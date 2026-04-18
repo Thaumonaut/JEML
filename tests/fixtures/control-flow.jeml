@@ -1,0 +1,18 @@
+>> script [type=typescript]: {
+  let show_admin = true
+  let items = ["alpha", "beta", "gamma"]
+}
+<<
+
+>> document:
+  ~ if (&show_admin)
+    > section: Admin panel <
+  ~ else
+    > section: Public view <
+  ~<
+
+  > heading.2: Items <
+  ~ for (&items as $item)
+    > text: $item <
+  ~<
+<< document

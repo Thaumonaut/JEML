@@ -2,7 +2,12 @@ export type JEMLDocument = {
   directives: DirectiveNode[]
 }
 
-export type DirectiveNode = MetaDirective | StyleDirective | DocumentDirective
+export type DirectiveNode =
+  | MetaDirective
+  | StyleDirective
+  | ImportDirective
+  | DocumentDirective
+  | ScriptDirective
 
 export type MetaDirective = {
   type: 'meta'
@@ -12,12 +17,27 @@ export type MetaDirective = {
 export type StyleDirective = {
   type: 'style'
   attributes: Attribute[]
-  content?: string
+  body?: string
+}
+
+export type ImportDirective = {
+  type: 'import'
+  from: string
+  attributes: Attribute[]
+  kind: 'default' | 'named' | 'namespace'
+  /** Identifier for default/namespace forms, comma list for named */
+  names: string[]
 }
 
 export type DocumentDirective = {
   type: 'document'
   children: Node[]
+}
+
+export type ScriptDirective = {
+  type: 'script'
+  attributes: Attribute[]
+  body: string
 }
 
 export type Node =
@@ -28,6 +48,8 @@ export type Node =
   | FencedCodeNode
   | BlankNode
   | CommentNode
+  | ControlIfNode
+  | ControlForNode
 
 export type BlockNode = {
   type: 'block'
@@ -69,6 +91,28 @@ export type BlankNode = {
 
 export type CommentNode = {
   type: 'comment'
+}
+
+export type ControlIfBranch = {
+  /** Raw condition expression between `(` and `)`; empty for the final `else` */
+  condition: string
+  children: Node[]
+}
+
+export type ControlIfNode = {
+  type: 'control-if'
+  branches: ControlIfBranch[]
+}
+
+export type ControlForNode = {
+  type: 'control-for'
+  /** Raw iterable expression, e.g. `&items` */
+  iterable: string
+  /** Iterator binding without `$`, e.g. `item` */
+  item: string
+  /** Optional index binding without `$` */
+  index?: string
+  children: Node[]
 }
 
 export type Attribute = {

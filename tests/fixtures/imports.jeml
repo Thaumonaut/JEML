@@ -1,0 +1,12 @@
+>> import [from="./components/avatar.jeml"]: Avatar
+>> import [from="@std/format"]: { format_date, format_money }
+>> import [from="@std/util"]: * as util
+
+>> script [type=typescript]: {
+  let user = { name: "Ada" }
+}
+<<
+
+>> document:
+  > heading.1: Hello <
+<< document

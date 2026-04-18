@@ -1,10 +1,15 @@
 import type {
   Attribute,
   BlockNode,
+  ControlForNode,
+  ControlIfBranch,
+  ControlIfNode,
   DirectiveNode,
   DocumentDirective,
+  ImportDirective,
   JEMLDocument,
   Node,
+  ScriptDirective,
   SiblingItemNode,
   StyleDirective,
   TextNode,
@@ -35,29 +40,27 @@ export function parse(source: string): JEMLDocument {
     }
 
     if (line.startsWith('>> meta')) {
-      const rest = line.slice('>> meta'.length).trim()
-      const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
-      directives.push({ type: 'meta', attributes: parsed.attrs })
-      ctx.index = parsed.nextIndex
+      directives.push(parseMetaDirective(ctx))
       continue
     }
 
     if (line.startsWith('>> style')) {
-      const rest = line.slice('>> style'.length).trim()
-      const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
-      directives.push({ type: 'style', attributes: parsed.attrs })
-      ctx.index = parsed.nextIndex
+      directives.push(parseStyleDirective(ctx))
+      continue
+    }
+
+    if (line.startsWith('>> import')) {
+      directives.push(parseImportDirective(ctx))
+      continue
+    }
+
+    if (line.startsWith('>> script')) {
+      directives.push(parseScriptDirective(ctx))
       continue
     }
 
     if (line.startsWith('>> document')) {
-      const rest = line.slice('>> document'.length).trim()
-      if (!rest.startsWith(':')) {
-        throw new Error(`Expected '>> document:' at line ${ctx.index + 1}`)
-      }
-      ctx.index += 1
-      const children = parseNodes(ctx, { stopAtDocumentClose: true })
-      directives.push({ type: 'document', children })
+      directives.push(parseDocumentDirective(ctx))
       continue
     }
 
@@ -70,6 +73,194 @@ export function parse(source: string): JEMLDocument {
   }
 
   return { directives }
+}
+
+function parseMetaDirective(ctx: ParseContext): DirectiveNode {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> meta'.length).trim()
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
+  ctx.index = parsed.nextIndex
+  consumeOptionalDirectiveClose(ctx, 'meta')
+  return { type: 'meta', attributes: parsed.attrs }
+}
+
+function parseStyleDirective(ctx: ParseContext): StyleDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> style'.length).trim()
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
+  ctx.index = parsed.nextIndex
+
+  const body = readOptionalBraceBody(ctx, parsed.rest)
+  consumeOptionalDirectiveClose(ctx, 'style')
+
+  const directive: StyleDirective = { type: 'style', attributes: parsed.attrs }
+  if (body !== undefined) directive.body = body
+  return directive
+}
+
+function parseImportDirective(ctx: ParseContext): ImportDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> import'.length).trim()
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
+  ctx.index = parsed.nextIndex
+
+  let spec = parsed.rest.trim()
+  if (!spec.startsWith(':')) {
+    throw new Error(`Expected ':' after >> import attributes at line ${ctx.index}`)
+  }
+  spec = spec.slice(1).trim()
+
+  const from = parsed.attrs.find((a) => a.key === 'from')?.value ?? ''
+  const { kind, names } = parseImportSpec(spec)
+
+  consumeOptionalDirectiveClose(ctx, 'import')
+
+  return {
+    type: 'import',
+    from,
+    attributes: parsed.attrs,
+    kind,
+    names,
+  }
+}
+
+function parseImportSpec(spec: string): { kind: ImportDirective['kind']; names: string[] } {
+  const trimmed = spec.trim()
+  if (trimmed.startsWith('{')) {
+    const close = trimmed.indexOf('}')
+    const inner = trimmed.slice(1, close >= 0 ? close : trimmed.length)
+    const names = inner
+      .split(',')
+      .map((n) => n.trim())
+      .filter((n) => n.length > 0)
+    return { kind: 'named', names }
+  }
+  if (trimmed.startsWith('*')) {
+    const asMatch = /^\*\s+as\s+([a-zA-Z_][\w]*)/u.exec(trimmed)
+    return { kind: 'namespace', names: asMatch ? [asMatch[1] ?? ''] : [] }
+  }
+  const idMatch = /^([a-zA-Z_][\w]*)/u.exec(trimmed)
+  return { kind: 'default', names: idMatch ? [idMatch[1] ?? ''] : [] }
+}
+
+function parseScriptDirective(ctx: ParseContext): ScriptDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> script'.length).trim()
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
+  ctx.index = parsed.nextIndex
+
+  const body = readOptionalBraceBody(ctx, parsed.rest) ?? ''
+  consumeOptionalDirectiveClose(ctx, 'script')
+
+  return { type: 'script', attributes: parsed.attrs, body }
+}
+
+function parseDocumentDirective(ctx: ParseContext): DocumentDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> document'.length).trim()
+  if (!rest.startsWith(':')) {
+    throw new Error(`Expected '>> document:' at line ${ctx.index + 1}`)
+  }
+  ctx.index += 1
+  const children = parseNodes(ctx, { stopAtDocumentClose: true })
+  return { type: 'document', children }
+}
+
+/**
+ * After a `>> directive [...]:` header, read an optional `{ ... }` body.
+ * `rest` is the remaining text on the header line after `]` (may start with `:` and `{`).
+ * If the next non-empty line is `{`, consume it. Body is returned without surrounding braces.
+ */
+function readOptionalBraceBody(ctx: ParseContext, rest: string): string | undefined {
+  let remainder = rest.trim()
+  if (remainder.startsWith(':')) {
+    remainder = remainder.slice(1).trim()
+  }
+
+  if (!remainder.startsWith('{')) {
+    while (ctx.index < ctx.lines.length) {
+      const peek = (ctx.lines[ctx.index] ?? '').trim()
+      if (peek === '' || peek.startsWith('%')) {
+        ctx.index += 1
+        continue
+      }
+      if (peek.startsWith('{')) {
+        remainder = peek
+        break
+      }
+      return undefined
+    }
+    if (!remainder.startsWith('{')) return undefined
+    ctx.index += 1
+  }
+
+  let buffer = remainder.slice(1)
+  let depth = 1
+  const bodyParts: string[] = []
+
+  const pushLine = (text: string, appendNewline: boolean): boolean => {
+    let i = 0
+    let inString: '"' | "'" | '`' | null = null
+    while (i < text.length) {
+      const ch = text[i]!
+      if (inString) {
+        if (ch === '\\' && i + 1 < text.length) {
+          i += 2
+          continue
+        }
+        if (ch === inString) inString = null
+        i += 1
+        continue
+      }
+      if (ch === '"' || ch === "'" || ch === '`') {
+        inString = ch as '"' | "'" | '`'
+        i += 1
+        continue
+      }
+      if (ch === '{') depth += 1
+      else if (ch === '}') {
+        depth -= 1
+        if (depth === 0) {
+          bodyParts.push(text.slice(0, i))
+          return true
+        }
+      }
+      i += 1
+    }
+    bodyParts.push(text)
+    if (appendNewline) bodyParts.push('\n')
+    return false
+  }
+
+  if (pushLine(buffer, true)) {
+    return bodyParts.join('')
+  }
+
+  while (ctx.index < ctx.lines.length) {
+    const raw = ctx.lines[ctx.index] ?? ''
+    ctx.index += 1
+    if (pushLine(raw, ctx.index < ctx.lines.length)) {
+      return bodyParts.join('')
+    }
+  }
+
+  throw new Error('Unclosed { body } in directive')
+}
+
+function consumeOptionalDirectiveClose(ctx: ParseContext, expectedTag?: string): void {
+  while (ctx.index < ctx.lines.length) {
+    const peek = (ctx.lines[ctx.index] ?? '').trim()
+    if (peek === '' || peek.startsWith('%')) {
+      ctx.index += 1
+      continue
+    }
+    const match = /^<<(?:\s+([a-zA-Z][\w-]*))?\s*$/u.exec(peek)
+    if (!match) return
+    const tag = match[1]
+    if (tag && expectedTag && tag !== expectedTag) return
+    ctx.index += 1
+    return
+  }
 }
 
 function parseNodes(ctx: ParseContext, options: { stopAtDocumentClose: boolean }): Node[] {
@@ -99,6 +290,15 @@ function parseNodes(ctx: ParseContext, options: { stopAtDocumentClose: boolean }
       continue
     }
 
+    if (trimmed.startsWith('~ if') || trimmed.startsWith('~ for')) {
+      nodes.push(parseControl(ctx))
+      continue
+    }
+
+    if (trimmed === '~<' || trimmed === '~ else' || trimmed.startsWith('~ else')) {
+      break
+    }
+
     if (trimmed.startsWith('> ')) {
       nodes.push(parseBlock(ctx))
       continue
@@ -118,6 +318,130 @@ function parseNodes(ctx: ParseContext, options: { stopAtDocumentClose: boolean }
     ctx.index += 1
   }
 
+  return nodes
+}
+
+function parseControl(ctx: ParseContext): ControlIfNode | ControlForNode {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  if (line.startsWith('~ for')) {
+    return parseControlFor(ctx)
+  }
+  return parseControlIf(ctx)
+}
+
+function parseControlIf(ctx: ParseContext): ControlIfNode {
+  const branches: ControlIfBranch[] = []
+  const first = (ctx.lines[ctx.index] ?? '').trim()
+  const firstCond = extractParenthesized(first.replace(/^~\s*if/u, '').trim())
+  ctx.index += 1
+  branches.push({ condition: firstCond, children: parseBlockSubtree(ctx) })
+
+  while (ctx.index < ctx.lines.length) {
+    const peek = (ctx.lines[ctx.index] ?? '').trim()
+    if (peek.startsWith('~ else if')) {
+      const cond = extractParenthesized(peek.replace(/^~\s*else\s+if/u, '').trim())
+      ctx.index += 1
+      branches.push({ condition: cond, children: parseBlockSubtree(ctx) })
+      continue
+    }
+    if (peek === '~ else' || peek.startsWith('~ else')) {
+      ctx.index += 1
+      branches.push({ condition: '', children: parseBlockSubtree(ctx) })
+      continue
+    }
+    break
+  }
+
+  if (ctx.index < ctx.lines.length) {
+    const closer = (ctx.lines[ctx.index] ?? '').trim()
+    if (closer === '~<') ctx.index += 1
+  }
+
+  return { type: 'control-if', branches }
+}
+
+function parseControlFor(ctx: ParseContext): ControlForNode {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const body = line.replace(/^~\s*for/u, '').trim()
+  const spec = extractParenthesized(body)
+  const match = /^(.*?)\s+as\s+\$([a-zA-Z_][\w]*)(?:\s*,\s*\$([a-zA-Z_][\w]*))?\s*$/u.exec(spec)
+  if (!match) {
+    throw new Error(`Invalid ~ for header near line ${ctx.index + 1}`)
+  }
+  const iterable = (match[1] ?? '').trim()
+  const item = match[2] ?? ''
+  const index = match[3]
+  ctx.index += 1
+  const children = parseBlockSubtree(ctx)
+  if (ctx.index < ctx.lines.length) {
+    const closer = (ctx.lines[ctx.index] ?? '').trim()
+    if (closer === '~<') ctx.index += 1
+  }
+  const node: ControlForNode = { type: 'control-for', iterable, item, children }
+  if (index) node.index = index
+  return node
+}
+
+function extractParenthesized(input: string): string {
+  const trimmed = input.trim()
+  if (!trimmed.startsWith('(')) return trimmed
+  const close = findMatchingParen(trimmed, 0)
+  return trimmed.slice(1, close).trim()
+}
+
+function findMatchingParen(input: string, openIndex: number): number {
+  let depth = 0
+  for (let i = openIndex; i < input.length; i += 1) {
+    const ch = input[i]
+    if (ch === '(') depth += 1
+    else if (ch === ')') {
+      depth -= 1
+      if (depth === 0) return i
+    }
+  }
+  return input.length
+}
+
+/**
+ * Parse the body of a `~ if` / `~ for` branch until we hit `~<`, `~ else`, `~ else if`,
+ * or an outer block closer. Nested `~`-blocks are consumed recursively by `parseNodes`.
+ */
+function parseBlockSubtree(ctx: ParseContext): Node[] {
+  const nodes: Node[] = []
+  while (ctx.index < ctx.lines.length) {
+    const raw = ctx.lines[ctx.index] ?? ''
+    const trimmed = raw.trim()
+    if (trimmed === '' || trimmed.startsWith('%')) {
+      ctx.index += 1
+      continue
+    }
+    if (trimmed === '~<' || trimmed.startsWith('~ else')) break
+    const closer = tryParseBlockClose(trimmed)
+    if (closer) break
+
+    if (/^```/u.test(trimmed)) {
+      nodes.push(parseFencedCode(ctx))
+      continue
+    }
+    if (trimmed.startsWith('~ if') || trimmed.startsWith('~ for')) {
+      nodes.push(parseControl(ctx))
+      continue
+    }
+    if (trimmed.startsWith('> ')) {
+      nodes.push(parseBlock(ctx))
+      continue
+    }
+    if (trimmed.startsWith('!> ')) {
+      nodes.push(parseVoid(ctx))
+      continue
+    }
+    if (trimmed.startsWith('- ')) {
+      nodes.push(parseSibling(ctx))
+      continue
+    }
+    nodes.push({ type: 'text', value: trimmed } satisfies TextNode)
+    ctx.index += 1
+  }
   return nodes
 }
 
@@ -173,6 +497,11 @@ function parseBlockBody(ctx: ParseContext, closeTag: string): Node[] {
       throw new Error(
         `Unexpected block close "${trimmed}" while expecting < or < ${closeTag} at line ${ctx.index + 1}`,
       )
+    }
+
+    if (trimmed.startsWith('~ if') || trimmed.startsWith('~ for')) {
+      nodes.push(parseControl(ctx))
+      continue
     }
 
     if (trimmed.startsWith('> ')) {

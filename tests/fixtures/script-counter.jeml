@@ -1,0 +1,21 @@
+>> meta [title="Counter"]
+
+>> script [type=typescript]: {
+  let count = 0
+
+  increment () {
+    count = count + 1
+  }
+
+  reset () {
+    count = 0
+  }
+}
+<<
+
+>> document:
+  > heading.1: Counter <
+  > text: Clicks: &count <
+  > button [on_press=@increment]: Add <
+  > button [on_press=@reset]: Reset <
+<< document

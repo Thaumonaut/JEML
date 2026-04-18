@@ -245,3 +245,22 @@ Do NOT stop for:
 - Control flow (`~ for`, `~ if`)
 - Handlers
 - Component system (`>> import`, `>> export`)
+
+### Milestone 3 status (in progress)
+
+The compiler now parses `>> script`, `>> import`, `~ if`, `~ for`, and the
+`&`/`@`/`$`/`{…}` reference sigils. For files that use any of these, the
+emitted HTML includes `data-jeml-*` markers and a `<script>` tag carrying a
+~3 KB client runtime plus the transpiled `>> script` body.
+
+- State (`let name = …`) is reactive via a `Proxy`; writes schedule a render.
+- Handlers (`name () { … }`) become `handlers.name` and wire through
+  `data-jeml-on-EVENT` attributes (`on_press` maps to `click`).
+- `~ if` / `~ for` emit `<template>`-based containers that the runtime
+  stamps into the DOM with a loop scope (`$scope.item`, `$scope.index`).
+- `>> import` is parsed but cross-file resolution is not yet implemented;
+  `.jeml` imports emit a commented skip marker in the output script.
+
+See `src/compiler/targets/typescript/transpile.ts` for the script transform
+(the JEML script body is **not** valid JS on its own) and
+`src/runtime/embed.ts` for the runtime text that gets inlined.

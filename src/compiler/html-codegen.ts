@@ -1,21 +1,42 @@
 import type {
   Attribute,
   BlockNode,
+  ControlForNode,
+  ControlIfNode,
   DocumentDirective,
+  ImportDirective,
   JEMLDocument,
   Node,
+  ScriptDirective,
   SiblingItemNode,
   VoidNode,
 } from '../parser/ast'
 import { parseAttributes } from '../parser/attributes'
+import { CLIENT_RUNTIME } from '../runtime/embed'
+import { transpileScript } from './targets/typescript/transpile'
 
 type HtmlGenContext = {
   responsiveRules: string[]
   nextR: number
+  /** True when the document uses script/import/control-flow/references. */
+  dynamic: boolean
 }
 
+let activeDynamic = false
+
 export function generateHtml(ast: JEMLDocument): string {
-  const ctx: HtmlGenContext = { responsiveRules: [], nextR: 0 }
+  const dynamic = documentIsDynamic(ast)
+  const ctx: HtmlGenContext = { responsiveRules: [], nextR: 0, dynamic }
+  const priorDynamic = activeDynamic
+  activeDynamic = dynamic
+  try {
+    return generateHtmlInner(ast, ctx, dynamic)
+  } finally {
+    activeDynamic = priorDynamic
+  }
+}
+
+function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: boolean): string {
   const headLines: string[] = []
   const documentDirective = ast.directives.find((directive): directive is DocumentDirective => directive.type === 'document')
   for (const directive of ast.directives) {
@@ -40,6 +61,11 @@ export function generateHtml(ast: JEMLDocument): string {
       if (ref) {
         headLines.push(`<link rel="stylesheet" href="${escapeAttr(ref)}">`)
       }
+      if (directive.body && directive.body.trim().length > 0) {
+        headLines.push('<style>')
+        headLines.push(directive.body.trim())
+        headLines.push('</style>')
+      }
     }
   }
 
@@ -59,8 +85,83 @@ export function generateHtml(ast: JEMLDocument): string {
   }
   output.push('<body>')
   output.push(...bodyLines)
+  if (dynamic) {
+    const scriptTag = buildClientScriptTag(ast)
+    if (scriptTag) output.push(scriptTag)
+  }
   output.push('</body>', '</html>')
   return `${output.join('\n')}\n`
+}
+
+function documentIsDynamic(ast: JEMLDocument): boolean {
+  for (const directive of ast.directives) {
+    if (directive.type === 'script' || directive.type === 'import') return true
+    if (directive.type === 'document' && nodesContainDynamic(directive.children)) return true
+  }
+  return false
+}
+
+function nodesContainDynamic(nodes: Node[]): boolean {
+  for (const node of nodes) {
+    if (node.type === 'control-if' || node.type === 'control-for') return true
+    if (node.type === 'block' || node.type === 'void' || node.type === 'sibling-item') {
+      if (attrsHaveRefs((node as { attributes: Attribute[] }).attributes)) return true
+    }
+    if (node.type === 'block' || node.type === 'sibling-item') {
+      if (nodesContainDynamic(node.children)) return true
+    }
+    if (node.type === 'text' && textHasRefs(node.value)) return true
+  }
+  return false
+}
+
+function attrsHaveRefs(attrs: Attribute[]): boolean {
+  for (const attr of attrs) {
+    if (attr.key.startsWith('on_')) return true
+    if (attr.value === undefined) continue
+    if (attr.value.startsWith('&') || attr.value.startsWith('@') || attr.value.startsWith('$')) return true
+    if (/\{[^{}]*\}/u.test(attr.value)) return true
+  }
+  return false
+}
+
+function textHasRefs(value: string): boolean {
+  return DYNAMIC_TEXT_RE.test(value)
+}
+
+const DYNAMIC_TEXT_RE =
+  /(?<![\w\\])(?:&[a-zA-Z_][\w.]*|@[a-zA-Z_][\w.]*|\$[a-zA-Z_][\w.]*)|(?<!\\)\{[^{}]*\}/u
+
+function buildClientScriptTag(ast: JEMLDocument): string | null {
+  const scriptDirective = ast.directives.find((d): d is ScriptDirective => d.type === 'script')
+  const imports = ast.directives.filter((d): d is ImportDirective => d.type === 'import')
+
+  let userBody = ''
+  if (scriptDirective) {
+    const { code } = transpileScript(scriptDirective.body)
+    userBody = code
+  }
+
+  const importLines: string[] = []
+  for (const imp of imports) {
+    if (imp.from.endsWith('.jeml')) {
+      importLines.push(`// [jeml] import of ${JSON.stringify(imp.from)} skipped: .jeml imports are not yet supported`)
+      continue
+    }
+    if (imp.kind === 'default') {
+      importLines.push(`// import ${imp.names[0] ?? ''} from ${JSON.stringify(imp.from)};`)
+    } else if (imp.kind === 'named') {
+      importLines.push(`// import { ${imp.names.join(', ')} } from ${JSON.stringify(imp.from)};`)
+    } else {
+      importLines.push(`// import * as ${imp.names[0] ?? ''} from ${JSON.stringify(imp.from)};`)
+    }
+  }
+
+  const body = [importLines.join('\n'), userBody].filter(Boolean).join('\n').trim()
+  const injected = body || '/* no user script */'
+  const runtime = CLIENT_RUNTIME.replace('__JEML_USER_SCRIPT__', () => injected)
+  const safe = runtime.replaceAll('</script>', '<\\/script>')
+  return `<script>${safe}</script>`
 }
 
 function nextResponsiveId(ctx: HtmlGenContext): string {
@@ -86,6 +187,14 @@ function emitNodes(nodes: Node[], parentTag: string | null, ctx: HtmlGenContext)
     }
     if (node.type === 'void') {
       lines.push(...emitVoid(node, ctx))
+      continue
+    }
+    if (node.type === 'control-if') {
+      lines.push(...emitControlIf(node, parentTag, ctx))
+      continue
+    }
+    if (node.type === 'control-for') {
+      lines.push(...emitControlFor(node, parentTag, ctx))
       continue
     }
     if (node.type !== 'block') {
@@ -307,6 +416,46 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
     return lines
   }
   return [`<${customTag}${unknownClasses}${renderAttrs(node.attributes)}>${renderChildrenInlineCtx(node.children, node.tag, ctx)}</${customTag}>`]
+}
+
+function emitControlIf(node: ControlIfNode, parentTag: string | null, ctx: HtmlGenContext): string[] {
+  const lines: string[] = ['<div class="jeml-if" data-jeml-if>']
+  for (const branch of node.branches) {
+    const caseExpr = branch.condition ? transformExpression(branch.condition) : ''
+    lines.push(`<template data-jeml-case="${escapeAttr(caseExpr)}">`)
+    lines.push(...emitNodes(branch.children, parentTag, ctx))
+    lines.push('</template>')
+  }
+  lines.push('</div>')
+  return lines
+}
+
+function emitControlFor(node: ControlForNode, parentTag: string | null, ctx: HtmlGenContext): string[] {
+  const iterable = transformExpression(node.iterable)
+  const attrs = [
+    `data-jeml-for="${escapeAttr(iterable)}"`,
+    `data-jeml-item="${escapeAttr(node.item)}"`,
+  ]
+  if (node.index) attrs.push(`data-jeml-index="${escapeAttr(node.index)}"`)
+  const lines = [`<div class="jeml-for" ${attrs.join(' ')}>`]
+  lines.push('<template>')
+  lines.push(...emitNodes(node.children, parentTag, ctx))
+  lines.push('</template>')
+  lines.push('</div>')
+  return lines
+}
+
+/**
+ * Rewrite sigil-prefixed references into runtime-evaluable JS expressions.
+ * `&user.name` → `state.user.name`, `@save` → `handlers.save`,
+ * `$item.title` → `$scope.item.title`. Operates on unquoted source; callers
+ * must not pass expressions whose string literals contain these sigils.
+ */
+function transformExpression(input: string): string {
+  return input
+    .replaceAll(/(?<![\w.])&([a-zA-Z_][\w.]*)/gu, 'state.$1')
+    .replaceAll(/(?<![\w.])@([a-zA-Z_][\w.]*)/gu, 'handlers.$1')
+    .replaceAll(/(?<![\w.])\$([a-zA-Z_][\w.]*)/gu, '$scope.$1')
 }
 
 function isKnownHtmlTag(tag: string): boolean {
@@ -546,8 +695,11 @@ function renderInlineElementResult(tag: string, attrs: Attribute[], contentRaw: 
 }
 
 function renderMarkdownish(input: string): string {
-  const tokenRe =
+  const staticRe =
     /#(['"])(.*?)\1\s*\[([^\]]*)\]|(?<!\\)\*\*[^*]+\*\*|(?<!\\)_[^_]+(?<!\\)_|(?<!\\)`[^`]+`/gu
+  const dynamicRe =
+    /#(['"])(.*?)\1\s*\[([^\]]*)\]|(?<!\\)\*\*[^*]+\*\*|(?<!\\)_[^_]+(?<!\\)_|(?<!\\)`[^`]+`|(?<![\w\\])&[a-zA-Z_][\w.]*|(?<![\w\\])@[a-zA-Z_][\w.]*|(?<![\w\\])\$[a-zA-Z_][\w.]*|(?<!\\)\{[^{}]*\}/gu
+  const tokenRe = activeDynamic ? dynamicRe : staticRe
   const segments: string[] = []
   let last = 0
   for (const match of input.matchAll(tokenRe)) {
@@ -582,6 +734,14 @@ function renderMarkdownToken(token: string): string {
   if (token.startsWith('`') && token.endsWith('`')) {
     return `<code>${escapeHtml(unescapeSigils(token.slice(1, -1)))}</code>`
   }
+  if (activeDynamic && (token.startsWith('&') || token.startsWith('@') || token.startsWith('$'))) {
+    const expr = transformExpression(token)
+    return `<span data-jeml-text="${escapeAttr(expr)}"></span>`
+  }
+  if (activeDynamic && token.startsWith('{') && token.endsWith('}')) {
+    const expr = transformExpression(token.slice(1, -1).trim())
+    return `<span data-jeml-text="${escapeAttr(expr)}"></span>`
+  }
   return escapeHtml(token)
 }
 
@@ -601,7 +761,23 @@ function renderAttrs(
 
   for (const attr of attrs) {
     if (omitSet.has(attr.key)) continue
-    if (attr.key === 'key' || attr.key.startsWith('on_') || attr.key === 'bind') continue
+    if (attr.key === 'key' || attr.key === 'bind') continue
+    if (attr.key.startsWith('on_')) {
+      if (activeDynamic && attr.value !== undefined) {
+        const eventName = attr.key.slice('on_'.length)
+        const expr = transformExpression(attr.value)
+        parts.push(`data-jeml-on-${escapeAttrKey(eventName)}="${escapeAttr(expr)}"`)
+      }
+      continue
+    }
+    if (activeDynamic && attr.value !== undefined && isDynamicValue(attr.value)) {
+      const expr = attr.value.startsWith('{') && attr.value.endsWith('}')
+        ? transformExpression(attr.value.slice(1, -1).trim())
+        : transformExpression(attr.value)
+      const boundName = rename[attr.key] ?? mapAttr(attr.key)
+      parts.push(`data-jeml-bind-${escapeAttrKey(boundName)}="${escapeAttr(expr)}"`)
+      continue
+    }
 
     const key = rename[attr.key] ?? mapAttr(attr.key)
     if (attr.key === 'layout' && attr.value) {
@@ -706,6 +882,18 @@ function renderDivClassAttrs(attrs: Attribute[], baseClass: string, addColsStyle
   const rest = renderAttrs(remaining, { omit: ['style'] })
   const stylePart = addColsStyle && columns ? ` style="--cols: ${escapeAttr(columns)}"` : ''
   return `${classPart}${rest}${stylePart}`
+}
+
+function isDynamicValue(value: string): boolean {
+  if (value.length === 0) return false
+  const first = value[0]
+  if (first === '&' || first === '@' || first === '$') return true
+  if (first === '{' && value.endsWith('}')) return true
+  return false
+}
+
+function escapeAttrKey(value: string): string {
+  return value.replaceAll(/[^a-z0-9-]/giu, '-').toLowerCase()
 }
 
 function mapInlineTag(tag: string): string {
