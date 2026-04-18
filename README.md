@@ -54,7 +54,7 @@ Each [GitHub Release](https://github.com/Thaumonaut/jeml-project/releases) inclu
 
 **Windows:** run `jeml-windows-x64.exe` from PowerShell or Explorer, or put it on your `PATH`. Binaries are not code-signed yet; SmartScreen may prompt the first time you run the `.exe`.
 
-**Try the workflow without a release:** open **Actions → Release binaries → Run workflow**; completed runs list **artifacts** you can download (same filenames, no GitHub Release page).
+**Run the workflow by hand:** **Actions → Release binaries → Run workflow**. Leave **release_tag** empty to only build and attach **workflow artifacts** (no GitHub Release step). Enter a tag (for example `v0.1.0`) to run **Attach to GitHub Release** and upload the same binaries to that release (the tag should already exist on GitHub, or create it first, then run the workflow).
 
 **Build one binary locally** (requires [Bun](https://bun.sh) and `npm ci`):
 

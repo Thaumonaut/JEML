@@ -1,12 +1,18 @@
 # Cross-compiled standalone CLIs (no Node.js required on the user machine).
-# Triggers: version tags v*.*.*, or manual run (artifacts only; no GitHub Release).
+# Triggers: push a tag like v0.1.0, or Run workflow (optionally set release_tag to attach assets).
 name: Release binaries
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*'
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'If set, upload binaries to this GitHub Release tag (e.g. v0.1.0). Tag must exist on the remote. Leave empty for build + artifacts only.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -68,7 +74,9 @@ jobs:
     name: Attach to GitHub Release
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag != '')
 
     steps:
       - uses: actions/download-artifact@v4
@@ -89,6 +97,7 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref_name }}
           draft: false
           generate_release_notes: true
           files: release-assets/*
