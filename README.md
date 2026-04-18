@@ -1,53 +1,142 @@
 # JEML
 
-**Jacob's Easy Markup Language** — a new markup language designed to replace HTML, XML, and parts of JSON for UI and templating.
+**Jacob’s Easy Markup Language** — a markup language for people who like writing UI by hand but want something shorter and more regular than HTML.
 
-This repository contains the reference implementation (TypeScript) of the JEML compiler, plus a browser playground.
+JEML is a **single-file component** format (think Svelte or Vue SFC, but markup-first). One file can hold metadata, linked styles, and your page tree. The reference compiler in this repo turns that into **real HTML** you can open in a browser or ship anywhere static HTML goes.
 
-## Status
+---
 
-v1 is in initial implementation. The static subset (markup, attributes, Markdown sigils, links, comments) is the current milestone. Reactivity, control flow, and components come later.
+## Why bother?
 
-## For AI agents working on this project
+- **Three structural “flavors”** instead of one overloaded `<tag>` syntax: blocks (`>` … `<`), inlines (`/>` … `</`), and voids (`!>` … nothing). You can see what kind of thing you’re reading without checking the spec.
+- **Variants** on tags (`heading.2`, `button.primary.lg`, `list.number`) so common UI patterns stay compact.
+- **Readable attributes** in `[brackets]`, including unquoted identifiers and numbers when that’s enough.
+- **Responsive overrides** next to the attribute they affect (`cols=1 ^(768px)=2`) — layout intent stays local (full responsive story is evolving; see specs and tests).
 
-**Start here:** Read `KICKOFF.md` in the project root. It contains the full onboarding brief — what to build, how to structure the code, what success looks like.
+If that sounds opinionated, it is — JEML is trying to be **pleasant to read and teach**, not to be a second HTML with different angle brackets.
 
-After reading `KICKOFF.md`, read these three files in order:
+---
 
-1. `spec/RULEBOOK.md` — the language specification. Source of truth for syntax.
-2. `spec/ELEMENT_MAPPING.md` — how JEML tags compile to HTML elements. Source of truth for the compiler's output.
-3. `tests/examples/` and `tests/expected/` — 12 paired JEML + HTML files that define correct behavior by example.
+## See it in 30 seconds
 
-## For humans
+```jeml
+>> meta [
+  title="Hello"
+  description="A tiny page"
+]
 
-### Quick start
+>> document:
+  > heading.1: Hello, world <
+<< document
+```
+
+The compiler emits a full document: `<!DOCTYPE html>`, `<html>`, `<head>`, `<body>`, and your content.
+
+---
+
+## Install the CLI (use JEML anywhere)
+
+You need **Node 18+**. Then pick one of these:
+
+### From GitHub (no npm account required)
+
+```bash
+npm install -g github:Thaumonaut/jeml-project
+jeml --help
+jeml compile my-page.jeml -o my-page.html
+jeml serve my-page.jeml --open
+```
+
+The first command clones the repo, installs dependencies, runs **`prepare`** to build `dist/jeml.mjs`, and links the **`jeml`** binary globally. Use a **fork’s** `user/repo` if you work from your own remote.
+
+### From a local clone (contributors)
+
+```bash
+git clone https://github.com/Thaumonaut/jeml-project.git
+cd jeml-project
+npm install          # runs prepare → builds the CLI automatically
+npm link             # puts `jeml` on your PATH from this checkout
+jeml --help
+```
+
+### From npm (after the package is published)
+
+```bash
+npm install -g jeml
+# or, without a global install:
+npx jeml compile my-page.jeml -o my-page.html
+```
+
+Publishing is a one-time `npm publish` from a maintainer machine (see [Creating & publishing packages](https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages)). If the name `jeml` is already taken on the registry, switch to a **scoped** name in `package.json` (for example `@your-scope/jeml`) and document that install string instead.
+
+**Note:** Installing **only** production deps from a git checkout (`npm install --omit=dev`) skips `esbuild`, so the `prepare` build will not run—use the default install for global git installs.
+
+---
+
+## Try it (develop in this repo)
 
 ```bash
 npm install
-npm run test       # runs the compiler test suite
-npm run dev        # launches the playground at localhost:5173
+npm run test          # fixture-driven compiler tests
+npm run typecheck
+npm run dev           # Vite playground → http://localhost:5173
 ```
 
-### Project layout
+Rebuild the CLI by hand (optional—`prepare` already does this after `npm install`):
+
+```bash
+npm run build:cli
+node dist/jeml.mjs compile tests/examples/01-hello-world.jeml
+node dist/jeml.mjs serve tests/examples/12-full-landing.jeml --open
+```
+
+---
+
+## Learn the language
+
+| Resource | What it’s for |
+|----------|----------------|
+| **[`docs/index.html`](docs/index.html)** | Illustrated tutorial (open locally, or publish **`/docs`** on GitHub Pages for a public site). |
+| **[`spec/RULEBOOK.md`](spec/RULEBOOK.md)** | Authoritative **v0.4** syntax and semantics. |
+| **[`spec/ELEMENT_MAPPING.md`](spec/ELEMENT_MAPPING.md)** | How tags and attributes map to HTML. |
+| **[`tests/examples/`](tests/examples/)** + **[`tests/expected/`](tests/expected/)** | Executable examples — the compiler’s contract. |
+
+**Contributors & coding agents:** start with [`KICKOFF.md`](KICKOFF.md), then read `RULEBOOK.md` → `ELEMENT_MAPPING.md` → the example pairs above.
+
+---
+
+## Project layout
 
 ```
 src/
-  grammar/      Peggy grammar file (jeml.pegjs)
-  parser/       AST types and parser wrapper
-  compiler/     AST → HTML codegen
-    targets/typescript/   Reserved for future script-section work
-  playground/   Browser playground (Vite)
+  parser/        AST, attribute lexer, line-based parser (v0.4)
+  compiler/    HTML codegen
+  cli/           compile + local preview server
+  playground/    Vite dev UI
+  grammar/       Peggy grammar (long-term; line parser is canonical today)
 spec/
-  RULEBOOK.md        Language specification
-  ELEMENT_MAPPING.md Compiler's JEML → HTML mapping
+  RULEBOOK.md
+  ELEMENT_MAPPING.md
+docs/
+  index.html     Visual tutorial (GitHub Pages–ready with .nojekyll)
 tests/
-  examples/     JEML input files
-  expected/     Corresponding HTML output files
-  compiler.test.ts   Snapshot tests
+  examples/*.jeml
+  expected/*.html
+  compiler.test.ts
 ```
+
+---
+
+## Status & direction
+
+Today this repo is a **working static compiler** for the **v0.4** surface syntax (directives `>>` / `<<`, blocks, inlines, voids, variants, rich attributes, paired fixtures). **Reactivity, `>> script`, imports, and control flow** are specified and sketched in the docs but not the focus of the current milestone.
+
+If you want JEML to exist as a serious alternative to hand-written HTML for static sites and prototypes, the most helpful things are: **clear bug reports**, **spec questions**, **example pages**, and **small PRs** that extend tests before code.
+
+---
 
 ## Contributing
 
-JEML is designed to eventually support script sections written in multiple languages (TypeScript, Python, Rust, Dart). The current implementation only handles TypeScript and static-subset markup. The `src/compiler/targets/typescript/` folder is the designated extension point for alternative script languages.
+New behavior should almost always land as a **new paired** `tests/examples/NN-….jeml` and `tests/expected/NN-….html` (or an update to an existing pair) so the intent stays obvious. See `KICKOFF.md` for workflow and conventions.
 
-When adding a new feature, always add a paired `tests/examples/NN-feature.jeml` and `tests/expected/NN-feature.html` file before implementing. Tests are the specification.
+The `src/compiler/targets/typescript/` area is reserved for future **script** compilation targets (TypeScript first; other languages later) without entangling the core markup pipeline.
