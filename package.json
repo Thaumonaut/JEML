@@ -1,6 +1,6 @@
 {
-  "name": "jeml",
-  "version": "0.1.0",
+  "name": "@jekdev/jeml",
+  "version": "0.4.0",
   "description": "Jacob's Easy Markup Language — compile .jeml files to HTML (v0.4 static compiler + CLI)",
   "keywords": [
     "jeml",
@@ -32,11 +32,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Thaumonaut/jeml-project.git"
+    "url": "git+https://github.com/Thaumonaut/jeml-project.git"
   },
   "homepage": "https://github.com/Thaumonaut/jeml-project#readme",
   "bugs": {
     "url": "https://github.com/Thaumonaut/jeml-project/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "chokidar": "^5.0.0",

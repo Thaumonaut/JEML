@@ -91,13 +91,15 @@ jeml --help
 
 ### From npm (after the package is published)
 
+The published name is whatever **`name`** is in `package.json` (currently **`@jekdev/jeml`**, scoped public):
+
 ```bash
-npm install -g jeml
+npm install -g @jekdev/jeml
 # or, without a global install:
-npx jeml compile my-page.jeml -o my-page.html
+npx @jekdev/jeml compile my-page.jeml -o my-page.html
 ```
 
-Publishing is a one-time `npm publish` from a maintainer machine (see [Creating & publishing packages](https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages)). If the name `jeml` is already taken on the registry, switch to a **scoped** name in `package.json` (for example `@your-scope/jeml`) and document that install string instead.
+**Publishing:** `publishConfig.access` is already **`public`**. If **`npm publish`** returns **404** on `PUT /@scope/...`, npm does not allow that **scope** for your login: the scope must be your **npm username** (`npm whoami`) or an [npm org](https://docs.npmjs.com/creating-an-organization) where you have publish rights. Fix by changing `"name"` to `@yourusername/jeml` (and updating the install commands above), or by creating/joining the org for that scope. See [scoped packages](https://docs.npmjs.com/about-scopes).
 
 **Note:** Installing **only** production deps from a git checkout (`npm install --omit=dev`) skips `esbuild`, so the `prepare` build will not run—use the default install for global git installs.
 
