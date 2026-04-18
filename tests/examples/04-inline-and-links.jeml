@@ -1,0 +1,13 @@
+>> document:
+  > text:
+    Check out the #'documentation'[url="/docs"] for more info.
+  <
+  > text:
+    You can also /> span [style="highlight"]: emphasize inline </ or add
+    /> icon [name="star"]: </
+    icons.
+  <
+  > text:
+    Links can have extra attributes like #'this one'[url="/page" target="_blank" title="Opens in new tab"].
+  <
+<< document

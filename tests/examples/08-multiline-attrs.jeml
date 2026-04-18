@@ -1,0 +1,13 @@
+>> meta [
+  title="Styled Page"
+]
+
+>> style [type=css ref="/styles/main.css"]
+
+>> document:
+  > button.primary [
+      type=submit
+      disabled
+      title="Click to continue"
+    ]: Continue <
+<< document

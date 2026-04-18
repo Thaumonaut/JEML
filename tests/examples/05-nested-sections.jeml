@@ -1,0 +1,15 @@
+>> document:
+  > section [id="hero"]:
+    > heading.1: Welcome to the site <
+    > text:
+      This is the hero section of our landing page.
+    <
+    > section [id="cta"]:
+      > heading.2: Get started today <
+      > text:
+        Click the button below to begin.
+      <
+      > button.primary: Sign up <
+    < section
+  < section
+<< document

@@ -1,0 +1,35 @@
+% This is a top-level line comment and should not appear in output
+
+%{
+  This is a block comment spanning
+  multiple lines. It should be stripped
+  from the compiled output entirely.
+%}
+
+>> document:
+  > heading.1: Syntax reference <
+
+  % A single-line comment inside the document
+
+  > text:
+    This document shows how to escape special characters like \*asterisks\*,
+    \_underscores\_, and \&ampersands\&. Literal backticks need \` escaping too.
+  <
+
+  > heading.2: Code example <
+  > text:
+    Here is an inline code reference: `const x = 1`.
+  <
+
+  ```typescript
+  function greet(name: string): string {
+    return `Hello, ${name}!`;
+  }
+  ```
+
+  > heading.2: Another language <
+  ```python
+  def greet(name):
+      return f"Hello, {name}!"
+  ```
+<< document

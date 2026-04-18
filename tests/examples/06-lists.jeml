@@ -1,0 +1,15 @@
+>> document:
+  > heading.2: Shopping list <
+  > list:
+    - Apples
+    - Bananas
+    - Cherries
+  <
+
+  > heading.2: Numbered steps <
+  > list.number:
+    - First, open the door
+    - Next, walk through
+    - Finally, close the door
+  <
+<< document

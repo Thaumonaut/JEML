@@ -1,0 +1,39 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+section:last-child {
+  grid-column: 1 / -1;
+}
+
+textarea,
+pre,
+iframe {
+  width: 100%;
+  min-height: 300px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  background: #fafafa;
+}
+
+iframe {
+  background: #fff;
+}

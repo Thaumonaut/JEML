@@ -1,0 +1,11 @@
+>> document:
+  > nav [id="main-nav"]:
+    > brand: Streamline <
+    > links:
+      - #'Home'[url="/"]
+      - #'About'[url="/about"]
+      - #'Docs'[url="/docs"]
+      - #'Contact'[url="/contact"]
+    <
+  < nav
+<< document

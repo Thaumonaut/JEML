@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Responsive Layout</title>
+<meta name="description" content="Demonstrates mobile-first responsive overrides">
+<style>
+[data-jeml-r="r1"] { --cols: 1; --gap: sm; }
+@media (min-width: 500px) { [data-jeml-r="r1"] { --cols: 2; } }
+@media (min-width: 768px) { [data-jeml-r="r1"] { --gap: md; } }
+@media (min-width: 1024px) { [data-jeml-r="r1"] { --cols: 4; --gap: lg; } }
+[data-jeml-r="r2"] { --layout: column; --gap: md; }
+@media (min-width: 900px) { [data-jeml-r="r2"] { --layout: row; --gap: xl; } }
+[data-jeml-r="r3"] { --size: lg; }
+@media (min-width: 768px) { [data-jeml-r="r3"] { --size: xl; } }
+@media (min-width: 1280px) { [data-jeml-r="r3"] { --size: xxl; } }
+[data-jeml-r="r4"] { --size: md; }
+@media (min-width: 768px) { [data-jeml-r="r4"] { --size: lg; } }
+</style>
+</head>
+<body>
+<section id="products">
+<h2>Featured products</h2>
+<div class="jeml-grid" data-jeml-r="r1">
+<div class="jeml-card">Product A</div>
+<div class="jeml-card">Product B</div>
+<div class="jeml-card">Product C</div>
+<div class="jeml-card">Product D</div>
+</div>
+</section>
+<section id="sidebar-layout">
+<h2>Article page</h2>
+<div class="jeml-group jeml-align-stretch" data-jeml-r="r2">
+<article>
+<h3>Main content</h3>
+<p>The article body goes here.</p>
+</article>
+<aside>
+<h4>Related</h4>
+<ul>
+<li>First related item</li>
+<li>Second related item</li>
+</ul>
+</aside>
+</div>
+</section>
+<section id="hero-responsive">
+<h1 data-jeml-r="r3">Welcome to the site</h1>
+<p class="lead" data-jeml-r="r4">A responsive page that looks good on every screen.</p>
+</section>
+</body>
+</html>

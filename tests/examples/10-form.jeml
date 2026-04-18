@@ -1,0 +1,40 @@
+>> document:
+  > heading.2: Contact form <
+
+  > form [id=contact]:
+    !> field [
+      type=text
+      label="Your name"
+      name=name
+      required
+    ]
+
+    !> field [
+      type=email
+      label="Email address"
+      name=email
+      required
+    ]
+
+    !> field [
+      type=select
+      label=Subject
+      name=subject
+    ]
+
+    !> field [
+      type=textarea
+      label=Message
+      name=message
+      rows=5
+    ]
+
+    !> field [
+      type=checkbox
+      label="Subscribe to newsletter"
+      name=newsletter
+    ]
+
+    > button.primary [type=submit]: Send message <
+  < form
+<< document

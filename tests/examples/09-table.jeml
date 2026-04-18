@@ -1,0 +1,26 @@
+>> document:
+  > heading.2: Team members <
+
+  > table:
+    > columns:
+      - [key="name" label="Name"]
+      - [key="role" label="Role"]
+      - [key="email" label="Email"]
+    <
+    > row:
+      - Alice Chen
+      - Engineering Lead
+      - alice@example.com
+    <
+    > row:
+      - Ben Torres
+      - Product Manager
+      - ben@example.com
+    <
+    > row:
+      - Cara Singh
+      - Designer
+      - cara@example.com
+    <
+  < table
+<< document

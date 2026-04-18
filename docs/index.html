@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning JEML — an illustrated tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --paper: #f5f1e8;
+    --paper-deep: #ebe4d2;
+    --paper-light: #faf6eb;
+    --ink: #1a1614;
+    --ink-soft: #423933;
+    --ink-muted: #78695c;
+    --rust: #b8502a;
+    --rust-deep: #8a3615;
+    --rust-soft: #e5a683;
+    --moss: #4a6a3d;
+    --sky: #3b6b8e;
+    --gold: #c4893a;
+    --line: rgba(26, 22, 20, 0.12);
+    --line-strong: rgba(26, 22, 20, 0.25);
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter Tight', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 32px; }
+
+  /* Offline warning banner */
+  .offline-banner {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--rust-deep);
+    color: var(--paper);
+    padding: 12px 48px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    display: none;
+  }
+  .offline-banner.visible { display: block; }
+  .offline-banner strong { color: var(--rust-soft); font-weight: 600; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.04;
+    background-image:
+      radial-gradient(circle at 25% 30%, rgba(0,0,0,0.5) 0.5px, transparent 1px),
+      radial-gradient(circle at 75% 70%, rgba(0,0,0,0.5) 0.5px, transparent 1px);
+    background-size: 3px 3px, 5px 5px;
+    mix-blend-mode: multiply;
+  }
+
+  /* ═══════════════════════ HERO ═══════════════════════ */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 48px 120px;
+    position: relative;
+  }
+
+  .hero-mark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 56px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line-strong);
+    width: fit-content;
+  }
+
+  .hero-mark-logo {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--rust);
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .hero-mark-version {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(52px, 8vw, 112px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    margin-bottom: 40px;
+    max-width: 1000px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--rust);
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .hero-lede {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin-bottom: 56px;
+    font-variation-settings: 'opsz' 14;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .hero-meta dt {
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+  }
+
+  .hero-meta dd {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+
+  /* ═══════════════════════ NAVIGATION ═══════════════════════ */
+  .toc-section {
+    background: var(--paper-deep);
+    padding: 80px 48px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .toc-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .toc-item {
+    background: var(--paper-light);
+    padding: 24px 28px;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.15s ease;
+  }
+
+  .toc-item:hover {
+    background: var(--paper);
+  }
+
+  .toc-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--rust);
+    font-weight: 500;
+  }
+
+  .toc-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    font-variation-settings: 'opsz' 14;
+    line-height: 1.2;
+  }
+
+  /* ═══════════════════════ SECTIONS ═══════════════════════ */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 96px 48px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section:last-of-type { border-bottom: none; }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    margin-bottom: 56px;
+    align-items: baseline;
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--rust);
+    padding-top: 12px;
+    border-top: 2px solid var(--rust);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .section-head-inner h2 {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .section-head-inner h2 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--rust);
+  }
+
+  .section-head-inner .kicker {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-weight: 400;
+    font-variation-settings: 'opsz' 14;
+    max-width: 680px;
+  }
+
+  .section-body {
+    margin-left: 152px;
+    max-width: 1000px;
+  }
+
+  .section-body p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+
+  .section-body p strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .section-body p code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--paper-deep);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--rust-deep);
+  }
+
+  .section-body h3 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 500;
+    font-style: italic;
+    margin: 48px 0 16px;
+    color: var(--ink);
+    font-variation-settings: 'opsz' 14;
+  }
+
+  /* ═══════════════════════ CODE TRIPTYCH ═══════════════════════ */
+  .triptych {
+    margin: 36px 0 48px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper-light);
+    overflow: hidden;
+  }
+
+  .triptych-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .triptych-header > div {
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .triptych-header > div:last-child { border-right: none; }
+
+  .triptych-header-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .triptych-header .dot-jeml { background: var(--rust-soft); }
+  .triptych-header .dot-html { background: var(--sky); filter: saturate(1.5) brightness(1.3); }
+  .triptych-header .dot-render { background: var(--moss); filter: saturate(1.5) brightness(1.3); }
+
+  .triptych-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    min-height: 180px;
+  }
+
+  .triptych-body > div {
+    border-right: 1px solid var(--line);
+    overflow: auto;
+    max-height: 600px;
+  }
+
+  .triptych-body > div:last-child { border-right: none; }
+
+  .code-pane {
+    padding: 24px 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre;
+    color: var(--ink);
+    background: var(--paper-light);
+  }
+
+  .code-pane.code-html {
+    background: #fcfaf4;
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+
+  /* Syntax highlighting tokens (for JEML pane) */
+  .t-dir { color: #b8502a; font-weight: 600; }
+  .t-block { color: #3b6b8e; font-weight: 600; }
+  .t-inline { color: #4a6a3d; font-weight: 600; }
+  .t-void { color: #c4893a; font-weight: 600; }
+  .t-tag { color: #3b6b8e; }
+  .t-variant { color: #5d8aa8; font-style: italic; }
+  .t-attr-key { color: #8a6a2d; }
+  .t-string { color: #4a6a3d; }
+  .t-number { color: #b85042; }
+  .t-bool { color: #3b6b8e; font-weight: 500; }
+  .t-ident { color: #4a6a3d; }
+  .t-resp { color: #b8502a; font-weight: 600; }
+  .t-breakpoint { color: #b85042; font-weight: 500; }
+  .t-var { color: #7a4a8a; font-weight: 500; }
+  .t-handler { color: #8a6a4a; font-weight: 500; }
+  .t-iter { color: #b8502a; }
+  .t-comment { color: #8a8578; font-style: italic; }
+  .t-punct { color: #78695c; }
+  .t-md-bold { font-weight: 700; }
+  .t-md-italic { font-style: italic; color: #78695c; }
+  .t-md-code { background: var(--paper-deep); padding: 0 4px; border-radius: 2px; }
+  .t-link { color: #b85042; text-decoration: underline; text-underline-offset: 2px; }
+  .t-flow { color: #b85042; font-weight: 500; }
+  .t-escape { color: #c4893a; }
+
+  /* HTML pane highlighting */
+  .h-tag { color: #3b6b8e; }
+  .h-attr { color: #8a6a2d; }
+  .h-val { color: #4a6a3d; }
+  .h-comment { color: #8a8578; font-style: italic; }
+
+  .render-pane {
+    padding: 24px 28px;
+    background: white;
+    overflow: auto;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .render-pane > *:first-child { margin-top: 0; }
+  .render-pane > *:last-child { margin-bottom: 0; }
+
+  /* ═══════════════════════ RESIZABLE PREVIEW ═══════════════════════ */
+  .resize-container {
+    margin: 36px 0 48px;
+    border: 1px solid var(--line-strong);
+    background: var(--paper-light);
+  }
+
+  .resize-header {
+    padding: 14px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .resize-width {
+    color: var(--rust-soft);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .resize-body {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 420px;
+  }
+
+  .resize-code {
+    padding: 24px 28px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre;
+    background: var(--paper-light);
+    border-right: 1px solid var(--line);
+    overflow: auto;
+    max-height: 420px;
+  }
+
+  .resize-preview-wrap {
+    position: relative;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--paper-deep) 0,
+      var(--paper-deep) 1px,
+      var(--paper-light) 1px,
+      var(--paper-light) 8px
+    );
+    padding: 0 12px 12px 0;
+    overflow: hidden;
+  }
+
+  .resize-preview {
+    background: white;
+    height: 100%;
+    min-height: 420px;
+    position: relative;
+    resize: horizontal;
+    overflow: auto;
+    max-width: 100%;
+    min-width: 320px;
+    border-right: 3px solid var(--rust);
+  }
+
+  .resize-preview iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .resize-hint {
+    padding: 12px 20px;
+    background: var(--paper-deep);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .resize-hint svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+  }
+
+  /* ═══════════════════════ CALLOUTS ═══════════════════════ */
+  .callout {
+    margin: 32px 0;
+    padding: 24px 28px;
+    border-left: 3px solid var(--rust);
+    background: var(--paper-deep);
+  }
+
+  .callout-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--rust);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .callout p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 0;
+  }
+
+  .callout p + p {
+    margin-top: 12px;
+  }
+
+  /* ═══════════════════════ COMPARISON TABLE ═══════════════════════ */
+  .compare {
+    margin: 36px 0;
+    border: 1px solid var(--line-strong);
+    background: var(--paper-light);
+  }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+
+  .compare-row.compare-head {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .compare-row.compare-head > div {
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .compare-row.compare-head > div:last-child { border-right: none; }
+
+  .compare-row > div {
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    border-right: 1px solid var(--line);
+    overflow-x: auto;
+  }
+
+  .compare-row > div:last-child { border-right: none; }
+
+  .compare-row > div:first-child {
+    color: var(--ink-soft);
+    background: #fcfaf4;
+  }
+
+  /* ═══════════════════════ FOOTER ═══════════════════════ */
+  .colophon {
+    background: var(--ink);
+    color: var(--paper-deep);
+    padding: 96px 48px;
+  }
+
+  .colophon-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .colophon-mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 36px;
+    color: var(--rust-soft);
+    margin-bottom: 32px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .colophon p {
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 16px;
+    color: var(--paper);
+    font-variation-settings: 'opsz' 14;
+  }
+
+  .colophon-meta {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(245, 241, 232, 0.2);
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .colophon-meta span strong {
+    color: var(--rust-soft);
+    font-weight: 500;
+  }
+
+  /* ═══════════════════════ RESPONSIVE ═══════════════════════ */
+  @media (max-width: 1100px) {
+    .triptych-body {
+      grid-template-columns: 1fr;
+    }
+    .triptych-header {
+      grid-template-columns: 1fr;
+    }
+    .triptych-body > div {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .triptych-header > div {
+      border-right: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .section-header {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .section-body {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .hero, .section, .toc-section, .colophon {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    .resize-body {
+      grid-template-columns: 1fr;
+    }
+    .hero-meta {
+      gap: 24px;
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="offline-banner" id="offline-banner">
+  <strong>Tailwind CDN didn't load.</strong> Rendered previews will appear unstyled. Check your network connection or try reloading.
+</div>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero">
+  <div class="hero-mark">
+    <span class="hero-mark-logo">JEML</span>
+    <span class="hero-mark-version">v0.4 · tutorial edition</span>
+  </div>
+
+  <h1>Markup, <em>rewritten</em> for humans.</h1>
+
+  <p class="hero-lede">
+    A three-column tour of JEML — the source on the left, the HTML it compiles to in the middle, and what it actually looks like on the right. Everything you see rendered is real, with Tailwind doing the styling.
+  </p>
+
+  <dl class="hero-meta">
+    <div>
+      <dt>Written for</dt>
+      <dd>HTML authors</dd>
+    </div>
+    <div>
+      <dt>Reading time</dt>
+      <dd>45 minutes</dd>
+    </div>
+    <div>
+      <dt>Styled with</dt>
+      <dd>Tailwind CSS v3</dd>
+    </div>
+    <div>
+      <dt>Companion to</dt>
+      <dd>spec/RULEBOOK.md</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ═══════════════════════ TABLE OF CONTENTS ═══════════════════════ -->
+<section class="toc-section">
+  <div class="toc-wrap">
+    <div class="toc-label">Contents — 14 chapters</div>
+    <nav class="toc-grid">
+      <a href="#s1" class="toc-item">
+        <span class="toc-num">§ 01</span>
+        <span class="toc-title">Your first document</span>
+      </a>
+      <a href="#s2" class="toc-item">
+        <span class="toc-num">§ 02</span>
+        <span class="toc-title">Three element flavors</span>
+      </a>
+      <a href="#s3" class="toc-item">
+        <span class="toc-num">§ 03</span>
+        <span class="toc-title">Attributes</span>
+      </a>
+      <a href="#s4" class="toc-item">
+        <span class="toc-num">§ 04</span>
+        <span class="toc-title">Tag variants</span>
+      </a>
+      <a href="#s5" class="toc-item">
+        <span class="toc-num">§ 05</span>
+        <span class="toc-title">Headings & lists</span>
+      </a>
+      <a href="#s6" class="toc-item">
+        <span class="toc-num">§ 06</span>
+        <span class="toc-title">Tables & forms</span>
+      </a>
+      <a href="#s7" class="toc-item">
+        <span class="toc-num">§ 07</span>
+        <span class="toc-title">Text formatting</span>
+      </a>
+      <a href="#s8" class="toc-item">
+        <span class="toc-num">§ 08</span>
+        <span class="toc-title">Links</span>
+      </a>
+      <a href="#s9" class="toc-item">
+        <span class="toc-num">§ 09</span>
+        <span class="toc-title">Directives</span>
+      </a>
+      <a href="#s10" class="toc-item">
+        <span class="toc-num">§ 10</span>
+        <span class="toc-title">Comments & escaping</span>
+      </a>
+      <a href="#s11" class="toc-item">
+        <span class="toc-num">§ 11</span>
+        <span class="toc-title">Responsive design</span>
+      </a>
+      <a href="#s12" class="toc-item">
+        <span class="toc-num">§ 12</span>
+        <span class="toc-title">Components & references</span>
+      </a>
+      <a href="#s13" class="toc-item">
+        <span class="toc-num">§ 13</span>
+        <span class="toc-title">Idiomatic style</span>
+      </a>
+      <a href="#s14" class="toc-item">
+        <span class="toc-num">§ 14</span>
+        <span class="toc-title">Cheat sheet</span>
+      </a>
+    </nav>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 1 ═══════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">§ 01</div>
+    <div class="section-head-inner">
+      <h2>Your <em>first</em> document</h2>
+      <p class="kicker">A JEML document is a set of directives. One of them is always the markup tree. Everything else — DOCTYPE, html, head, body — is generated for you.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p>The simplest possible JEML file has one directive — <code>&gt;&gt; document</code> — containing whatever you want rendered. The compiler wraps the result in a full HTML skeleton automatically.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML source</div>
+        <div><span class="triptych-header-dot dot-html"></span>Generated HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-dir">&gt;&gt;</span> <span class="t-tag">document</span><span class="t-punct">:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.1</span><span class="t-punct">:</span> Hello, world <span class="t-block">&lt;</span>
+<span class="t-dir">&lt;&lt;</span> <span class="t-tag">document</span></div>
+        <div class="code-pane code-html"><span class="h-comment">&lt;!DOCTYPE html&gt;</span>
+<span class="h-tag">&lt;html&gt;</span>
+<span class="h-tag">&lt;head&gt;</span><span class="h-tag">&lt;/head&gt;</span>
+<span class="h-tag">&lt;body&gt;</span>
+<span class="h-tag">&lt;h1&gt;</span>Hello, world<span class="h-tag">&lt;/h1&gt;</span>
+<span class="h-tag">&lt;/body&gt;</span>
+<span class="h-tag">&lt;/html&gt;</span></div>
+        <div class="render-pane">
+          <h1 class="text-3xl font-semibold text-slate-900">Hello, world</h1>
+        </div>
+      </div>
+    </div>
+
+    <p>Three things are happening here. The <code>&gt;&gt;</code> and <code>&lt;&lt;</code> pair is the <strong>directive</strong> sigil — the widest structural bracket in JEML, used for document-level sections. The <code>&gt;</code> and <code>&lt;</code> pair is the <strong>block element</strong> sigil, used for everything inside the markup tree. And the <code>.1</code> after <code>heading</code> is a <strong>variant</strong>, a suffix that tells the compiler this is level 1 rather than level 2 or 3.</p>
+
+    <p>The colon after each opener is mandatory — it's the moment where tag declaration ends and content begins. This consistency matters: whether a block is one line or fifty, the structure reads the same way.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 2 ═══════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">§ 02</div>
+    <div class="section-head-inner">
+      <h2>Three <em>flavors</em> of element</h2>
+      <p class="kicker">HTML has block, inline, and void elements, but uses the same <code>&lt;tag&gt;&lt;/tag&gt;</code> syntax for all three. JEML gives each its own sigil, so you can tell at a glance what kind of thing you're looking at.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Block — multi-line structure</h3>
+
+    <p>Block elements hold other elements or prose. They open with <code>&gt;</code>, close with <code>&lt;</code>, and typically span multiple lines. The closing tag can optionally name the element for clarity.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">section</span> <span class="t-punct">[</span><span class="t-attr-key">id</span><span class="t-punct">=</span><span class="t-ident">hero</span><span class="t-punct">]</span><span class="t-punct">:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.1</span><span class="t-punct">:</span> Welcome <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span>
+    A paragraph inside the section.
+  <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">section</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;section</span> <span class="h-attr">id</span>=<span class="h-val">"hero"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;h1&gt;</span>Welcome<span class="h-tag">&lt;/h1&gt;</span>
+  <span class="h-tag">&lt;p&gt;</span>A paragraph inside
+    the section.<span class="h-tag">&lt;/p&gt;</span>
+<span class="h-tag">&lt;/section&gt;</span></div>
+        <div class="render-pane">
+          <section id="hero" class="p-6 bg-orange-50 rounded-lg border border-orange-200">
+            <h1 class="text-2xl font-semibold text-orange-900 mb-3">Welcome</h1>
+            <p class="text-orange-800">A paragraph inside the section.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <h3>Inline — single-line flow</h3>
+
+    <p>Inline elements appear within text flow and stay on one line. They open with <code>/&gt;</code> and close with <code>&lt;/</code>. The sigil shape is visually distinct from block markers, so mixed content reads cleanly.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span>
+  This paragraph has
+  <span class="t-inline">/&gt;</span> <span class="t-tag">span</span> <span class="t-punct">[</span><span class="t-attr-key">style</span><span class="t-punct">=</span><span class="t-ident">highlight</span><span class="t-punct">]:</span> emphasized <span class="t-inline">&lt;/</span> text,
+  plus <span class="t-inline">/&gt;</span> <span class="t-tag">badge</span><span class="t-variant">.warning</span><span class="t-punct">:</span> a badge <span class="t-inline">&lt;/</span>.
+<span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;p&gt;</span>This paragraph has
+<span class="h-tag">&lt;span</span> <span class="h-attr">class</span>=<span class="h-val">"highlight"</span><span class="h-tag">&gt;</span>emphasized
+<span class="h-tag">&lt;/span&gt;</span> text, plus
+<span class="h-tag">&lt;span</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-badge
+warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/span&gt;</span>.
+<span class="h-tag">&lt;/p&gt;</span></div>
+        <div class="render-pane">
+          <p class="text-slate-800 leading-relaxed">
+            This paragraph has <span class="bg-yellow-200 px-1 rounded">emphasized</span> text,
+            plus <span class="inline-block bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded uppercase tracking-wider">a badge</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Void — no body, no closer</h3>
+
+    <p>Some elements are complete on their own — an image, a line break, a form field. In HTML these are called "void" elements. JEML gives them a third sigil, <code>!&gt;</code>, with no closer. The exclamation point visually announces: <em>this element is finished</em>.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">form</span><span class="t-punct">:</span>
+  <span class="t-void">!&gt;</span> <span class="t-tag">field</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">email</span> <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Email"</span> <span class="t-bool">required</span><span class="t-punct">]</span>
+  <span class="t-void">!&gt;</span> <span class="t-tag">break</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span><span class="t-punct">:</span> Sign up <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">form</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;form&gt;</span>
+<span class="h-tag">&lt;label&gt;</span>Email
+<span class="h-tag">&lt;input</span> <span class="h-attr">type</span>=<span class="h-val">"email"</span>
+  <span class="h-attr">required</span><span class="h-tag">&gt;</span>
+<span class="h-tag">&lt;/label&gt;</span>
+<span class="h-tag">&lt;br&gt;</span>
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary"</span><span class="h-tag">&gt;</span>
+  Sign up<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;/form&gt;</span></div>
+        <div class="render-pane">
+          <form class="space-y-3">
+            <label class="block">
+              <span class="block text-sm font-medium text-slate-700 mb-1">Email</span>
+              <input type="email" required class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+            </label>
+            <button type="button" class="inline-flex items-center px-4 py-2 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Sign up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Why three flavors?</div>
+      <p>HTML's single <code>&lt;tag&gt;</code> syntax makes you read documentation to know what kind of element you're dealing with. Is <code>&lt;progress&gt;</code> block? Inline? Void? In JEML, the sigil tells you immediately. <code>&gt; progress &lt;</code> is a block. <code>/&gt; progress &lt;/</code> is inline. <code>!&gt; progress</code> is void. No spec lookup required.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 3 ═══════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">§ 03</div>
+    <div class="section-head-inner">
+      <h2><em>Attributes</em> in brackets</h2>
+      <p class="kicker">Attributes describe properties of an element. JEML puts them in square brackets after the tag name, and accepts unquoted values for simple cases — numbers, booleans, identifiers, and CSS lengths.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Unquoted values</h3>
+
+    <p>You don't need quotes around values that are plain identifiers, numbers, booleans, or CSS lengths. Quotes are only required when the value contains spaces, slashes, or other punctuation that would confuse the parser.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-comment">% unquoted, quoted, and boolean forms</span>
+<span class="t-block">&gt;</span> <span class="t-tag">field</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">email</span> <span class="t-attr-key">name</span><span class="t-punct">=</span><span class="t-ident">work-email</span><span class="t-punct">]:</span> Email <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">grid</span> <span class="t-punct">[</span><span class="t-attr-key">cols</span><span class="t-punct">=</span><span class="t-number">3</span> <span class="t-attr-key">gap</span><span class="t-punct">=</span><span class="t-ident">md</span><span class="t-punct">]:</span> ... <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">link</span> <span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/about us"</span><span class="t-punct">]:</span> About <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">input</span> <span class="t-punct">[</span><span class="t-bool">disabled</span><span class="t-punct">]:</span> <span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;label&gt;</span>Email<span class="h-tag">&lt;input</span>
+  <span class="h-attr">type</span>=<span class="h-val">"email"</span>
+  <span class="h-attr">name</span>=<span class="h-val">"work-email"</span>
+<span class="h-tag">&gt;&lt;/label&gt;</span>
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-grid"</span>
+  <span class="h-attr">style</span>=<span class="h-val">"--cols:3;
+  --gap:md"</span><span class="h-tag">&gt;</span> ...<span class="h-tag">&lt;/div&gt;</span>
+<span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/about us"</span><span class="h-tag">&gt;</span>
+  About<span class="h-tag">&lt;/a&gt;</span>
+<span class="h-tag">&lt;input</span> <span class="h-attr">disabled</span><span class="h-tag">&gt;</span></div>
+        <div class="render-pane">
+          <div class="space-y-4">
+            <label class="block">
+              <span class="block text-sm font-medium text-slate-700 mb-1">Email</span>
+              <input type="email" name="work-email" class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm">
+            </label>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="p-3 bg-slate-100 rounded text-xs text-center">cell</div>
+              <div class="p-3 bg-slate-100 rounded text-xs text-center">cell</div>
+              <div class="p-3 bg-slate-100 rounded text-xs text-center">cell</div>
+            </div>
+            <a href="#" class="text-orange-600 hover:underline">About</a>
+            <input disabled value="disabled field" class="block w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Important — bare identifiers are strings</div>
+      <p>In JEML, <code>style=primary</code> means the string <code>"primary"</code>, not a variable called <code>primary</code>. Variables always use the <code>&amp;</code> sigil: <code>style=&amp;theme_name</code>. This keeps the two clearly distinct — no context switching required.</p>
+    </div>
+
+    <h3>Multi-line attribute lists</h3>
+
+    <p>When you have more than three attributes, or any value is long, break them onto their own lines. Alignment matters for readability.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">submit</span>
+    <span class="t-attr-key">on_press</span><span class="t-punct">=</span><span class="t-handler">@submit_form</span>
+    <span class="t-attr-key">disabled</span><span class="t-punct">=</span><span class="t-var">&amp;is_submitting</span>
+    <span class="t-attr-key">title</span><span class="t-punct">=</span><span class="t-string">"Click to sign up"</span>
+  <span class="t-punct">]:</span> Sign up <span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;button</span>
+  <span class="h-attr">type</span>=<span class="h-val">"submit"</span>
+  <span class="h-attr">class</span>=<span class="h-val">"primary"</span>
+  <span class="h-attr">title</span>=<span class="h-val">"Click to sign up"</span>
+<span class="h-tag">&gt;</span>
+  Sign up
+<span class="h-tag">&lt;/button&gt;</span></div>
+        <div class="render-pane">
+          <button type="button" title="Click to sign up" class="inline-flex items-center px-5 py-2.5 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Sign up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 4 ═══════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">§ 04</div>
+    <div class="section-head-inner">
+      <h2>Tag <em>variants</em></h2>
+      <p class="kicker">Many HTML elements are really sub-types — h1 and h2, primary and secondary buttons, small and large cards. JEML unifies these as variants on a single tag name using a <code>.name</code> suffix.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p>Variants are part of a tag's identity, not metadata about it. A level-2 heading isn't "a heading with a level attribute" — it's <code>h2</code>, a distinct semantic thing that deserves its own name. Variants keep JEML tight.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.1</span><span class="t-punct">:</span> Page title <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.2</span><span class="t-punct">:</span> Section <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.3</span><span class="t-punct">:</span> Subsection <span class="t-block">&lt;</span>
+
+<span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span><span class="t-punct">:</span> Sign up <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.secondary</span><span class="t-punct">:</span> Cancel <span class="t-block">&lt;</span>
+<span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.ghost</span><span class="t-punct">:</span> Learn more <span class="t-block">&lt;</span>
+
+<span class="t-comment">% stacked variants</span>
+<span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span><span class="t-variant">.lg</span><span class="t-punct">:</span> Start free trial <span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;h1&gt;</span>Page title<span class="h-tag">&lt;/h1&gt;</span>
+<span class="h-tag">&lt;h2&gt;</span>Section<span class="h-tag">&lt;/h2&gt;</span>
+<span class="h-tag">&lt;h3&gt;</span>Subsection<span class="h-tag">&lt;/h3&gt;</span>
+
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary"</span><span class="h-tag">&gt;</span>
+  Sign up<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"secondary"</span><span class="h-tag">&gt;</span>
+  Cancel<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"ghost"</span><span class="h-tag">&gt;</span>
+  Learn more<span class="h-tag">&lt;/button&gt;</span>
+
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary
+  jeml-size-lg"</span><span class="h-tag">&gt;</span>
+  Start free trial<span class="h-tag">&lt;/button&gt;</span></div>
+        <div class="render-pane">
+          <div class="space-y-3">
+            <h1 class="text-2xl font-bold text-slate-900">Page title</h1>
+            <h2 class="text-xl font-semibold text-slate-800">Section</h2>
+            <h3 class="text-lg font-semibold text-slate-700">Subsection</h3>
+            <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-200">
+              <button class="px-4 py-2 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Sign up</button>
+              <button class="px-4 py-2 rounded-md bg-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-300 transition">Cancel</button>
+              <button class="px-4 py-2 rounded-md text-slate-600 text-sm font-medium hover:bg-slate-100 transition">Learn more</button>
+            </div>
+            <div class="pt-3 border-t border-slate-200">
+              <button class="px-6 py-3 rounded-md bg-orange-600 text-white text-base font-medium hover:bg-orange-700 transition">Start free trial</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Variants versus attributes</div>
+      <p>A simple rule: if the value is part of what the element <em>is</em>, make it a variant (<code>.primary</code>). If it's metadata <em>about</em> the element, make it an attribute (<code>[id=submit]</code>). The distinction matters because variants are enumerated — each tag has a fixed list of valid variants — while attributes are open-ended.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 5 ═══════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">§ 05</div>
+    <div class="section-head-inner">
+      <h2>Headings, <em>lists</em>, navigation</h2>
+      <p class="kicker">The everyday structural elements. Headings use variants for levels, lists use variants for ordered versus unordered, and navigation has semantic sub-tags for the parts.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Lists, both kinds</h3>
+
+    <p>HTML has <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code> — two different tags for bullet versus numbered. JEML uses one tag (<code>list</code>) with a variant. Switching from bullets to numbers is a one-character change, not a rewrite.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">list</span><span class="t-punct">:</span>
+  <span class="t-punct">-</span> Apples
+  <span class="t-punct">-</span> Bananas
+  <span class="t-punct">-</span> Cherries
+<span class="t-block">&lt;</span>
+
+<span class="t-block">&gt;</span> <span class="t-tag">list</span><span class="t-variant">.number</span><span class="t-punct">:</span>
+  <span class="t-punct">-</span> Open the door
+  <span class="t-punct">-</span> Walk through
+  <span class="t-punct">-</span> Close it behind you
+<span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;ul&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Apples<span class="h-tag">&lt;/li&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Bananas<span class="h-tag">&lt;/li&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Cherries<span class="h-tag">&lt;/li&gt;</span>
+<span class="h-tag">&lt;/ul&gt;</span>
+
+<span class="h-tag">&lt;ol&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Open the door<span class="h-tag">&lt;/li&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Walk through<span class="h-tag">&lt;/li&gt;</span>
+  <span class="h-tag">&lt;li&gt;</span>Close it behind<span class="h-tag">&lt;/li&gt;</span>
+<span class="h-tag">&lt;/ol&gt;</span></div>
+        <div class="render-pane">
+          <ul class="list-disc list-inside text-slate-700 space-y-1 mb-6">
+            <li>Apples</li>
+            <li>Bananas</li>
+            <li>Cherries</li>
+          </ul>
+          <ol class="list-decimal list-inside text-slate-700 space-y-1">
+            <li>Open the door</li>
+            <li>Walk through</li>
+            <li>Close it behind you</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <h3>Navigation with semantic parts</h3>
+
+    <p>A nav has a brand (logo + name) and a set of links. JEML gives each its own tag inside <code>&gt; nav &lt;</code>, so the structure is self-documenting.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">nav</span> <span class="t-punct">[</span><span class="t-attr-key">id</span><span class="t-punct">=</span><span class="t-ident">main-nav</span><span class="t-punct">]:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">brand</span><span class="t-punct">:</span> Streamline <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">links</span><span class="t-punct">:</span>
+    <span class="t-punct">-</span> <span class="t-link">#'Home'</span><span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/"</span><span class="t-punct">]</span>
+    <span class="t-punct">-</span> <span class="t-link">#'Docs'</span><span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/docs"</span><span class="t-punct">]</span>
+    <span class="t-punct">-</span> <span class="t-link">#'Pricing'</span><span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/pricing"</span><span class="t-punct">]</span>
+  <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span><span class="t-punct">:</span> Start trial <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">nav</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;nav</span> <span class="h-attr">id</span>=<span class="h-val">"main-nav"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;div</span>
+    <span class="h-attr">class</span>=<span class="h-val">"jeml-brand"</span><span class="h-tag">&gt;</span>
+    Streamline<span class="h-tag">&lt;/div&gt;</span>
+  <span class="h-tag">&lt;ul&gt;</span>
+    <span class="h-tag">&lt;li&gt;&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/"</span><span class="h-tag">&gt;</span>
+      Home<span class="h-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="h-tag">&lt;li&gt;&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/docs"</span><span class="h-tag">&gt;</span>
+      Docs<span class="h-tag">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="h-tag">&lt;li&gt;&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/pricing"</span><span class="h-tag">&gt;</span>
+      Pricing<span class="h-tag">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="h-tag">&lt;/ul&gt;</span>
+  <span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary"</span><span class="h-tag">&gt;</span>
+    Start trial<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;/nav&gt;</span></div>
+        <div class="render-pane">
+          <nav class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg">
+            <div class="font-bold text-slate-900">Streamline</div>
+            <ul class="flex gap-5 text-sm text-slate-700">
+              <li><a href="#" class="hover:text-orange-600">Home</a></li>
+              <li><a href="#" class="hover:text-orange-600">Docs</a></li>
+              <li><a href="#" class="hover:text-orange-600">Pricing</a></li>
+            </ul>
+            <button class="px-3 py-1.5 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Start trial</button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 6 ═══════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">§ 06</div>
+    <div class="section-head-inner">
+      <h2>Tables and <em>forms</em></h2>
+      <p class="kicker">The places where HTML is most verbose. JEML cuts the line count roughly in half while making the visual structure match the data structure.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Tables by shape</h3>
+
+    <p>A JEML table is written the way a table actually looks — columns across the top, rows beneath. The <code>-</code> sibling marker separates cells within each row, positioned to match the column order.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">table</span><span class="t-punct">:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">columns</span><span class="t-punct">:</span>
+    <span class="t-punct">-</span> <span class="t-punct">[</span><span class="t-attr-key">key</span><span class="t-punct">=</span><span class="t-ident">name</span> <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Name"</span><span class="t-punct">]</span>
+    <span class="t-punct">-</span> <span class="t-punct">[</span><span class="t-attr-key">key</span><span class="t-punct">=</span><span class="t-ident">role</span> <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Role"</span><span class="t-punct">]</span>
+    <span class="t-punct">-</span> <span class="t-punct">[</span><span class="t-attr-key">key</span><span class="t-punct">=</span><span class="t-ident">email</span> <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Email"</span><span class="t-punct">]</span>
+  <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">row</span><span class="t-punct">:</span>
+    <span class="t-punct">-</span> Alice Chen
+    <span class="t-punct">-</span> Engineer
+    <span class="t-punct">-</span> alice\@co.io
+  <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">row</span><span class="t-punct">:</span>
+    <span class="t-punct">-</span> Ben Torres
+    <span class="t-punct">-</span> PM
+    <span class="t-punct">-</span> ben\@co.io
+  <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">table</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;table&gt;</span>
+  <span class="h-tag">&lt;thead&gt;&lt;tr&gt;</span>
+    <span class="h-tag">&lt;th&gt;</span>Name<span class="h-tag">&lt;/th&gt;</span>
+    <span class="h-tag">&lt;th&gt;</span>Role<span class="h-tag">&lt;/th&gt;</span>
+    <span class="h-tag">&lt;th&gt;</span>Email<span class="h-tag">&lt;/th&gt;</span>
+  <span class="h-tag">&lt;/tr&gt;&lt;/thead&gt;</span>
+  <span class="h-tag">&lt;tbody&gt;</span>
+    <span class="h-tag">&lt;tr&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>Alice Chen<span class="h-tag">&lt;/td&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>Engineer<span class="h-tag">&lt;/td&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>alice@co.io<span class="h-tag">&lt;/td&gt;</span>
+    <span class="h-tag">&lt;/tr&gt;</span>
+    <span class="h-tag">&lt;tr&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>Ben Torres<span class="h-tag">&lt;/td&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>PM<span class="h-tag">&lt;/td&gt;</span>
+      <span class="h-tag">&lt;td&gt;</span>ben@co.io<span class="h-tag">&lt;/td&gt;</span>
+    <span class="h-tag">&lt;/tr&gt;</span>
+  <span class="h-tag">&lt;/tbody&gt;</span>
+<span class="h-tag">&lt;/table&gt;</span></div>
+        <div class="render-pane">
+          <table class="min-w-full text-sm">
+            <thead class="bg-slate-100 border-b border-slate-200">
+              <tr>
+                <th class="px-3 py-2 text-left font-semibold text-slate-700">Name</th>
+                <th class="px-3 py-2 text-left font-semibold text-slate-700">Role</th>
+                <th class="px-3 py-2 text-left font-semibold text-slate-700">Email</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="px-3 py-2 text-slate-800">Alice Chen</td><td class="px-3 py-2 text-slate-600">Engineer</td><td class="px-3 py-2 text-slate-500 font-mono text-xs">alice@co.io</td></tr>
+              <tr><td class="px-3 py-2 text-slate-800">Ben Torres</td><td class="px-3 py-2 text-slate-600">PM</td><td class="px-3 py-2 text-slate-500 font-mono text-xs">ben@co.io</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <h3>Forms with void fields</h3>
+
+    <p>Form fields are semantically void — they carry all their information in attributes. One <code>!&gt; field</code> element replaces a <code>&lt;label&gt;</code> wrapping an <code>&lt;input&gt;</code>. The field type determines what HTML input is generated.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">form</span> <span class="t-punct">[</span><span class="t-attr-key">id</span><span class="t-punct">=</span><span class="t-ident">contact</span><span class="t-punct">]:</span>
+  <span class="t-void">!&gt;</span> <span class="t-tag">field</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">text</span>
+    <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Your name"</span>
+    <span class="t-attr-key">name</span><span class="t-punct">=</span><span class="t-ident">name</span>
+    <span class="t-bool">required</span>
+  <span class="t-punct">]</span>
+  <span class="t-void">!&gt;</span> <span class="t-tag">field</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">email</span>
+    <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Email"</span>
+    <span class="t-attr-key">name</span><span class="t-punct">=</span><span class="t-ident">email</span>
+    <span class="t-bool">required</span>
+  <span class="t-punct">]</span>
+  <span class="t-void">!&gt;</span> <span class="t-tag">field</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">textarea</span>
+    <span class="t-attr-key">label</span><span class="t-punct">=</span><span class="t-string">"Message"</span>
+    <span class="t-attr-key">name</span><span class="t-punct">=</span><span class="t-ident">msg</span>
+    <span class="t-attr-key">rows</span><span class="t-punct">=</span><span class="t-number">4</span>
+  <span class="t-punct">]</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">submit</span><span class="t-punct">]:</span> Send <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">form</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;form</span> <span class="h-attr">id</span>=<span class="h-val">"contact"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;label&gt;</span>Your name<span class="h-tag">&lt;input</span>
+    <span class="h-attr">type</span>=<span class="h-val">"text"</span>
+    <span class="h-attr">name</span>=<span class="h-val">"name"</span>
+    <span class="h-attr">required</span><span class="h-tag">&gt;&lt;/label&gt;</span>
+  <span class="h-tag">&lt;label&gt;</span>Email<span class="h-tag">&lt;input</span>
+    <span class="h-attr">type</span>=<span class="h-val">"email"</span>
+    <span class="h-attr">name</span>=<span class="h-val">"email"</span>
+    <span class="h-attr">required</span><span class="h-tag">&gt;&lt;/label&gt;</span>
+  <span class="h-tag">&lt;label&gt;</span>Message<span class="h-tag">&lt;textarea</span>
+    <span class="h-attr">name</span>=<span class="h-val">"msg"</span>
+    <span class="h-attr">rows</span>=<span class="h-val">"4"</span><span class="h-tag">&gt;&lt;/textarea&gt;</span>
+  <span class="h-tag">&lt;/label&gt;</span>
+  <span class="h-tag">&lt;button</span> <span class="h-attr">type</span>=<span class="h-val">"submit"</span>
+    <span class="h-attr">class</span>=<span class="h-val">"primary"</span><span class="h-tag">&gt;</span>
+    Send<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;/form&gt;</span></div>
+        <div class="render-pane">
+          <form id="contact" class="space-y-3">
+            <label class="block">
+              <span class="block text-sm font-medium text-slate-700 mb-1">Your name</span>
+              <input type="text" required class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+            </label>
+            <label class="block">
+              <span class="block text-sm font-medium text-slate-700 mb-1">Email</span>
+              <input type="email" required class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+            </label>
+            <label class="block">
+              <span class="block text-sm font-medium text-slate-700 mb-1">Message</span>
+              <textarea rows="4" class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"></textarea>
+            </label>
+            <button type="button" class="inline-flex items-center px-4 py-2 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 7 ═══════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <div class="section-num">§ 07</div>
+    <div class="section-head-inner">
+      <h2>Text, <em>Markdown-style</em></h2>
+      <p class="kicker">Inside content, JEML uses Markdown's familiar sigils for bold, italic, and inline code. These are shortcuts for the full inline forms — use whichever fits the situation.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span>
+  This paragraph has <span class="t-md-bold">**bold text**</span>,
+  <span class="t-md-italic">_italic text_</span>, and
+  <span class="t-md-code">`inline code`</span>.
+<span class="t-block">&lt;</span>
+
+<span class="t-comment">% fenced code block — opaque</span>
+```<span class="t-ident">typescript</span>
+function greet(name: string) {
+  return `Hello, ${name}!`
+}
+```</div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;p&gt;</span>This paragraph has
+  <span class="h-tag">&lt;strong&gt;</span>bold text<span class="h-tag">&lt;/strong&gt;</span>,
+  <span class="h-tag">&lt;em&gt;</span>italic text<span class="h-tag">&lt;/em&gt;</span>, and
+  <span class="h-tag">&lt;code&gt;</span>inline code<span class="h-tag">&lt;/code&gt;</span>.
+<span class="h-tag">&lt;/p&gt;</span>
+
+<span class="h-tag">&lt;pre&gt;&lt;code</span>
+  <span class="h-attr">class</span>=<span class="h-val">"language-typescript"</span>
+<span class="h-tag">&gt;</span>function greet(name: string) {
+  return `Hello, ${name}!`
+}<span class="h-tag">&lt;/code&gt;&lt;/pre&gt;</span></div>
+        <div class="render-pane">
+          <p class="text-slate-800 leading-relaxed mb-4">
+            This paragraph has <strong class="font-semibold text-slate-900">bold text</strong>, <em class="italic text-slate-700">italic text</em>, and <code class="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded text-slate-800">inline code</code>.
+          </p>
+          <pre class="bg-slate-900 text-slate-100 p-4 rounded-md overflow-x-auto text-sm font-mono"><code>function greet(name: string) {
+  return `Hello, ${name}!`
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Fenced code is opaque</div>
+      <p>Content inside triple-backtick blocks is preserved exactly — no JEML parsing happens inside. You don't need to escape <code>&amp;</code>, <code>&lt;</code>, <code>*</code>, or anything else. The text is safe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 8 ═══════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <div class="section-num">§ 08</div>
+    <div class="section-head-inner">
+      <h2><em>Links</em>, three ways</h2>
+      <p class="kicker">A short form for inline links in prose, a full inline form for complex link content, and a block form for wrapping whole sections.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-comment">% short form — inline prose links</span>
+<span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span>
+  Read the <span class="t-link">#'docs'</span><span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/docs"</span><span class="t-punct">]</span>
+  and see the <span class="t-link">#'changelog'</span><span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/log"</span><span class="t-punct">]</span>.
+<span class="t-block">&lt;</span>
+
+<span class="t-comment">% full inline form — icon + text</span>
+<span class="t-inline">/&gt;</span> <span class="t-tag">link</span> <span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/profile"</span><span class="t-punct">]:</span>
+  <span class="t-inline">/&gt;</span> <span class="t-tag">icon</span> <span class="t-punct">[</span><span class="t-attr-key">name</span><span class="t-punct">=</span><span class="t-ident">user</span><span class="t-punct">]:</span> <span class="t-inline">&lt;/</span> Profile
+<span class="t-inline">&lt;/</span>
+
+<span class="t-comment">% block form — wrapping a card</span>
+<span class="t-block">&gt;</span> <span class="t-tag">link</span> <span class="t-punct">[</span><span class="t-attr-key">url</span><span class="t-punct">=</span><span class="t-string">"/intro"</span><span class="t-punct">]:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-variant">.elevated</span><span class="t-punct">:</span>
+    <span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.3</span><span class="t-punct">:</span> Introduction <span class="t-block">&lt;</span>
+  <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span> <span class="t-tag">link</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;p&gt;</span>Read the <span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/docs"</span><span class="h-tag">&gt;</span>
+  docs<span class="h-tag">&lt;/a&gt;</span> and see the
+  <span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/log"</span><span class="h-tag">&gt;</span>
+  changelog<span class="h-tag">&lt;/a&gt;</span>.<span class="h-tag">&lt;/p&gt;</span>
+
+<span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/profile"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;i</span> <span class="h-attr">class</span>=<span class="h-val">"icon"</span>
+     <span class="h-attr">data-icon</span>=<span class="h-val">"user"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;/i&gt;</span> Profile
+<span class="h-tag">&lt;/a&gt;</span>
+
+<span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/intro"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;div</span>
+    <span class="h-attr">class</span>=<span class="h-val">"jeml-card elevated"</span><span class="h-tag">&gt;</span>
+    <span class="h-tag">&lt;h3&gt;</span>Introduction<span class="h-tag">&lt;/h3&gt;</span>
+  <span class="h-tag">&lt;/div&gt;</span>
+<span class="h-tag">&lt;/a&gt;</span></div>
+        <div class="render-pane">
+          <p class="text-slate-800 mb-4">
+            Read the <a href="#" class="text-orange-600 underline underline-offset-2 hover:text-orange-700">docs</a> and see the <a href="#" class="text-orange-600 underline underline-offset-2 hover:text-orange-700">changelog</a>.
+          </p>
+          <a href="#" class="inline-flex items-center gap-1.5 text-orange-600 hover:text-orange-700 mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Profile
+          </a>
+          <a href="#" class="block">
+            <div class="p-4 bg-white rounded-lg shadow-md border border-slate-100 hover:shadow-lg transition">
+              <h3 class="font-semibold text-slate-900">Introduction</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 9 ═══════════════════════ -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <div class="section-num">§ 09</div>
+    <div class="section-head-inner">
+      <h2><em>Directives</em> — head, style, script</h2>
+      <p class="kicker">Document-level sections sit above or below the markup tree. They handle metadata, styles, imports, and reactive script — everything that isn't what the user sees on the page.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p>A complete JEML file typically has four or five directives: <code>&gt;&gt; meta</code> for the head, <code>&gt;&gt; style</code> for CSS, <code>&gt;&gt; import</code> for components, <code>&gt;&gt; document</code> for the markup tree, and <code>&gt;&gt; script</code> for reactive logic.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-dir">&gt;&gt;</span> <span class="t-tag">meta</span> <span class="t-punct">[</span>
+  <span class="t-attr-key">title</span><span class="t-punct">=</span><span class="t-string">"My page"</span>
+  <span class="t-attr-key">description</span><span class="t-punct">=</span><span class="t-string">"A description"</span>
+  <span class="t-attr-key">icon</span><span class="t-punct">=</span><span class="t-string">"/favicon.svg"</span>
+<span class="t-punct">]</span>
+
+<span class="t-dir">&gt;&gt;</span> <span class="t-tag">style</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">css</span> <span class="t-attr-key">ref</span><span class="t-punct">=</span><span class="t-string">"/style.css"</span><span class="t-punct">]</span>
+
+<span class="t-dir">&gt;&gt;</span> <span class="t-tag">import</span> <span class="t-punct">[</span><span class="t-attr-key">from</span><span class="t-punct">=</span><span class="t-string">"./button.jeml"</span><span class="t-punct">]:</span> Button
+
+<span class="t-dir">&gt;&gt;</span> <span class="t-tag">document</span><span class="t-punct">:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.1</span><span class="t-punct">:</span> My page <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> Button<span class="t-punct">:</span> Click me <span class="t-block">&lt;</span>
+<span class="t-dir">&lt;&lt;</span> <span class="t-tag">document</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="h-tag">&lt;html&gt;</span>
+<span class="h-tag">&lt;head&gt;</span>
+  <span class="h-tag">&lt;title&gt;</span>My page<span class="h-tag">&lt;/title&gt;</span>
+  <span class="h-tag">&lt;meta</span>
+    <span class="h-attr">name</span>=<span class="h-val">"description"</span>
+    <span class="h-attr">content</span>=<span class="h-val">"A description"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;link</span> <span class="h-attr">rel</span>=<span class="h-val">"icon"</span>
+    <span class="h-attr">href</span>=<span class="h-val">"/favicon.svg"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;link</span> <span class="h-attr">rel</span>=<span class="h-val">"stylesheet"</span>
+    <span class="h-attr">href</span>=<span class="h-val">"/style.css"</span><span class="h-tag">&gt;</span>
+<span class="h-tag">&lt;/head&gt;</span>
+<span class="h-tag">&lt;body&gt;</span>
+  <span class="h-tag">&lt;h1&gt;</span>My page<span class="h-tag">&lt;/h1&gt;</span>
+  <span class="h-tag">&lt;button&gt;</span>Click me<span class="h-tag">&lt;/button&gt;</span>
+<span class="h-tag">&lt;/body&gt;</span>
+<span class="h-tag">&lt;/html&gt;</span></div>
+        <div class="render-pane">
+          <div class="bg-slate-50 rounded-md p-3 mb-3 border border-slate-200">
+            <div class="text-xs text-slate-500 mb-1 font-mono">Browser tab</div>
+            <div class="flex items-center gap-2 text-sm">
+              <div class="w-3 h-3 bg-orange-500 rounded-sm"></div>
+              <span class="text-slate-700">My page</span>
+            </div>
+          </div>
+          <div class="p-4 bg-white rounded-md border border-slate-200">
+            <h1 class="text-xl font-bold text-slate-900 mb-3">My page</h1>
+            <button class="px-3 py-1.5 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition">Click me</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The colon rule, applied uniformly</div>
+      <p>A directive with no body (like <code>&gt;&gt; meta [...]</code>) terminates at end-of-line with no closer needed. A directive <em>with</em> a body (like <code>&gt;&gt; document: ... &lt;&lt;</code>) uses <code>:</code> to introduce content and requires <code>&lt;&lt;</code> to close. Same logic as block elements — the colon always marks where content begins.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 10 ═══════════════════════ -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <div class="section-num">§ 10</div>
+    <div class="section-head-inner">
+      <h2>Comments and <em>escaping</em></h2>
+      <p class="kicker">JEML uses <code>%</code> for comments — not <code>//</code> or <code>#</code> — and <code>\</code> to escape any sigil. Simple, consistent, unusual in a good way.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-comment">% a single-line comment</span>
+
+<span class="t-comment">%{
+  A block comment can span
+  multiple lines. Block comments
+  don't nest.
+%}</span>
+
+<span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span>
+  To show a literal sigil, escape it.
+  Use <span class="t-escape">\*</span>asterisks<span class="t-escape">\*</span> for <span class="t-md-bold">**bold**</span>.
+  The <span class="t-escape">\&amp;</span> character escapes a sigil,
+  <span class="t-escape">\_</span> escapes underscore.
+<span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-comment">&lt;!-- comments are stripped at
+     compile time --&gt;</span>
+
+<span class="h-tag">&lt;p&gt;</span>To show a literal sigil,
+escape it. Use *asterisks*
+for <span class="h-tag">&lt;strong&gt;</span>bold<span class="h-tag">&lt;/strong&gt;</span>.
+The &amp;amp; character escapes
+a sigil, _ escapes underscore.
+<span class="h-tag">&lt;/p&gt;</span></div>
+        <div class="render-pane">
+          <p class="text-slate-800 leading-relaxed">
+            To show a literal sigil, escape it. Use *asterisks* for <strong class="font-semibold">bold</strong>. The &amp; character escapes a sigil, _ escapes underscore.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 11 — RESPONSIVE ═══════════════════════ -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <div class="section-num">§ 11</div>
+    <div class="section-head-inner">
+      <h2>Responsive, <em>built in</em></h2>
+      <p class="kicker">The part that makes JEML shine. Mobile-first responsive overrides live right next to the attribute they modify — no media queries to hand-write, no Tailwind prefixes to memorize.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p>The <code>^(breakpoint)=value</code> syntax attaches a responsive override to the preceding attribute. The base value applies below the breakpoint; the override applies at and above. Mobile-first, by design.</p>
+
+    <p><strong>Drag the right edge of the preview below to resize it.</strong> Watch the grid change from 1 column to 2 to 4 as you cross 500px and 1024px.</p>
+
+    <div class="resize-container">
+      <div class="resize-header">
+        <span>Live responsive preview · drag to resize</span>
+        <span class="resize-width" id="width-display">Loading…</span>
+      </div>
+      <div class="resize-body">
+        <div class="resize-code"><span class="t-block">&gt;</span> <span class="t-tag">grid</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">cols</span><span class="t-punct">=</span><span class="t-number">1</span>
+    <span class="t-resp">^(</span><span class="t-breakpoint">500px</span><span class="t-resp">)=</span><span class="t-number">2</span>
+    <span class="t-resp">^(</span><span class="t-breakpoint">1024px</span><span class="t-resp">)=</span><span class="t-number">4</span>
+    <span class="t-attr-key">gap</span><span class="t-punct">=</span><span class="t-ident">sm</span>
+    <span class="t-resp">^(</span><span class="t-breakpoint">768px</span><span class="t-resp">)=</span><span class="t-ident">md</span>
+  <span class="t-punct">]:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> A <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> B <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> C <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> D <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> E <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> F <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> G <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span> H <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span></div>
+        <div class="resize-preview-wrap">
+          <div class="resize-preview" id="resize-preview">
+            <iframe id="resize-iframe" src="about:blank"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="resize-hint">
+        <svg viewBox="0 0 24 24" stroke-width="2"><path d="M9 5l-6 7 6 7M15 5l6 7-6 7"></path></svg>
+        Drag the orange handle on the right edge to resize
+      </div>
+    </div>
+
+    <p>The same syntax handles multiple attributes in one list. Each override attaches to the most recent base attribute — or you can be explicit by writing <code>attr^(breakpoint)=value</code>:</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-html"></span>HTML + CSS</div>
+        <div><span class="triptych-header-dot dot-render"></span>At 900px+</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-block">&gt;</span> <span class="t-tag">group</span> <span class="t-punct">[</span>
+    <span class="t-attr-key">layout</span><span class="t-punct">=</span><span class="t-ident">column</span>
+    <span class="t-attr-key">layout</span><span class="t-resp">^(</span><span class="t-breakpoint">900px</span><span class="t-resp">)=</span><span class="t-ident">row</span>
+    <span class="t-attr-key">gap</span><span class="t-punct">=</span><span class="t-ident">md</span>
+    <span class="t-attr-key">gap</span><span class="t-resp">^(</span><span class="t-breakpoint">900px</span><span class="t-resp">)=</span><span class="t-ident">xl</span>
+  <span class="t-punct">]:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">article</span><span class="t-punct">:</span> Main <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">aside</span><span class="t-punct">:</span> Related <span class="t-block">&lt;</span>
+<span class="t-block">&lt;</span></div>
+        <div class="code-pane code-html"><span class="h-tag">&lt;div</span> <span class="h-attr">data-jeml-r</span>=<span class="h-val">"r1"</span>
+  <span class="h-attr">class</span>=<span class="h-val">"jeml-group"</span><span class="h-tag">&gt;</span>
+  <span class="h-tag">&lt;article&gt;</span>Main<span class="h-tag">&lt;/article&gt;</span>
+  <span class="h-tag">&lt;aside&gt;</span>Related<span class="h-tag">&lt;/aside&gt;</span>
+<span class="h-tag">&lt;/div&gt;</span>
+
+<span class="h-tag">&lt;style&gt;</span>
+[data-jeml-r="r1"] {
+  --layout: column;
+  --gap: md;
+}
+@media (min-width: 900px) {
+  [data-jeml-r="r1"] {
+    --layout: row;
+    --gap: xl;
+  }
+}
+<span class="h-tag">&lt;/style&gt;</span></div>
+        <div class="render-pane">
+          <div class="flex flex-row gap-8">
+            <article class="flex-1 p-4 bg-slate-50 rounded-md border border-slate-200">
+              <div class="text-sm font-semibold text-slate-700 mb-1">Main</div>
+              <div class="text-xs text-slate-500">The article's main column.</div>
+            </article>
+            <aside class="w-48 p-4 bg-orange-50 rounded-md border border-orange-200">
+              <div class="text-sm font-semibold text-orange-800 mb-1">Related</div>
+              <div class="text-xs text-orange-700">Sidebar content.</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Layout versus style</div>
+      <p>Responsive overrides are designed for layout attributes — <code>cols</code>, <code>gap</code>, <code>layout</code>, <code>size</code>, <code>visible</code>. They aren't meant for appearance (<code>color</code>, <code>background</code>, <code>shadow</code>), because changing colors based on viewport usually means you want a theme system, not a media query. The compiler will warn if you use <code>^()</code> on a style attribute.</p>
+    </div>
+
+    <h3>Versus Tailwind</h3>
+
+    <p>Tailwind handles responsive with prefixes: <code>grid-cols-1 md:grid-cols-2 lg:grid-cols-4</code>. That's six classes for one concern. In JEML the same thing is <code>cols=1 ^(768px)=2 ^(1024px)=4</code> — still three values, but living on one attribute, and with the breakpoint values explicit in the source.</p>
+
+    <p>The trade-off: Tailwind's named breakpoints (sm, md, lg, xl, 2xl) are shared across a whole project, so they're consistent. JEML's pixel values are explicit in every file, which is more honest but requires discipline to keep consistent across a codebase. For a small project, JEML wins on clarity. For a large project, you'd want to factor breakpoints into a shared config — a feature planned for v0.5.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 12 ═══════════════════════ -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <div class="section-num">§ 12</div>
+    <div class="section-head-inner">
+      <h2>Components <em>preview</em></h2>
+      <p class="kicker">This section previews features that are part of the v0.4 spec but not yet implemented in the v1 compiler. Skip it if you're writing static pages; come back when you're ready for interactivity.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Three reference sigils</h3>
+
+    <p>JEML uses three distinct sigils for three kinds of references — values, functions, and loop iterators. The distinction makes sigil-confusion impossible: a reader always knows what kind of thing they're looking at.</p>
+
+    <div class="triptych">
+      <div class="triptych-header">
+        <div><span class="triptych-header-dot dot-jeml"></span>JEML source</div>
+        <div><span class="triptych-header-dot dot-html"></span>After evaluation</div>
+        <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
+      </div>
+      <div class="triptych-body">
+        <div class="code-pane"><span class="t-dir">&gt;&gt;</span> <span class="t-tag">script</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">typescript</span><span class="t-punct">]:</span> {
+  let count = 0
+  let users = [
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Ben" }
+  ]
+  increment () { count = count + 1 }
+}
+<span class="t-dir">&lt;&lt;</span>
+
+<span class="t-dir">&gt;&gt;</span> <span class="t-tag">document</span><span class="t-punct">:</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">text</span><span class="t-punct">:</span> Count: <span class="t-var">&amp;count</span> <span class="t-block">&lt;</span>
+  <span class="t-block">&gt;</span> <span class="t-tag">button</span><span class="t-variant">.primary</span>
+    <span class="t-punct">[</span><span class="t-attr-key">on_press</span><span class="t-punct">=</span><span class="t-handler">@increment</span><span class="t-punct">]:</span>
+    Add one
+  <span class="t-block">&lt;</span>
+
+  <span class="t-flow">~</span> <span class="t-flow">for</span> (<span class="t-var">&amp;users</span> <span class="t-flow">as</span> <span class="t-iter">$user</span>)
+    <span class="t-block">&gt;</span> <span class="t-tag">card</span><span class="t-punct">:</span>
+      <span class="t-iter">$user.name</span>
+    <span class="t-block">&lt;</span>
+  <span class="t-flow">~&lt;</span>
+<span class="t-dir">&lt;&lt;</span> <span class="t-tag">document</span></div>
+        <div class="code-pane code-html"><span class="h-comment">// after count = 3 and
+// two iterations:</span>
+
+<span class="h-tag">&lt;p&gt;</span>Count: 3<span class="h-tag">&lt;/p&gt;</span>
+<span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary"</span>
+  <span class="h-attr">onclick</span>=<span class="h-val">"increment()"</span><span class="h-tag">&gt;</span>
+  Add one
+<span class="h-tag">&lt;/button&gt;</span>
+
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-card"</span><span class="h-tag">&gt;</span>
+  Alice
+<span class="h-tag">&lt;/div&gt;</span>
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-card"</span><span class="h-tag">&gt;</span>
+  Ben
+<span class="h-tag">&lt;/div&gt;</span></div>
+        <div class="render-pane">
+          <p class="text-slate-800 mb-3">Count: <span class="font-semibold text-orange-600 tabular-nums">3</span></p>
+          <button class="px-3 py-1.5 rounded-md bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 transition mb-4">Add one</button>
+          <div class="space-y-2">
+            <div class="p-3 bg-white rounded border border-slate-200 text-sm text-slate-800">Alice</div>
+            <div class="p-3 bg-white rounded border border-slate-200 text-sm text-slate-800">Ben</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The three-sigil discipline</div>
+      <p><code>&amp;name</code> is a value reference — reactive, renders as content. <code>@name</code> is a handler — a function to call or pass by reference. <code>$name</code> is a loop iterator, scoped to a <code>~ for</code> loop body. Using the wrong one is a compile error, not a subtle bug.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 13 ═══════════════════════ -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <div class="section-num">§ 13</div>
+    <div class="section-head-inner">
+      <h2>Idiomatic <em>style</em></h2>
+      <p class="kicker">A collection of small conventions that make JEML pleasant to read. Follow them when you can; violate them when you have a reason.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <h3>Use variants for sub-types, attributes for properties</h3>
+    <p><code>&gt; heading.2</code> is idiomatic. <code>&gt; heading [level=2]</code> works but reads awkwardly. Variants express identity; attributes express metadata.</p>
+
+    <h3>Use named closers on long blocks</h3>
+    <p><code>&lt; section</code> is useful when the opening <code>&gt; section [id=hero]:</code> is twenty lines above. For three-line blocks, bare <code>&lt;</code> is fine.</p>
+
+    <h3>Break long attribute lists onto their own lines</h3>
+    <p>When you have more than three attributes, or any value is long, multi-line formatting is the norm. Readability wins over compactness.</p>
+
+    <h3>Prefer unquoted values when possible</h3>
+    <p><code>type=email</code> reads better than <code>type="email"</code>. Quotes are for strings with spaces or special characters.</p>
+
+    <h3>Keep each concern in its own directive</h3>
+    <p>Styles belong in <code>&gt;&gt; style</code>, logic in <code>&gt;&gt; script</code>, markup in <code>&gt;&gt; document</code>. Don't put business logic in expression wrappers, and don't hand-write CSS properties in markup attributes.</p>
+
+    <h3>Write mobile-first</h3>
+    <p>Start with the base value — what it looks like on a phone — then add overrides for larger viewports. This matches modern CSS conventions and produces smaller compiled output.</p>
+
+    <h3>Use responsive overrides for layout, not appearance</h3>
+    <p>Changing columns at different viewport sizes is right. Changing colors at different viewport sizes is probably wrong — reach for a theme system instead.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 14 — CHEAT SHEET ═══════════════════════ -->
+<section class="section" id="s14">
+  <div class="section-header">
+    <div class="section-num">§ 14</div>
+    <div class="section-head-inner">
+      <h2>HTML → JEML <em>cheat sheet</em></h2>
+      <p class="kicker">A quick translation table for people moving between the two. Bookmark this page and come back when you've forgotten how something maps.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>Document structure</h3>
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>HTML</div><div>JEML</div>
+      </div>
+      <div class="compare-row"><div>&lt;!DOCTYPE html&gt;</div><div>(compiler generates)</div></div>
+      <div class="compare-row"><div>&lt;html&gt; / &lt;/html&gt;</div><div>(compiler generates)</div></div>
+      <div class="compare-row"><div>&lt;head&gt;...&lt;/head&gt;</div><div>&gt;&gt; meta, &gt;&gt; style, &gt;&gt; import</div></div>
+      <div class="compare-row"><div>&lt;body&gt;...&lt;/body&gt;</div><div>&gt;&gt; document: ... &lt;&lt;</div></div>
+    </div>
+
+    <h3>Block elements</h3>
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>HTML</div><div>JEML</div>
+      </div>
+      <div class="compare-row"><div>&lt;h1&gt;Text&lt;/h1&gt;</div><div>&gt; heading.1: Text &lt;</div></div>
+      <div class="compare-row"><div>&lt;h2&gt;Text&lt;/h2&gt;</div><div>&gt; heading.2: Text &lt;</div></div>
+      <div class="compare-row"><div>&lt;p&gt;Text&lt;/p&gt;</div><div>&gt; text: Text &lt;</div></div>
+      <div class="compare-row"><div>&lt;section id="x"&gt;...&lt;/section&gt;</div><div>&gt; section [id=x]: ... &lt; section</div></div>
+      <div class="compare-row"><div>&lt;ul&gt;&lt;li&gt;A&lt;/li&gt;&lt;/ul&gt;</div><div>&gt; list:&#10;  - A&#10;&lt;</div></div>
+      <div class="compare-row"><div>&lt;ol&gt;&lt;li&gt;A&lt;/li&gt;&lt;/ol&gt;</div><div>&gt; list.number:&#10;  - A&#10;&lt;</div></div>
+      <div class="compare-row"><div>&lt;nav&gt;...&lt;/nav&gt;</div><div>&gt; nav: ... &lt; nav</div></div>
+      <div class="compare-row"><div>&lt;button class="primary"&gt;Go&lt;/button&gt;</div><div>&gt; button.primary: Go &lt;</div></div>
+      <div class="compare-row"><div>&lt;div class="card"&gt;...&lt;/div&gt;</div><div>&gt; card.elevated: ... &lt;</div></div>
+    </div>
+
+    <h3>Inline elements</h3>
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>HTML</div><div>JEML</div>
+      </div>
+      <div class="compare-row"><div>&lt;strong&gt;bold&lt;/strong&gt;</div><div>**bold** or /&gt; strong: bold &lt;/</div></div>
+      <div class="compare-row"><div>&lt;em&gt;italic&lt;/em&gt;</div><div>_italic_ or /&gt; em: italic &lt;/</div></div>
+      <div class="compare-row"><div>&lt;code&gt;x&lt;/code&gt;</div><div>`x` or /&gt; code: x &lt;/</div></div>
+      <div class="compare-row"><div>&lt;a href="/x"&gt;text&lt;/a&gt;</div><div>#'text'[url="/x"]</div></div>
+      <div class="compare-row"><div>&lt;span class="x"&gt;text&lt;/span&gt;</div><div>/&gt; span [style=x]: text &lt;/</div></div>
+    </div>
+
+    <h3>Void elements</h3>
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>HTML</div><div>JEML</div>
+      </div>
+      <div class="compare-row"><div>&lt;img src="/x.png" alt="y"&gt;</div><div>!&gt; image [src="/x.png" alt=y]</div></div>
+      <div class="compare-row"><div>&lt;br&gt;</div><div>!&gt; break</div></div>
+      <div class="compare-row"><div>&lt;hr&gt;</div><div>!&gt; divider</div></div>
+      <div class="compare-row"><div>&lt;input type="email"&gt;</div><div>!&gt; field [type=email]</div></div>
+    </div>
+
+    <h3>Responsive — unique to JEML</h3>
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>Tailwind</div><div>JEML</div>
+      </div>
+      <div class="compare-row"><div>class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"</div><div>cols=1 ^(768px)=2 ^(1024px)=4</div></div>
+      <div class="compare-row"><div>class="flex-col md:flex-row"</div><div>layout=column ^(768px)=row</div></div>
+      <div class="compare-row"><div>class="gap-2 md:gap-4 lg:gap-6"</div><div>gap=sm ^(768px)=md ^(1024px)=lg</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COLOPHON ═══════════════════════ -->
+<section class="colophon">
+  <div class="colophon-inner">
+    <div class="colophon-mark">JEML</div>
+    <p>Made for people who write markup by hand, prefer short sigils to long tags, and want their responsive design to live next to the layout attribute it modifies.</p>
+    <p>This tutorial covers JEML v0.4. The full specification is in <em>spec/RULEBOOK.md</em>; the compiler reference is in <em>spec/ELEMENT_MAPPING.md</em>; the example corpus lives in <em>tests/examples/</em> and <em>tests/expected/</em>.</p>
+    <div class="colophon-meta">
+      <span><strong>Typography</strong> Fraunces & Inter Tight</span>
+      <span><strong>Code</strong> JetBrains Mono</span>
+      <span><strong>Styling</strong> Tailwind CSS v3</span>
+      <span><strong>Version</strong> tutorial 0.4.0</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ═══════════════════════ TAILWIND LOAD CHECK ═══════════════════════
+  // Wait for the page to settle, then verify Tailwind is applying styles.
+  // If a known utility class isn't doing its job, show the offline banner.
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const probe = document.createElement('div');
+      probe.className = 'bg-orange-600';
+      probe.style.position = 'absolute';
+      probe.style.left = '-9999px';
+      document.body.appendChild(probe);
+      const bg = window.getComputedStyle(probe).backgroundColor;
+      document.body.removeChild(probe);
+
+      // bg-orange-600 should be rgb(234, 88, 12). If it's transparent or default, Tailwind failed.
+      const tailwindLoaded = bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent';
+      if (!tailwindLoaded) {
+        document.getElementById('offline-banner').classList.add('visible');
+      }
+    }, 1500);
+  });
+
+  // ═══════════════════════ RESIZE PREVIEW ═══════════════════════
+
+  const previewHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.tailwindcss.com"><\/script>
+<style>
+  body { margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; }
+  .grid-cards { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap); }
+  .card {
+    padding: 24px 16px;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffe8d0 100%);
+    border: 1px solid #f5c090;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 28px;
+    color: #8a3615;
+    min-height: 80px;
+    transition: all 0.15s ease;
+  }
+  [style*="--cols: 1"] { --cols: 1; }
+  [style*="--cols: 2"] { --cols: 2; }
+  [style*="--cols: 4"] { --cols: 4; }
+  [style*="--gap: sm"] { --gap: 8px; }
+  [style*="--gap: md"] { --gap: 16px; }
+  .info {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: #f5f1e8;
+    border: 1px solid #ebe4d2;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #78695c;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .info strong { color: #b8502a; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="info">
+  Viewport: <strong id="vp">—</strong>  ·  cols: <strong id="c">—</strong>  ·  gap: <strong id="g">—</strong>
+</div>
+<div class="grid-cards" id="grid" style="--cols: 1; --gap: 8px;">
+  <div class="card">A</div>
+  <div class="card">B</div>
+  <div class="card">C</div>
+  <div class="card">D</div>
+  <div class="card">E</div>
+  <div class="card">F</div>
+  <div class="card">G</div>
+  <div class="card">H</div>
+</div>
+<script>
+  function update() {
+    const w = window.innerWidth;
+    let cols = 1, gap = 'sm';
+    if (w >= 500) cols = 2;
+    if (w >= 1024) cols = 4;
+    if (w >= 768) gap = 'md';
+    const gapPx = gap === 'sm' ? '8px' : '16px';
+    const grid = document.getElementById('grid');
+    grid.style.setProperty('--cols', cols);
+    grid.style.setProperty('--gap', gapPx);
+    document.getElementById('vp').textContent = w + 'px';
+    document.getElementById('c').textContent = cols;
+    document.getElementById('g').textContent = gap;
+  }
+  update();
+  window.addEventListener('resize', update);
+<\/script>
+</body>
+</html>

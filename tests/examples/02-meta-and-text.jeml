@@ -1,0 +1,11 @@
+>> meta [
+  title="My First Page"
+  description="A simple test page"
+]
+
+>> document:
+  > heading.1: Welcome <
+  > text:
+    This is a paragraph of text.
+  <
+<< document

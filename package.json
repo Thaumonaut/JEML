@@ -1,0 +1,28 @@
+{
+  "name": "jeml",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "jeml": "dist/jeml.mjs"
+  },
+  "scripts": {
+    "dev": "vite src/playground",
+    "build": "vite build src/playground --outDir ../../dist/playground",
+    "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jeml.mjs",
+    "prepack": "npm run build:cli",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "peggy": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

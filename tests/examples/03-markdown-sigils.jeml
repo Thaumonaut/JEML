@@ -1,0 +1,8 @@
+>> document:
+  > text:
+    This paragraph has **bold text** and _italic text_ and `inline code`.
+  <
+  > text:
+    You can combine them in **one _tricky_ sentence** but nesting rules apply.
+  <
+<< document

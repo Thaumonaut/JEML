@@ -1,0 +1,74 @@
+>> meta [
+  title="Responsive Layout"
+  description="Demonstrates mobile-first responsive overrides"
+]
+
+>> document:
+  > section [id=products]:
+    > heading.2: Featured products <
+
+    % Mobile-first grid: 1 column base, 2 at tablet width, 4 at desktop width.
+    % Gap also increases at larger viewports.
+    > grid [
+        cols=1 ^(500px)=2 ^(1024px)=4
+        gap=1rem gap^(768px)=2rem gap^(1024px)=4rem
+      ]:
+      > card: Product A <
+      > card: Product B <
+      > card: Product C <
+      > card: Product D <
+    < grid
+  < section
+
+  > section [id=sidebar-layout]:
+    > heading.2: Article page <
+
+    % Explicit bindings when overrides are interleaved with multiple base
+    % attributes. The explicit form removes any doubt about what's being
+    % overridden at which breakpoint.
+    > group [
+        layout=column
+        layout^(900px)=row
+        gap=md
+        gap^(900px)=xl
+        align=stretch
+      ]:
+      > article:
+        > heading.3: Main content <
+        > text: The article body goes here. <
+      <
+      > aside:
+        > heading.4: Related <
+        > list [list.number]:
+          - First related item
+          - Second related item
+        <
+      <
+    < group
+  < section
+
+  > section [id="test-section"]:
+    > heading.2: Test section <
+    > grid [cols^(780px)=2 ^(1024px)=4]:
+      > group:
+        > heading.3: Test group <
+        > text: This is a test group. <
+      <
+      > group:
+        > heading.3: Test group <
+        > text: This is a test group. <
+      <
+    < grid
+  < section
+
+  > section [id=hero-responsive]:
+    % Implicit overrides work when the binding is obvious from proximity.
+    > heading.1 [size=lg ^(768px)=xl ^(1280px)=xxl]:
+      Welcome to the site
+    <
+    > text.lead [size=md ^(768px)=lg]:
+      A responsive page that looks good on every screen.
+    <
+  < section
+
+<< document

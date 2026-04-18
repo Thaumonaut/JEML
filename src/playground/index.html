@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JEML Playground</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section>
+        <h2>JEML Input</h2>
+        <textarea id="source"></textarea>
+      </section>
+      <section>
+        <h2>Compiled HTML</h2>
+        <pre id="html"></pre>
+      </section>
+      <section>
+        <h2>Rendered Preview</h2>
+        <iframe id="preview" title="Rendered HTML preview"></iframe>
+      </section>
+      <section>
+        <h2>AST</h2>
+        <pre id="ast"></pre>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

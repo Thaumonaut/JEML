@@ -1,0 +1,141 @@
+>> meta [
+  title="Streamline — Project management for teams"
+  description="The project tool your team will actually use"
+  icon="/favicon.svg"
+  scale=1.0
+]
+<< meta
+
+>> style [type=css ref="/styles/landing.css"]
+
+>> document:
+
+  > nav [id=main-nav style=sticky]:
+    > brand:
+      /> icon [name=logo]: </
+      Streamline
+    <
+    > links:
+      - #'Features'[url="#features"]
+      - #'Pricing'[url="#pricing"]
+      - #'Docs'[url="/docs"]
+      - #'Sign in'[url="/login"]
+    <
+    > button.primary: Start free trial <
+  < nav
+
+  > section [id=hero style=hero-gradient]:
+    > heading.1:
+      The project tool your team will _actually_ use
+    <
+    > text.lead:
+      Streamline keeps your team's work in one place without the bloat.
+      **No more context switching**, no more lost threads, no more
+      #'tool fatigue'[url="/blog/tool-fatigue"].
+    <
+    > group [layout=row gap=md]:
+      > button.primary.lg: Start free trial <
+      > button.ghost.lg:
+        /> icon [name=play]: </
+        Watch 2-min demo
+      <
+    <
+    > text.muted [size=sm]:
+      No credit card required. Free for teams up to 5.
+    <
+  < section
+
+  > section [id=features]:
+    > heading.2: Built for how teams actually work <
+
+    > grid [cols=1 ^(768px)=2 ^(1024px)=3 gap=md ^(1024px)=lg]:
+      > card:
+        /> icon [name=zap size=xl]: </
+        > heading.3: Fast by default <
+        > text:
+          Keyboard-first design and instant search keep you in flow.
+        <
+      <
+      > card:
+        /> icon [name=shield size=xl]: </
+        > heading.3: Private by design <
+        > text:
+          End-to-end encryption on sensitive projects, zero tracking.
+        <
+      <
+      > card:
+        /> icon [name=link size=xl]: </
+        > heading.3: Works with your stack <
+        > text:
+          Integrates with GitHub, Slack, Linear, and 40 other tools.
+        <
+      <
+    < grid
+  < section
+
+  > section [id=about]:
+    > heading.2: About us <
+    > text:
+      We are a team of developers who are passionate about building tools that help teams work better.
+    <
+  < section
+
+  > section [id=pricing]:
+    > heading.2: Simple pricing <
+
+    > table:
+      > columns:
+        - [key=plan label=Plan]
+        - [key=price label=Price]
+        - [key=seats label=Seats]
+      <
+      > row:
+        - Free
+        - $0
+        - Up to 5
+      <
+      > row:
+        - Team
+        - $12 per user per month
+        - 5 to 50
+      <
+      > row:
+        - Enterprise
+        - Contact sales
+        - 50 plus
+      <
+    < table
+  < section
+
+  > footer:
+    > grid [cols=1 ^(768px)=3 gap=lg]:
+      > stack:
+        > heading.4: Product <
+        > list:
+          - #'Features'[url="/features"]
+          - #'Pricing'[url="/pricing"]
+          - #'Changelog'[url="/changelog"]
+        <
+      <
+      > stack:
+        > heading.4: Company <
+        > list:
+          - #'About'[url="/about"]
+          - #'Blog'[url="/blog"]
+          - #'Careers'[url="/careers"]
+        <
+      <
+      > stack:
+        > heading.4: Legal <
+        > list:
+          - #'Privacy'[url="/privacy"]
+          - #'Terms'[url="/terms"]
+        <
+      <
+    < grid
+    > text.muted [size=sm align=center]:
+      Copyright 2026 Streamline Inc.
+    <
+  < footer
+
+<< document

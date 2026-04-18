@@ -1,0 +1,416 @@
+/* Streamline landing — pairs with tests/examples/12-full-landing.jeml */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
+
+:root {
+  color-scheme: dark light;
+  --bg: #0b0d12;
+  --bg-elevated: #12151c;
+  --surface: #161a24;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #e8eaef;
+  --muted: #9aa3b2;
+  --accent: #5b8cff;
+  --accent-soft: rgba(91, 140, 255, 0.15);
+  --accent-glow: rgba(91, 140, 255, 0.35);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --font: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ----- Nav ----- */
+nav#main-nav.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: 0.85rem clamp(1.25rem, 4vw, 2.5rem);
+  background: rgba(11, 13, 18, 0.72);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+}
+
+.jeml-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul a {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+nav ul a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav button.primary {
+  margin-left: auto;
+}
+
+/* ----- Buttons ----- */
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+button.primary {
+  background: linear-gradient(135deg, #6a9cff 0%, #4f7dff 50%, #3d5eff 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+button.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px var(--accent-glow);
+}
+
+button.ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+button.jeml-size-lg {
+  padding: 0.75rem 1.35rem;
+  font-size: 1rem;
+}
+
+/* ----- Hero ----- */
+section#hero.hero-gradient {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(3rem, 8vw, 5.5rem) clamp(1.25rem, 4vw, 2.5rem) clamp(4rem, 10vw, 6rem);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(91, 140, 255, 0.35), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 100% 50%, rgba(120, 90, 255, 0.12), transparent 50%),
+    linear-gradient(180deg, #0e1118 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+section#hero h1 {
+  max-width: 14ch;
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.1rem, 5vw, 3.35rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+section#hero .lead {
+  max-width: 52ch;
+  margin: 0 0 2rem;
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+
+section#hero .lead strong {
+  color: var(--text);
+}
+
+section#hero .jeml-group {
+  margin-bottom: 1.5rem;
+}
+
+section#hero .jeml-group button + button {
+  margin-left: 0.75rem;
+}
+
+section#hero .muted {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* ----- Layout utilities ----- */
+.jeml-group.jeml-layout-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.jeml-gap-md {
+  gap: 1rem !important;
+}
+
+.jeml-gap-lg {
+  gap: 1.75rem !important;
+}
+
+.jeml-size-sm {
+  font-size: 0.9rem;
+}
+
+.jeml-align-center {
+  text-align: center;
+}
+
+/* ----- Sections ----- */
+section {
+  padding: clamp(3rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2.5rem);
+}
+
+section:not(#hero) h2 {
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+section#about {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+section#about p {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ----- Feature grid ----- */
+.jeml-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .jeml-grid.jeml-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jeml-card {
+  padding: 1.5rem 1.35rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.jeml-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(91, 140, 255, 0.25);
+}
+
+.jeml-card h3 {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.jeml-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+/* ----- Tables ----- */
+table {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+thead {
+  background: rgba(91, 140, 255, 0.08);
+}
+
+th,
+td {
+  padding: 0.85rem 1.1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+section#pricing table {
+  margin-top: 0.5rem;
+}
+
+/* ----- Footer ----- */
+footer {
+  padding: clamp(3rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2.5rem) 2.5rem;
+  background: linear-gradient(180deg, var(--bg) 0%, #07080c 100%);
+  border-top: 1px solid var(--border);
+}
+
+footer .jeml-grid {
+  margin-bottom: 2rem;
+}
+
+.jeml-stack h4 {
+  margin: 0 0 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.jeml-stack ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jeml-stack li {
+  margin-bottom: 0.55rem;
+}
+
+.jeml-stack a {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.jeml-stack a:hover {
+  color: var(--accent);
+}
+
+footer .muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ----- Icons (decorative) ----- */
+i.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35em;
+  height: 1.35em;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  font-style: normal;
+  font-size: 0.95em;
+  vertical-align: middle;
+}
+
+.jeml-card > .icon:first-child {
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.25rem;
+  border-radius: 12px;
+}
+
+button .icon {
+  margin-right: 0.4rem;
+}
+
+/* Subtle glyph hints via data-icon (optional enhancement) */
+i.icon[data-icon="logo"]::after {
+  content: "◆";
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+i.icon[data-icon="play"]::after {
+  content: "▶";
+  font-size: 0.65em;
+  margin-left: 2px;
+}
+
+i.icon[data-icon="zap"]::after {
+  content: "⚡";
+}
+
+i.icon[data-icon="shield"]::after {
+  content: "🛡";
+  font-size: 0.85em;
+}
+
+i.icon[data-icon="link"]::after {
+  content: "🔗";
+  font-size: 0.75em;
+}
