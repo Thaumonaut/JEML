@@ -30,11 +30,17 @@ const STATIC_TYPES: Record<string, string> = {
   '.txt': 'text/plain; charset=utf-8',
 }
 
+type SplitOutput = {
+  html: string
+  script: string
+  styles: string
+}
+
 export function serve(inputPath: string, options: ServeOptions): void {
   const cwd = process.cwd()
   const abs = resolve(cwd, inputPath)
   const staticRoots = [cwd, dirname(abs)]
-  let html = ''
+  let split: SplitOutput = { html: '', script: '', styles: '' }
   let version = 0
 
   const clients: ServerResponse[] = []
@@ -53,14 +59,15 @@ export function serve(inputPath: string, options: ServeOptions): void {
   function compileFile(): void {
     try {
       const source = readFileSync(abs, 'utf8')
-      html = compile(source)
+      const compiled = compile(source)
+      split = splitDocument(compiled)
       version += 1
       notify()
       console.log(`[jeml] compiled (build ${version})`)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       console.error('[jeml] compile error:', message)
-      html = errorDocument(message)
+      split = { html: errorDocument(message), script: '', styles: '' }
       version += 1
       notify()
     }
@@ -88,15 +95,36 @@ export function serve(inputPath: string, options: ServeOptions): void {
       return
     }
 
-    if (url.pathname === '/preview.html') {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-      res.end(html)
+    if (url.pathname === '/__jeml/runtime.js') {
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      })
+      res.end(split.script)
+      return
+    }
+
+    if (url.pathname === '/__jeml/styles.css') {
+      res.writeHead(200, {
+        'Content-Type': 'text/css; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      })
+      res.end(split.styles)
+      return
+    }
+
+    if (url.pathname === '/__jeml/livereload.js') {
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      })
+      res.end(LIVE_RELOAD_SCRIPT)
       return
     }
 
     if (url.pathname === '/' || url.pathname === '/index.html') {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-      res.end(previewShellPage())
+      res.end(split.html)
       return
     }
 
@@ -128,30 +156,64 @@ export function serve(inputPath: string, options: ServeOptions): void {
   })
 }
 
-function previewShellPage(): string {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>JEML preview</title>
-  <style>
-    html, body { margin: 0; height: 100%; background: #111; }
-    iframe { border: 0; width: 100%; height: 100vh; display: block; background: #fff; }
-  </style>
-</head>
-<body>
-  <iframe id="preview" title="Compiled HTML" src="/preview.html"></iframe>
-  <script>
-    const frame = document.getElementById('preview');
-    const es = new EventSource('/events');
-    es.onmessage = function () {
-      frame.src = '/preview.html?t=' + Date.now();
-    };
-  </script>
-</body>
-</html>
+const LIVE_RELOAD_SCRIPT = `(function(){
+  if (typeof EventSource === "undefined") return;
+  var es = new EventSource("/events");
+  var first = true;
+  es.onmessage = function () {
+    if (first) { first = false; return; }
+    location.reload();
+  };
+})();
 `
+
+/**
+ * Pull inline <script> and <style> tags out of the compiled HTML and
+ * replace them with linked references to endpoints the dev server owns.
+ * Also injects a tiny livereload client. The compiler output itself
+ * remains a single portable file — this rewrite is dev-server only.
+ */
+function splitDocument(compiled: string): SplitOutput {
+  let html = compiled
+  let script = ''
+  const styles: string[] = []
+
+  html = html.replace(
+    /<script(\s[^>]*)?>([\s\S]*?)<\/script>/gu,
+    (match, attrs: string | undefined, body: string) => {
+      if (attrs && (/\ssrc\s*=/u.test(attrs) || /\stype\s*=\s*["']importmap["']/u.test(attrs))) {
+        return match
+      }
+      script += `${body}\n`
+      return ''
+    },
+  )
+
+  let firstStyleReplaced = false
+  html = html.replace(
+    /<style(\s[^>]*)?>([\s\S]*?)<\/style>/gu,
+    (_match, _attrs, body: string) => {
+      styles.push(body)
+      if (firstStyleReplaced) return ''
+      firstStyleReplaced = true
+      return '<link rel="stylesheet" href="/__jeml/styles.css">'
+    },
+  )
+
+  const injections: string[] = []
+  if (script.trim().length > 0) {
+    injections.push('<script src="/__jeml/runtime.js"></script>')
+  }
+  injections.push('<script src="/__jeml/livereload.js"></script>')
+
+  const tag = injections.join('\n')
+  if (html.includes('</body>')) {
+    html = html.replace('</body>', `${tag}\n</body>`)
+  } else {
+    html += `\n${tag}\n`
+  }
+
+  return { html, script: script.trim(), styles: styles.join('\n\n').trim() }
 }
 
 function errorDocument(message: string): string {

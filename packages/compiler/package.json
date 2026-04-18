@@ -1,0 +1,57 @@
+{
+  "name": "@jekdev/jeml",
+  "version": "0.4.0",
+  "description": "Jacob's Easy Markup Language — compile .jeml files to HTML (v0.4 static compiler + CLI)",
+  "keywords": [
+    "jeml",
+    "markup",
+    "compiler",
+    "html",
+    "template"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "jeml": "dist/jeml.mjs"
+  },
+  "files": [
+    "dist/jeml.mjs",
+    "README.md",
+    "scripts/prepare-cli.mjs"
+  ],
+  "scripts": {
+    "dev": "vite src/playground",
+    "build": "npm run build:cli",
+    "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jeml.mjs",
+    "build:playground": "vite build src/playground --outDir ../../dist/playground",
+    "prepare": "node scripts/prepare-cli.mjs",
+    "prepack": "npm run build:cli",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thaumonaut/jeml-project.git",
+    "directory": "packages/compiler"
+  },
+  "homepage": "https://github.com/Thaumonaut/jeml-project#readme",
+  "bugs": {
+    "url": "https://github.com/Thaumonaut/jeml-project/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "peggy": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -10,8 +10,10 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "dev": "npm run dev -w @jeml/compiler",
-    "dev:lsp": "npm run dev -w @jeml/lsp"
+    "dev": "npm run dev -w @jekdev/jeml",
+    "dev:lsp": "npm run dev -w @jeml/lsp",
+    "build:cli": "npm run build:cli -w @jekdev/jeml",
+    "build:playground": "npm run build:playground -w @jekdev/jeml"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

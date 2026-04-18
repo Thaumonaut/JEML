@@ -19,6 +19,9 @@ import {
   Hover,
   Diagnostic,
   TextDocumentPositionParams,
+  DocumentDiagnosticReportKind,
+  DocumentDiagnosticParams,
+  DocumentDiagnosticReport,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -102,6 +105,26 @@ documents.onDidClose(e => {
   cache.delete(e.document.uri);
   connection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
 });
+
+// Pull diagnostics — LSP 3.17+ clients (including current VS Code) may request
+// diagnostics explicitly via this method instead of relying on pushed
+// notifications. We support both to work with any client generation.
+connection.languages.diagnostics.on(
+  async (params: DocumentDiagnosticParams): Promise<DocumentDiagnosticReport> => {
+    const doc = documents.get(params.textDocument.uri);
+    if (!doc) {
+      return {
+        kind: DocumentDiagnosticReportKind.Full,
+        items: [],
+      };
+    }
+    const analysis = analyze(doc);
+    return {
+      kind: DocumentDiagnosticReportKind.Full,
+      items: computeDiagnostics(analysis.tokens),
+    };
+  },
+);
 
 // ─────────────────────────────────────────────────────
 // Completions

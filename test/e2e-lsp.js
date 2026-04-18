@@ -123,6 +123,17 @@ async function run() {
     },
   });
 
+  // 3b. Pull diagnostics (LSP 3.17) for the error document
+  const pullDiagId = id++;
+  send({
+    jsonrpc: '2.0',
+    id: pullDiagId,
+    method: 'textDocument/diagnostic',
+    params: {
+      textDocument: { uri: 'file:///test.jeml' },
+    },
+  });
+
   // 4. Request hover on "heading"
   send({
     jsonrpc: '2.0',
@@ -178,8 +189,22 @@ async function run() {
     console.log('  (no result)');
   }
 
+  console.log('\n── Pull diagnostics (textDocument/diagnostic) ──');
+  const pullResp = messages.find((m) => m.id === pullDiagId);
+  if (pullResp?.result) {
+    console.log(`  kind: ${pullResp.result.kind}`);
+    for (const diag of pullResp.result.items || []) {
+      const sev = diag.severity === 1 ? 'ERROR' : diag.severity === 2 ? 'WARN' : 'INFO';
+      console.log(`    [${sev}] ${diag.range.start.line}:${diag.range.start.character} — ${diag.message}`);
+    }
+  } else if (pullResp?.error) {
+    console.log(`  ERROR: ${pullResp.error.message} (code ${pullResp.error.code})`);
+  } else {
+    console.log('  (no result)');
+  }
+
   console.log('\n── Hover (heading tag) ──');
-  const hoverResp = messages.find((m) => m.id === 3);
+  const hoverResp = messages.find((m) => m.id === 4);
   if (hoverResp?.result) {
     const value = hoverResp.result.contents?.value || JSON.stringify(hoverResp.result.contents);
     console.log(value.split('\n').slice(0, 8).map((l) => '  ' + l).join('\n'));

@@ -2,7 +2,7 @@
   "name": "jeml-language",
   "displayName": "JEML Language Support",
   "description": "Syntax highlighting, diagnostics, completions, and hover for JEML (Jacob's Easy Markup Language)",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "jeml",
   "engines": {
     "vscode": "^1.80.0"
@@ -16,6 +16,11 @@
     "html",
     "templating"
   ],
+  "icon": "icons/jeml-logo.png",
+  "galleryBanner": {
+    "color": "#0F1D2E",
+    "theme": "dark"
+  },
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
@@ -29,7 +34,11 @@
         "extensions": [
           ".jeml"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/jeml-logo.png",
+          "dark": "./icons/jeml-logo.png"
+        }
       }
     ],
     "grammars": [
@@ -62,7 +71,7 @@
     "watch": "node esbuild.js --watch",
     "vscode:prepublish": "node esbuild.js",
     "typecheck": "tsc -p . --noEmit",
-    "package": "vsce package --allow-missing-repository"
+    "package": "vsce package --allow-missing-repository --no-dependencies"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"

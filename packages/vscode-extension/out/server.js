@@ -11193,6 +11193,20 @@ documents.onDidClose((e) => {
   cache.delete(e.document.uri);
   connection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
 });
+connection.languages.diagnostics.on(async (params) => {
+  const doc = documents.get(params.textDocument.uri);
+  if (!doc) {
+    return {
+      kind: node_1.DocumentDiagnosticReportKind.Full,
+      items: []
+    };
+  }
+  const analysis = analyze(doc);
+  return {
+    kind: node_1.DocumentDiagnosticReportKind.Full,
+    items: (0, diagnostics_1.computeDiagnostics)(analysis.tokens)
+  };
+});
 connection.onCompletion((params) => {
   const doc = documents.get(params.textDocument.uri);
   if (!doc)
