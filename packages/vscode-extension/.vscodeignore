@@ -1,0 +1,18 @@
+# Source and build configuration
+src/**
+esbuild.js
+tsconfig.json
+*.vsix
+
+# All node_modules (bundled by esbuild)
+node_modules/**
+
+# Dev artifacts
+.vscode/**
+.vscode-test/**
+**/*.ts
+!**/*.d.ts
+**/*.map
+**/*.test.js
+.gitignore
+.eslintrc*

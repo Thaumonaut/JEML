@@ -1,0 +1,82 @@
+{
+  "name": "jeml-language",
+  "displayName": "JEML Language Support",
+  "description": "Syntax highlighting, diagnostics, completions, and hover for JEML (Jacob's Easy Markup Language)",
+  "version": "0.4.0",
+  "publisher": "jeml",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "jeml",
+    "markup",
+    "html",
+    "templating"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "jeml",
+        "aliases": [
+          "JEML",
+          "jeml"
+        ],
+        "extensions": [
+          ".jeml"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jeml",
+        "scopeName": "source.jeml",
+        "path": "./syntaxes/jeml.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "JEML",
+      "properties": {
+        "jeml.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the JEML language server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "vscode:prepublish": "node esbuild.js",
+    "typecheck": "tsc -p . --noEmit",
+    "package": "vsce package --allow-missing-repository"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thaumonaut/JEML.git"
+  },
+  "license": "MIT"
+}

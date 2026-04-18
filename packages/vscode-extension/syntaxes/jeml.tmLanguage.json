@@ -1,0 +1,584 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "JEML",
+  "scopeName": "source.jeml",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#directive" },
+    { "include": "#void-element" },
+    { "include": "#inline-element" },
+    { "include": "#control-flow-close" },
+    { "include": "#control-flow" },
+    { "include": "#block-close" },
+    { "include": "#block-open" },
+    { "include": "#fenced-code" },
+    { "include": "#sibling-marker" },
+    { "include": "#content-line" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.jeml",
+          "begin": "%\\{",
+          "end": "%\\}",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.comment.jeml" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.comment.jeml" }
+          }
+        },
+        {
+          "name": "comment.line.percent.jeml",
+          "begin": "%",
+          "end": "$",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.comment.jeml" }
+          }
+        }
+      ]
+    },
+    "directive": {
+      "patterns": [
+        {
+          "name": "meta.tag.directive.close.jeml",
+          "match": "^\\s*(<<)\\s*([a-zA-Z_][a-zA-Z0-9_]*)?\\s*$",
+          "captures": {
+            "1": { "name": "keyword.control.tag.directive.jeml" },
+            "2": { "name": "entity.name.tag.jeml" }
+          }
+        },
+        {
+          "name": "meta.tag.directive.open.jeml",
+          "begin": "^\\s*(>>)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "end": "(:)\\s*$|$",
+          "beginCaptures": {
+            "1": { "name": "keyword.control.tag.directive.jeml" },
+            "2": { "name": "entity.name.tag.jeml" }
+          },
+          "endCaptures": {
+            "1": { "name": "punctuation.separator.content.jeml" }
+          },
+          "patterns": [
+            { "include": "#attributes" },
+            { "include": "#import-names" },
+            { "include": "#string" }
+          ]
+        }
+      ]
+    },
+    "inline-element": {
+      "patterns": [
+        {
+          "name": "meta.tag.inline.content.jeml",
+          "begin": "(/>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)([^:\\n]*?)(:)",
+          "end": "(</)",
+          "beginCaptures": {
+            "1": { "name": "keyword.control.tag.inline.jeml" },
+            "2": {
+              "patterns": [
+                { "include": "#tag-name-with-variants" }
+              ]
+            },
+            "3": {
+              "patterns": [
+                { "include": "#attributes" }
+              ]
+            },
+            "4": { "name": "punctuation.separator.content.jeml" }
+          },
+          "endCaptures": {
+            "1": { "name": "keyword.control.tag.inline.jeml" }
+          },
+          "patterns": [
+            { "include": "#content-line" }
+          ]
+        }
+      ]
+    },
+    "void-element": {
+      "name": "meta.tag.void.jeml",
+      "begin": "^(\\s*)(!>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)(?=\\s*(\\[|$))",
+      "end": "(?<=\\])|(?<=[a-zA-Z_0-9])\\s*$",
+      "beginCaptures": {
+        "2": { "name": "keyword.control.tag.void.jeml" },
+        "3": {
+          "patterns": [
+            { "include": "#tag-name-with-variants" }
+          ]
+        }
+      },
+      "patterns": [
+        { "include": "#attributes" }
+      ]
+    },
+    "tag-name-with-variants": {
+      "patterns": [
+        {
+          "match": "([a-zA-Z_][a-zA-Z0-9_]*)((?:\\.[a-zA-Z0-9_]+)+)",
+          "captures": {
+            "1": { "name": "entity.name.tag.jeml" },
+            "2": {
+              "patterns": [
+                {
+                  "match": "(\\.)([a-zA-Z0-9_]+)",
+                  "captures": {
+                    "1": { "name": "punctuation.definition.variant.jeml" },
+                    "2": { "name": "entity.other.attribute-name.variant.jeml" }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "match": "[a-zA-Z_][a-zA-Z0-9_]*",
+          "name": "entity.name.tag.jeml"
+        }
+      ]
+    },
+    "block-open": {
+      "patterns": [
+        {
+          "name": "meta.tag.block.same-line.jeml",
+          "begin": "^(\\s*)(>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)([^:\\n]*?)(:)(?=.*\\S.*<\\s*$)",
+          "end": "(<)\\s*$",
+          "beginCaptures": {
+            "2": { "name": "keyword.control.tag.jeml" },
+            "3": {
+              "patterns": [
+                { "include": "#tag-name-with-variants" }
+              ]
+            },
+            "4": {
+              "patterns": [
+                { "include": "#attributes" }
+              ]
+            },
+            "5": { "name": "punctuation.separator.content.jeml" }
+          },
+          "endCaptures": {
+            "1": { "name": "keyword.control.tag.jeml" }
+          },
+          "patterns": [
+            { "include": "#inline-element" },
+            { "include": "#content-line" }
+          ]
+        },
+        {
+          "name": "meta.tag.block.multi-line.open.jeml",
+          "begin": "^(\\s*)(>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)",
+          "end": "(:)\\s*$",
+          "beginCaptures": {
+            "2": { "name": "keyword.control.tag.jeml" },
+            "3": {
+              "patterns": [
+                { "include": "#tag-name-with-variants" }
+              ]
+            }
+          },
+          "endCaptures": {
+            "1": { "name": "punctuation.separator.content.jeml" }
+          },
+          "patterns": [
+            { "include": "#attributes" }
+          ]
+        }
+      ]
+    },
+    "block-close": {
+      "name": "meta.tag.close.jeml",
+      "match": "^\\s*(<)\\s*([a-zA-Z_][a-zA-Z0-9_]*)?\\s*$",
+      "captures": {
+        "1": { "name": "keyword.control.tag.close.jeml" },
+        "2": { "name": "entity.name.tag.jeml" }
+      }
+    },
+    "control-flow": {
+      "name": "meta.control-flow.jeml",
+      "begin": "^(\\s*)(~)\\s+(for|if|else\\s+if|else)\\b",
+      "end": "$",
+      "beginCaptures": {
+        "2": { "name": "keyword.control.flow.jeml" },
+        "3": { "name": "keyword.control.flow.jeml" }
+      },
+      "patterns": [
+        { "include": "#expression-content" }
+      ]
+    },
+    "control-flow-close": {
+      "name": "meta.control-flow.close.jeml",
+      "match": "^\\s*(~<)\\s*$",
+      "captures": {
+        "1": { "name": "keyword.control.flow.jeml" }
+      }
+    },
+    "sibling-marker": {
+      "name": "meta.sibling.jeml",
+      "begin": "^(\\s*)(-)(\\s+)",
+      "end": "$",
+      "beginCaptures": {
+        "2": { "name": "punctuation.definition.list.jeml" }
+      },
+      "patterns": [
+        { "include": "#attributes" },
+        { "include": "#content-line" }
+      ]
+    },
+    "fenced-code": {
+      "begin": "^(\\s*)(```)([a-zA-Z0-9_-]*)\\s*$",
+      "end": "^\\s*(```)\\s*$",
+      "beginCaptures": {
+        "2": { "name": "punctuation.definition.markdown.jeml" },
+        "3": { "name": "fenced_code.block.language.jeml" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.markdown.jeml" }
+      },
+      "name": "markup.fenced_code.block.jeml",
+      "patterns": [
+        {
+          "match": "^.*$",
+          "name": "markup.raw.block.jeml"
+        }
+      ]
+    },
+    "attributes": {
+      "name": "meta.attributes.jeml",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.attributes.begin.jeml" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.attributes.end.jeml" }
+      },
+      "patterns": [
+        { "include": "#responsive-override-explicit" },
+        { "include": "#responsive-override-implicit" },
+        {
+          "name": "meta.attribute.key-value.jeml",
+          "match": "([a-zA-Z_][a-zA-Z0-9_-]*)(=)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.jeml" },
+            "2": { "name": "punctuation.separator.key-value.jeml" }
+          }
+        },
+        {
+          "name": "entity.other.attribute-name.boolean.jeml",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_-]*)\\b(?![=\\^])"
+        },
+        { "include": "#string" },
+        { "include": "#variable-ref" },
+        { "include": "#handler-ref" },
+        { "include": "#iterator-ref" },
+        { "include": "#expression" },
+        { "include": "#css-length" },
+        { "include": "#number" },
+        { "include": "#boolean-literal" },
+        { "include": "#unquoted-identifier" },
+        {
+          "name": "keyword.operator.ternary.jeml",
+          "match": "\\?|:"
+        }
+      ]
+    },
+    "responsive-override-explicit": {
+      "name": "meta.attribute.responsive.explicit.jeml",
+      "match": "([a-zA-Z_][a-zA-Z0-9_-]*)(\\^)(\\()([0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt))(\\))(=)",
+      "captures": {
+        "1": { "name": "entity.other.attribute-name.jeml" },
+        "2": { "name": "keyword.operator.responsive.jeml" },
+        "3": { "name": "punctuation.definition.responsive.begin.jeml" },
+        "4": { "name": "constant.numeric.breakpoint.jeml" },
+        "5": { "name": "punctuation.definition.responsive.end.jeml" },
+        "6": { "name": "punctuation.separator.key-value.jeml" }
+      }
+    },
+    "responsive-override-implicit": {
+      "name": "meta.attribute.responsive.implicit.jeml",
+      "match": "(\\^)(\\()([0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt))(\\))(=)",
+      "captures": {
+        "1": { "name": "keyword.operator.responsive.jeml" },
+        "2": { "name": "punctuation.definition.responsive.begin.jeml" },
+        "3": { "name": "constant.numeric.breakpoint.jeml" },
+        "4": { "name": "punctuation.definition.responsive.end.jeml" },
+        "5": { "name": "punctuation.separator.key-value.jeml" }
+      }
+    },
+    "css-length": {
+      "name": "constant.numeric.length.jeml",
+      "match": "\\b[0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt)\\b"
+    },
+    "boolean-literal": {
+      "name": "constant.language.boolean.jeml",
+      "match": "\\b(true|false)\\b"
+    },
+    "unquoted-identifier": {
+      "name": "string.unquoted.jeml",
+      "match": "(?<==)([a-zA-Z_][a-zA-Z0-9_-]*)"
+    },
+    "import-names": {
+      "patterns": [
+        {
+          "name": "meta.import.namespace.jeml",
+          "match": "(\\*)\\s+(as)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "keyword.operator.namespace.jeml" },
+            "2": { "name": "keyword.control.import.jeml" },
+            "3": { "name": "entity.name.namespace.jeml" }
+          }
+        },
+        {
+          "name": "meta.import.destructure.jeml",
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": { "name": "punctuation.section.destructure.begin.jeml" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.section.destructure.end.jeml" }
+          },
+          "patterns": [
+            {
+              "name": "entity.name.import.jeml",
+              "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+            },
+            {
+              "name": "punctuation.separator.comma.jeml",
+              "match": ","
+            }
+          ]
+        },
+        {
+          "name": "entity.name.import.default.jeml",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.jeml",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jeml",
+              "match": "\\\\."
+            },
+            { "include": "#variable-ref" },
+            { "include": "#expression" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.jeml",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jeml",
+              "match": "\\\\."
+            },
+            { "include": "#variable-ref" },
+            { "include": "#expression" }
+          ]
+        },
+        {
+          "name": "string.quoted.backtick.jeml",
+          "begin": "`",
+          "end": "`",
+          "patterns": [
+            {
+              "name": "constant.character.escape.jeml",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "variable-ref": {
+      "name": "variable.other.readwrite.jeml",
+      "match": "(?<![a-zA-Z0-9_])(&)([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.variable.jeml" },
+        "2": { "name": "variable.other.readwrite.jeml" }
+      }
+    },
+    "handler-ref": {
+      "name": "variable.function.handler.jeml",
+      "match": "(?<![a-zA-Z0-9_])(@)([a-zA-Z_][a-zA-Z0-9_]*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.handler.jeml" },
+        "2": { "name": "entity.name.function.handler.jeml" }
+      }
+    },
+    "iterator-ref": {
+      "name": "variable.parameter.iterator.jeml",
+      "match": "(?<![a-zA-Z0-9_])(\\$)([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.iterator.jeml" },
+        "2": { "name": "variable.parameter.iterator.jeml" }
+      }
+    },
+    "expression": {
+      "name": "meta.expression.jeml",
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.expression.begin.jeml" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.section.expression.end.jeml" }
+      },
+      "patterns": [
+        { "include": "#variable-ref" },
+        { "include": "#handler-ref" },
+        { "include": "#iterator-ref" },
+        { "include": "#string" },
+        { "include": "#number" },
+        {
+          "name": "keyword.operator.jeml",
+          "match": "\\?|:|==|!=|<=|>=|<|>|\\+|-|\\*|/|%|&&|\\|\\||!"
+        }
+      ]
+    },
+    "expression-content": {
+      "patterns": [
+        { "include": "#variable-ref" },
+        { "include": "#handler-ref" },
+        { "include": "#iterator-ref" },
+        { "include": "#string" },
+        { "include": "#number" },
+        {
+          "name": "keyword.other.as.jeml",
+          "match": "\\bas\\b"
+        },
+        {
+          "name": "keyword.operator.jeml",
+          "match": "==|!=|<=|>=|<|>|\\+|-|\\*|/|%|&&|\\|\\||!|\\?|:"
+        },
+        {
+          "name": "punctuation.section.group.jeml",
+          "match": "[()]"
+        }
+      ]
+    },
+    "number": {
+      "name": "constant.numeric.jeml",
+      "match": "\\b-?[0-9]+(\\.[0-9]+)?\\b"
+    },
+    "content-line": {
+      "patterns": [
+        { "include": "#escaped-char" },
+        { "include": "#variable-ref" },
+        { "include": "#handler-ref" },
+        { "include": "#iterator-ref" },
+        { "include": "#expression" },
+        { "include": "#inline-directive" },
+        { "include": "#link-shorthand" },
+        { "include": "#markdown-bold" },
+        { "include": "#markdown-italic" },
+        { "include": "#markdown-code" }
+      ]
+    },
+    "escaped-char": {
+      "name": "constant.character.escape.jeml",
+      "match": "\\\\[&@$*_`#\\\\{}\\[\\]<>|~:!/-]"
+    },
+    "link-shorthand": {
+      "name": "markup.underline.link.jeml",
+      "patterns": [
+        {
+          "name": "meta.link.jeml",
+          "begin": "(#)(['\"])",
+          "end": "(['\"])\\s*(\\[)([^\\]]*)(\\])",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.link.jeml" },
+            "2": { "name": "punctuation.definition.string.begin.jeml" }
+          },
+          "endCaptures": {
+            "1": { "name": "punctuation.definition.string.end.jeml" },
+            "2": { "name": "punctuation.section.attributes.begin.jeml" },
+            "3": {
+              "patterns": [
+                { "include": "#attributes-inner" }
+              ]
+            },
+            "4": { "name": "punctuation.section.attributes.end.jeml" }
+          },
+          "patterns": [
+            {
+              "name": "constant.character.escape.jeml",
+              "match": "\\\\."
+            },
+            { "include": "#variable-ref" },
+            { "include": "#expression" }
+          ]
+        }
+      ]
+    },
+    "attributes-inner": {
+      "patterns": [
+        {
+          "name": "meta.attribute.key-value.jeml",
+          "match": "([a-zA-Z_][a-zA-Z0-9_]*)(=)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.jeml" },
+            "2": { "name": "punctuation.separator.key-value.jeml" }
+          }
+        },
+        { "include": "#string" },
+        { "include": "#variable-ref" },
+        { "include": "#handler-ref" },
+        { "include": "#expression" },
+        {
+          "name": "entity.other.attribute-name.boolean.jeml",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!=)"
+        }
+      ]
+    },
+    "markdown-bold": {
+      "name": "markup.bold.jeml",
+      "begin": "\\*\\*",
+      "end": "\\*\\*",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.bold.jeml" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.bold.jeml" }
+      },
+      "patterns": [
+        { "include": "#variable-ref" },
+        { "include": "#expression" }
+      ]
+    },
+    "markdown-italic": {
+      "name": "markup.italic.jeml",
+      "begin": "(?<=\\s|^|[^a-zA-Z0-9])_(?=[^_\\s])",
+      "end": "_(?=\\s|$|[^a-zA-Z0-9])",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.italic.jeml" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.italic.jeml" }
+      },
+      "patterns": [
+        { "include": "#variable-ref" },
+        { "include": "#expression" }
+      ]
+    },
+    "markdown-code": {
+      "name": "markup.raw.inline.jeml",
+      "begin": "`",
+      "end": "`",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.raw.jeml" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.raw.jeml" }
+      }
+    }
+  }
+}
