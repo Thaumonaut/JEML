@@ -36,9 +36,39 @@ The compiler emits a full document: `<!DOCTYPE html>`, `<html>`, `<head>`, `<bod
 
 ## Install the CLI (use JEML anywhere)
 
-You need **Node 18+**. Then pick one of these:
+Pick **standalone binaries** (no Node.js) or **npm** (needs Node 18+).
+
+### Standalone binaries (Linux, macOS, Windows)
+
+Each [GitHub Release](https://github.com/Thaumonaut/jeml-project/releases) includes executables built by CI when a maintainer pushes a **version tag** (for example `v0.1.0`). Checksums are in **`SHA256SUMS.txt`** on that release.
+
+| Asset | Use on |
+|--------|--------|
+| `jeml-linux-x64` | Linux x86_64 |
+| `jeml-linux-arm64` | Linux ARM64 (many cloud VMs, Raspberry Pi 4+, etc.) |
+| `jeml-darwin-arm64` | macOS Apple Silicon |
+| `jeml-darwin-x64` | macOS Intel |
+| `jeml-windows-x64.exe` | Windows 10/11 x64 |
+
+**macOS / Linux:** after download, `chmod +x jeml-<name>` (use the real filename), then `./jeml-linux-x64 --help` (adjust for your asset).
+
+**Windows:** run `jeml-windows-x64.exe` from PowerShell or Explorer, or put it on your `PATH`. Binaries are not code-signed yet; SmartScreen may prompt the first time you run the `.exe`.
+
+**Try the workflow without a release:** open **Actions → Release binaries → Run workflow**; completed runs list **artifacts** you can download (same filenames, no GitHub Release page).
+
+**Build one binary locally** (requires [Bun](https://bun.sh) and `npm ci`):
+
+```bash
+bun build --compile --target=bun-darwin-arm64 ./src/cli.ts --outfile jeml
+```
+
+Change `--target` to `bun-linux-x64`, `bun-darwin-x64`, `bun-windows-x64`, etc. ([Bun cross-compile docs](https://bun.sh/docs/bundler/executables#cross-compile-to-other-platforms)).
+
+---
 
 ### From GitHub (no npm account required)
+
+You need **Node 18+**.
 
 ```bash
 npm install -g github:Thaumonaut/jeml-project

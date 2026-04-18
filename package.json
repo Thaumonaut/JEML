@@ -1,18 +1,42 @@
 {
   "name": "jeml",
   "version": "0.1.0",
-  "private": true,
+  "description": "Jacob's Easy Markup Language — compile .jeml files to HTML (v0.4 static compiler + CLI)",
+  "keywords": [
+    "jeml",
+    "markup",
+    "compiler",
+    "html",
+    "template"
+  ],
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "bin": {
     "jeml": "dist/jeml.mjs"
   },
+  "files": [
+    "dist/jeml.mjs",
+    "README.md",
+    "scripts/prepare-cli.mjs"
+  ],
   "scripts": {
     "dev": "vite src/playground",
     "build": "vite build src/playground --outDir ../../dist/playground",
     "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jeml.mjs",
+    "prepare": "node scripts/prepare-cli.mjs",
     "prepack": "npm run build:cli",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thaumonaut/jeml-project.git"
+  },
+  "homepage": "https://github.com/Thaumonaut/jeml-project#readme",
+  "bugs": {
+    "url": "https://github.com/Thaumonaut/jeml-project/issues"
   },
   "dependencies": {
     "chokidar": "^5.0.0",
