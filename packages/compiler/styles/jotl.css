@@ -1,20 +1,20 @@
 /*
- * JEML — default stylesheet (preset: base)
+ * JOTL — default stylesheet (preset: base)
  *
  * Foundation: new.css v1.1.3 by Xz (https://newcss.net) — MIT License.
  * A classless CSS framework that styles raw HTML elements directly.
- * We've vendored it here (renamed --nc-* tokens to --jeml-* for a single
- * theming surface) so JEML output stays self-contained with zero external
+ * We've vendored it here (renamed --nc-* tokens to --jotl-* for a single
+ * theming surface) so JOTL output stays self-contained with zero external
  * requests — no font CDN, no <link>, just one inline <style> block.
  *
- * On top of new.css we add a thin JEML primitives layer for the structural
- * classes the compiler emits (.jeml-grid, .jeml-stack, .jeml-group,
- * .jeml-card) plus a few quality-of-life rules that are tailored to JEML's
+ * On top of new.css we add a thin JOTL primitives layer for the structural
+ * classes the compiler emits (.jotl-grid, .jotl-stack, .jotl-group,
+ * .jotl-card) plus a few quality-of-life rules that are tailored to JOTL's
  * codegen (e.g. horizontal spacing between sibling <button> elements so
  * casual `> button: Add < > button: Reset <` layouts look right without a
  * `> group:` wrapper).
  *
- * Override any --jeml-* token from your own stylesheet to re-skin the
+ * Override any --jotl-* token from your own stylesheet to re-skin the
  * document. Opt out entirely with `>> style [preset=none]`.
  *
  * Upstream new.css source: https://newcss.net/new.min.css
@@ -24,59 +24,59 @@
 /* ─── Tokens ──────────────────────────────────────────────────────────────── */
 
 :root {
-  --jeml-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+  --jotl-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --jeml-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monaco,
+  --jotl-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monaco,
     "Ubuntu Mono", "Liberation Mono", "Courier New", Courier, monospace;
 
-  --jeml-tx-1: #000;
-  --jeml-tx-2: #1a1a1a;
-  --jeml-bg-1: #fff;
-  --jeml-bg-2: #f6f8fa;
-  --jeml-bg-3: #e5e7eb;
-  --jeml-lk-1: #0070f3;
-  --jeml-lk-2: #0366d6;
-  --jeml-lk-tx: #fff;
-  --jeml-ac-1: #79ffe1;
-  --jeml-ac-tx: #0c4047;
+  --jotl-tx-1: #000;
+  --jotl-tx-2: #1a1a1a;
+  --jotl-bg-1: #fff;
+  --jotl-bg-2: #f6f8fa;
+  --jotl-bg-3: #e5e7eb;
+  --jotl-lk-1: #0070f3;
+  --jotl-lk-2: #0366d6;
+  --jotl-lk-tx: #fff;
+  --jotl-ac-1: #79ffe1;
+  --jotl-ac-tx: #0c4047;
 
-  /* JEML-primitive tokens (used by .jeml-grid, .jeml-stack, .jeml-card, …) */
-  --jeml-gap-sm: 0.5rem;
-  --jeml-gap-md: 1rem;
-  --jeml-gap-lg: 1.5rem;
-  --jeml-radius: 6px;
+  /* JOTL-primitive tokens (used by .jotl-grid, .jotl-stack, .jotl-card, …) */
+  --jotl-gap-sm: 0.5rem;
+  --jotl-gap-md: 1rem;
+  --jotl-gap-lg: 1.5rem;
+  --jotl-radius: 6px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --jeml-tx-1: #fff;
-    --jeml-tx-2: #eee;
-    --jeml-bg-1: #000;
-    --jeml-bg-2: #111;
-    --jeml-bg-3: #222;
-    --jeml-lk-1: #3291ff;
-    --jeml-lk-2: #0070f3;
-    --jeml-lk-tx: #fff;
-    --jeml-ac-1: #7928ca;
-    --jeml-ac-tx: #fff;
+    --jotl-tx-1: #fff;
+    --jotl-tx-2: #eee;
+    --jotl-bg-1: #000;
+    --jotl-bg-2: #111;
+    --jotl-bg-3: #222;
+    --jotl-lk-1: #3291ff;
+    --jotl-lk-2: #0070f3;
+    --jotl-lk-tx: #fff;
+    --jotl-ac-1: #7928ca;
+    --jotl-ac-tx: #fff;
   }
 }
 
 [data-theme="dark"] {
-  --jeml-tx-1: #fff;
-  --jeml-tx-2: #eee;
-  --jeml-bg-1: #000;
-  --jeml-bg-2: #111;
-  --jeml-bg-3: #222;
-  --jeml-lk-1: #3291ff;
-  --jeml-lk-2: #0070f3;
-  --jeml-lk-tx: #fff;
-  --jeml-ac-1: #7928ca;
-  --jeml-ac-tx: #fff;
+  --jotl-tx-1: #fff;
+  --jotl-tx-2: #eee;
+  --jotl-bg-1: #000;
+  --jotl-bg-2: #111;
+  --jotl-bg-3: #222;
+  --jotl-lk-1: #3291ff;
+  --jotl-lk-2: #0070f3;
+  --jotl-lk-tx: #fff;
+  --jotl-ac-1: #7928ca;
+  --jotl-ac-tx: #fff;
 }
 
-/* ─── new.css foundation (verbatim, with --nc-* → --jeml-*) ───────────────── */
+/* ─── new.css foundation (verbatim, with --nc-* → --jotl-*) ───────────────── */
 
 * {
   margin: 0;
@@ -90,7 +90,7 @@ output, p, pre, progress, ruby, section, table, textarea, ul, video {
 }
 
 html, input, select, button {
-  font-family: var(--jeml-font-sans);
+  font-family: var(--jotl-font-sans);
 }
 
 body {
@@ -101,30 +101,30 @@ body {
   overflow-x: hidden;
   word-break: break-word;
   overflow-wrap: break-word;
-  background: var(--jeml-bg-1);
-  color: var(--jeml-tx-2);
+  background: var(--jotl-bg-1);
+  color: var(--jotl-tx-2);
   font-size: 1.03rem;
   line-height: 1.5;
 }
 
 ::selection {
-  background: var(--jeml-ac-1);
-  color: var(--jeml-ac-tx);
+  background: var(--jotl-ac-1);
+  color: var(--jotl-ac-tx);
 }
 
 p { margin-bottom: 1rem; }
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 1;
-  color: var(--jeml-tx-1);
+  color: var(--jotl-tx-1);
   padding-top: 0.875rem;
 }
 
 h1, h2, h3 {
-  color: var(--jeml-tx-1);
+  color: var(--jotl-tx-1);
   padding-bottom: 2px;
   margin-bottom: 8px;
-  border-bottom: 1px solid var(--jeml-bg-2);
+  border-bottom: 1px solid var(--jotl-bg-2);
 }
 
 h4, h5, h6 { margin-bottom: 0.3rem; }
@@ -136,15 +136,15 @@ h4 { font-size: 1.25rem; }
 h5 { font-size: 1rem; }
 h6 { font-size: 0.875rem; }
 
-a            { color: var(--jeml-lk-1); }
-a:hover      { color: var(--jeml-lk-2); }
+a            { color: var(--jotl-lk-1); }
+a:hover      { color: var(--jotl-lk-2); }
 abbr:hover   { cursor: help; }
 abbr         { cursor: help; }
 
 blockquote {
   padding: 1.5rem;
-  background: var(--jeml-bg-2);
-  border-left: 5px solid var(--jeml-bg-3);
+  background: var(--jotl-bg-2);
+  border-left: 5px solid var(--jotl-bg-3);
 }
 blockquote :last-child {
   padding-bottom: 0;
@@ -152,8 +152,8 @@ blockquote :last-child {
 }
 
 header {
-  background: var(--jeml-bg-2);
-  border-bottom: 1px solid var(--jeml-bg-3);
+  background: var(--jotl-bg-2);
+  border-bottom: 1px solid var(--jotl-bg-3);
   padding: 2rem 1.5rem;
   margin: -2rem calc(0px - (50vw - 50%)) 2rem;
   padding-left: calc(50vw - 50%);
@@ -177,8 +177,8 @@ input[type="button"] {
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
-  background: var(--jeml-lk-1);
-  color: var(--jeml-lk-tx);
+  background: var(--jotl-lk-1);
+  color: var(--jotl-lk-tx);
   border: 0;
   border-radius: 4px;
   box-sizing: border-box;
@@ -199,20 +199,20 @@ button:focus, button:hover,
 input[type="submit"]:focus, input[type="submit"]:hover,
 input[type="reset"]:focus,  input[type="reset"]:hover,
 input[type="button"]:focus, input[type="button"]:hover {
-  background: var(--jeml-lk-2);
+  background: var(--jotl-lk-2);
 }
 
-code, pre, kbd, samp { font-family: var(--jeml-font-mono); }
+code, pre, kbd, samp { font-family: var(--jotl-font-mono); }
 
 code, samp, kbd, pre {
-  background: var(--jeml-bg-2);
-  border: 1px solid var(--jeml-bg-3);
+  background: var(--jotl-bg-2);
+  border: 1px solid var(--jotl-bg-3);
   border-radius: 4px;
   padding: 3px 6px;
   font-size: 0.9rem;
 }
 
-kbd { border-bottom: 3px solid var(--jeml-bg-3); }
+kbd { border-bottom: 3px solid var(--jotl-bg-3); }
 
 pre {
   padding: 1rem 1.4rem;
@@ -239,8 +239,8 @@ code pre {
 
 details {
   padding: 0.6rem 1rem;
-  background: var(--jeml-bg-2);
-  border: 1px solid var(--jeml-bg-3);
+  background: var(--jotl-bg-2);
+  border: 1px solid var(--jotl-bg-3);
   border-radius: 4px;
 }
 summary { cursor: pointer; font-weight: 700; }
@@ -253,26 +253,26 @@ dd::before { content: '→ '; }
 
 hr {
   border: 0;
-  border-bottom: 1px solid var(--jeml-bg-3);
+  border-bottom: 1px solid var(--jotl-bg-3);
   margin: 1rem auto;
 }
 
 fieldset {
   margin-top: 1rem;
   padding: 2rem;
-  border: 1px solid var(--jeml-bg-3);
+  border: 1px solid var(--jotl-bg-3);
   border-radius: 4px;
 }
 legend { padding: auto 0.5rem; }
 
 table { border-collapse: collapse; width: 100%; }
 td, th {
-  border: 1px solid var(--jeml-bg-3);
+  border: 1px solid var(--jotl-bg-3);
   text-align: left;
   padding: 0.5rem;
 }
-th { background: var(--jeml-bg-2); }
-tr:nth-child(even) { background: var(--jeml-bg-2); }
+th { background: var(--jotl-bg-2); }
+tr:nth-child(even) { background: var(--jotl-bg-2); }
 table caption { font-weight: 700; margin-bottom: 0.5rem; }
 
 textarea { max-width: 100%; }
@@ -283,28 +283,28 @@ ul ul, ol ul, ul ol, ol ol { margin-bottom: 0; }
 
 mark {
   padding: 3px 6px;
-  background: var(--jeml-ac-1);
-  color: var(--jeml-ac-tx);
+  background: var(--jotl-ac-1);
+  color: var(--jotl-ac-tx);
 }
 
 textarea, select, input {
   padding: 6px 12px;
   margin-bottom: 0.5rem;
-  background: var(--jeml-bg-2);
-  color: var(--jeml-tx-2);
-  border: 1px solid var(--jeml-bg-2);
+  background: var(--jotl-bg-2);
+  color: var(--jotl-tx-2);
+  border: 1px solid var(--jotl-bg-2);
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;
 }
 textarea:focus, select:focus, input[type]:focus {
-  border: 1px solid var(--jeml-bg-3);
+  border: 1px solid var(--jotl-bg-3);
   outline: 0;
 }
 
 img { max-width: 100%; }
 
-/* ─── JEML primitives layer (codegen-tied, not part of new.css) ──────────── */
+/* ─── JOTL primitives layer (codegen-tied, not part of new.css) ──────────── */
 
 /* Casual sibling buttons need a horizontal gap when they sit next to each
  * other inline (e.g. `> button: Add < > button: Reset <` without a wrapper). */
@@ -313,7 +313,7 @@ button + a,
 a + button,
 input + button,
 button + input {
-  margin-left: var(--jeml-gap-sm);
+  margin-left: var(--jotl-gap-sm);
 }
 
 /* Restore breathing room between paragraphs/headings and adjacent
@@ -323,39 +323,39 @@ p + a {
   margin-top: 0;
 }
 
-/* JEML grid primitive: CSS grid with author-controllable column count + gap. */
-.jeml-grid {
+/* JOTL grid primitive: CSS grid with author-controllable column count + gap. */
+.jotl-grid {
   display: grid;
-  gap: var(--jeml-gap-md);
+  gap: var(--jotl-gap-md);
   grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
 }
 
 /* Responsive grids carry a textual --gap token (e.g. "md") that CSS can't
  * resolve into a length, so we just use the default gap and let authors
  * override per-id when they need finer control. */
-.jeml-grid[data-jeml-r] { gap: var(--jeml-gap-md); }
+.jotl-grid[data-jotl-r] { gap: var(--jotl-gap-md); }
 
-/* JEML stack: vertical flex with a uniform gap. */
-.jeml-stack {
+/* JOTL stack: vertical flex with a uniform gap. */
+.jotl-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--jeml-gap-md);
+  gap: var(--jotl-gap-md);
 }
 
-/* JEML group: horizontal flex with a uniform gap, wraps on overflow. */
-.jeml-group {
+/* JOTL group: horizontal flex with a uniform gap, wraps on overflow. */
+.jotl-group {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--jeml-gap-sm);
+  gap: var(--jotl-gap-sm);
 }
 
-/* JEML card: padded surface with subtle border + rounded corners. */
-.jeml-card {
-  padding: var(--jeml-gap-lg);
-  background: var(--jeml-bg-1);
-  border: 1px solid var(--jeml-bg-3);
-  border-radius: var(--jeml-radius);
+/* JOTL card: padded surface with subtle border + rounded corners. */
+.jotl-card {
+  padding: var(--jotl-gap-lg);
+  background: var(--jotl-bg-1);
+  border: 1px solid var(--jotl-bg-3);
+  border-radius: var(--jotl-radius);
 }
 
 /* When an .icon class lands on a tag, treat it as inline media and stop

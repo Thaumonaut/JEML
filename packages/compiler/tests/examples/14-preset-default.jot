@@ -1,6 +1,6 @@
 >> meta [
   title="Preset showcase"
-  description="Every JEML primitive rendered with the default preset"
+  description="Every JOTL primitive rendered with the default preset"
 ]
 
 >> document:
@@ -8,7 +8,7 @@
   > nav.sticky:
     > brand:
       /> icon [name=logo]: </
-      JEML
+      JOTL
     <
     > links:
       - #'Tokens'[url="#tokens"]
@@ -21,8 +21,8 @@
   > section [id=tokens]:
     > heading.1: Default preset showcase <
     > text.lead:
-      A single stylesheet that styles every JEML primitive with restraint.
-      Override any **--jeml-*** token to re-skin without rewriting selectors.
+      A single stylesheet that styles every JOTL primitive with restraint.
+      Override any **--jotl-*** token to re-skin without rewriting selectors.
     <
     > text.muted: System-minimal aesthetic. No webfonts. Light + dark via prefers-color-scheme. <
   < section
@@ -112,7 +112,7 @@
   < section
 
   > footer:
-    > text.muted [align=center]: Built with JEML. Default preset · v0.4.x <
+    > text.muted [align=center]: Built with JOTL. Default preset · v0.4.x <
   < footer
 
 << document

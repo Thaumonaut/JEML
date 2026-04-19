@@ -1,4 +1,4 @@
-/* Streamline landing — pairs with tests/examples/12-full-landing.jeml */
+/* Streamline landing — pairs with tests/examples/12-full-landing.jot */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
 
 :root {
@@ -64,7 +64,7 @@ nav#main-nav.sticky {
   backdrop-filter: blur(14px);
 }
 
-.jeml-brand {
+.jotl-brand {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -136,7 +136,7 @@ button.ghost:hover {
   border-color: rgba(255, 255, 255, 0.14);
 }
 
-button.jeml-size-lg {
+button.jotl-size-lg {
   padding: 0.75rem 1.35rem;
   font-size: 1rem;
 }
@@ -173,11 +173,11 @@ section#hero .lead strong {
   color: var(--text);
 }
 
-section#hero .jeml-group {
+section#hero .jotl-group {
   margin-bottom: 1.5rem;
 }
 
-section#hero .jeml-group button + button {
+section#hero .jotl-group button + button {
   margin-left: 0.75rem;
 }
 
@@ -188,26 +188,26 @@ section#hero .muted {
 }
 
 /* ----- Layout utilities ----- */
-.jeml-group.jeml-layout-row {
+.jotl-group.jotl-layout-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
 }
 
-.jeml-gap-md {
+.jotl-gap-md {
   gap: 1rem !important;
 }
 
-.jeml-gap-lg {
+.jotl-gap-lg {
   gap: 1.75rem !important;
 }
 
-.jeml-size-sm {
+.jotl-size-sm {
   font-size: 0.9rem;
 }
 
-.jeml-align-center {
+.jotl-align-center {
   text-align: center;
 }
 
@@ -235,19 +235,19 @@ section#about p {
 }
 
 /* ----- Feature grid ----- */
-.jeml-grid {
+.jotl-grid {
   display: grid;
   grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   gap: 1.25rem;
 }
 
 @media (max-width: 900px) {
-  .jeml-grid.jeml-cols-3 {
+  .jotl-grid.jotl-cols-3 {
     grid-template-columns: 1fr;
   }
 }
 
-.jeml-card {
+.jotl-card {
   padding: 1.5rem 1.35rem;
   border-radius: var(--radius);
   background: var(--surface);
@@ -258,18 +258,18 @@ section#about p {
     border-color 0.2s ease;
 }
 
-.jeml-card:hover {
+.jotl-card:hover {
   transform: translateY(-3px);
   border-color: rgba(91, 140, 255, 0.25);
 }
 
-.jeml-card h3 {
+.jotl-card h3 {
   margin: 0.75rem 0 0.5rem;
   font-size: 1.15rem;
   font-weight: 600;
 }
 
-.jeml-card p {
+.jotl-card p {
   margin: 0;
   color: var(--muted);
   font-size: 0.98rem;
@@ -326,11 +326,11 @@ footer {
   border-top: 1px solid var(--border);
 }
 
-footer .jeml-grid {
+footer .jotl-grid {
   margin-bottom: 2rem;
 }
 
-.jeml-stack h4 {
+.jotl-stack h4 {
   margin: 0 0 1rem;
   font-size: 0.82rem;
   font-weight: 600;
@@ -339,22 +339,22 @@ footer .jeml-grid {
   color: var(--muted);
 }
 
-.jeml-stack ul {
+.jotl-stack ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.jeml-stack li {
+.jotl-stack li {
   margin-bottom: 0.55rem;
 }
 
-.jeml-stack a {
+.jotl-stack a {
   color: var(--text);
   font-size: 0.95rem;
 }
 
-.jeml-stack a:hover {
+.jotl-stack a:hover {
   color: var(--accent);
 }
 
@@ -377,7 +377,7 @@ i.icon {
   vertical-align: middle;
 }
 
-.jeml-card > .icon:first-child {
+.jotl-card > .icon:first-child {
   width: 2.75rem;
   height: 2.75rem;
   font-size: 1.25rem;

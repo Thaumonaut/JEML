@@ -1,14 +1,16 @@
 import type {
   Attribute,
   BlockNode,
+  ComponentDirective,
   ControlForNode,
   ControlIfBranch,
   ControlIfNode,
   DirectiveNode,
   DocumentDirective,
   ImportDirective,
-  JEMLDocument,
+  JotlDocument,
   Node,
+  PropsDirective,
   ScriptDirective,
   SiblingItemNode,
   StyleDirective,
@@ -26,9 +28,21 @@ type ParseContext = {
 
 const BLOCK_COMMENT_RE = /%\{[\s\S]*?%\}/g
 
-export function parse(source: string): JEMLDocument {
+export function parse(source: string): JotlDocument {
   const stripped = source.replace(BLOCK_COMMENT_RE, '')
   const ctx: ParseContext = { lines: stripped.split(/\r?\n/u), index: 0 }
+  const directives = parseDirectiveList(ctx, { until: null })
+  return { directives }
+}
+
+/**
+ * Parse a sequence of top-level directives. Used both at the file root and
+ * recursively for the body of `>> component Name:` (which contains nested
+ * directives, not Nodes). When `until` is set, parsing stops at the first
+ * `<< {until}` (or bare `<<`) line.
+ */
+function parseDirectiveList(ctx: ParseContext, options: { until: string | null }): DirectiveNode[] {
+  const { until } = options
   const directives: DirectiveNode[] = []
 
   while (ctx.index < ctx.lines.length) {
@@ -37,6 +51,17 @@ export function parse(source: string): JEMLDocument {
     if (line === '' || line.startsWith('%')) {
       ctx.index += 1
       continue
+    }
+
+    if (until !== null) {
+      const closeMatch = /^<<(?:\s+([a-zA-Z][\w-]*))?\s*$/u.exec(line)
+      if (closeMatch) {
+        const tag = closeMatch[1]
+        if (!tag || tag === until) {
+          ctx.index += 1
+          return directives
+        }
+      }
     }
 
     if (line.startsWith('>> meta')) {
@@ -59,6 +84,16 @@ export function parse(source: string): JEMLDocument {
       continue
     }
 
+    if (line.startsWith('>> props')) {
+      directives.push(parsePropsDirective(ctx))
+      continue
+    }
+
+    if (line.startsWith('>> component')) {
+      directives.push(parseComponentDirective(ctx))
+      continue
+    }
+
     if (line.startsWith('>> document')) {
       directives.push(parseDocumentDirective(ctx))
       continue
@@ -72,7 +107,7 @@ export function parse(source: string): JEMLDocument {
     ctx.index += 1
   }
 
-  return { directives }
+  return directives
 }
 
 function parseMetaDirective(ctx: ParseContext): DirectiveNode {
@@ -153,6 +188,52 @@ function parseScriptDirective(ctx: ParseContext): ScriptDirective {
   consumeOptionalDirectiveClose(ctx, 'script')
 
   return { type: 'script', attributes: parsed.attrs, body }
+}
+
+function parsePropsDirective(ctx: ParseContext): PropsDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> props'.length).trim()
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, rest)
+  ctx.index = parsed.nextIndex
+
+  const body = readOptionalBraceBody(ctx, parsed.rest) ?? ''
+  consumeOptionalDirectiveClose(ctx, 'props')
+
+  return { type: 'props', attributes: parsed.attrs, body }
+}
+
+function parseComponentDirective(ctx: ParseContext): ComponentDirective {
+  const line = (ctx.lines[ctx.index] ?? '').trim()
+  const rest = line.slice('>> component'.length).trim()
+
+  // Component name: required PascalCase identifier between the keyword and
+  // the optional `[attrs]` and trailing `:`.
+  const nameMatch = /^([A-Za-z_][\w]*)/u.exec(rest)
+  if (!nameMatch) {
+    throw new Error(`Expected component name after >> component at line ${ctx.index + 1}`)
+  }
+  const name = nameMatch[1] ?? ''
+  const afterName = rest.slice(name.length).trim()
+
+  const parsed = parseAttrsMaybeMultiline(ctx.lines, ctx.index, afterName)
+  ctx.index = parsed.nextIndex
+
+  let trailing = parsed.rest.trim()
+  if (!trailing.startsWith(':')) {
+    throw new Error(`Expected ':' after >> component ${name} at line ${ctx.index}`)
+  }
+  trailing = trailing.slice(1).trim()
+  if (trailing.length > 0) {
+    // Components don't accept inline content on the header line.
+    throw new Error(`Unexpected content after >> component ${name}: at line ${ctx.index}`)
+  }
+
+  // Recurse into the same directive parser the file root uses; nesting works
+  // for free because everything after `:` and before `<< component` is just
+  // another DirectiveNode list.
+  const directives = parseDirectiveList(ctx, { until: 'component' })
+
+  return { type: 'component', name, attributes: parsed.attrs, directives }
 }
 
 function parseDocumentDirective(ctx: ParseContext): DocumentDirective {

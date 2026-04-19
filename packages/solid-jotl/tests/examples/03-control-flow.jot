@@ -1,0 +1,20 @@
+>> component Todos:
+  >> script: {
+    let items = signal(["apples", "bread"])
+    let showAll = signal(true)
+  }
+
+  >> document:
+    ~ if (&showAll):
+      > heading.2: All items <
+    ~ else:
+      > heading.2: Hidden <
+    ~<
+
+    > list:
+      ~ for (&items as $item):
+        - &item
+      ~<
+    < list
+  << document
+<< component

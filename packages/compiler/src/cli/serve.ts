@@ -63,10 +63,10 @@ export function serve(inputPath: string, options: ServeOptions): void {
       split = splitDocument(compiled)
       version += 1
       notify()
-      console.log(`[jeml] compiled (build ${version})`)
+      console.log(`[jotl] compiled (build ${version})`)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      console.error('[jeml] compile error:', message)
+      console.error('[jotl] compile error:', message)
       split = { html: errorDocument(message), script: '', styles: '' }
       version += 1
       notify()
@@ -95,7 +95,7 @@ export function serve(inputPath: string, options: ServeOptions): void {
       return
     }
 
-    if (url.pathname === '/__jeml/runtime.js') {
+    if (url.pathname === '/__jotl/runtime.js') {
       res.writeHead(200, {
         'Content-Type': 'application/javascript; charset=utf-8',
         'Cache-Control': 'no-cache',
@@ -104,7 +104,7 @@ export function serve(inputPath: string, options: ServeOptions): void {
       return
     }
 
-    if (url.pathname === '/__jeml/styles.css') {
+    if (url.pathname === '/__jotl/styles.css') {
       res.writeHead(200, {
         'Content-Type': 'text/css; charset=utf-8',
         'Cache-Control': 'no-cache',
@@ -113,7 +113,7 @@ export function serve(inputPath: string, options: ServeOptions): void {
       return
     }
 
-    if (url.pathname === '/__jeml/livereload.js') {
+    if (url.pathname === '/__jotl/livereload.js') {
       res.writeHead(200, {
         'Content-Type': 'application/javascript; charset=utf-8',
         'Cache-Control': 'no-cache',
@@ -144,8 +144,8 @@ export function serve(inputPath: string, options: ServeOptions): void {
 
   server.listen(options.port, options.host, () => {
     const url = `http://${options.host}:${options.port}/`
-    console.log(`[jeml] watching ${abs}`)
-    console.log(`[jeml] preview: ${url}`)
+    console.log(`[jotl] watching ${abs}`)
+    console.log(`[jotl] preview: ${url}`)
     if (options.open) {
       openBrowser(url)
     }
@@ -196,15 +196,15 @@ function splitDocument(compiled: string): SplitOutput {
       styles.push(body)
       if (firstStyleReplaced) return ''
       firstStyleReplaced = true
-      return '<link rel="stylesheet" href="/__jeml/styles.css">'
+      return '<link rel="stylesheet" href="/__jotl/styles.css">'
     },
   )
 
   const injections: string[] = []
   if (script.trim().length > 0) {
-    injections.push('<script src="/__jeml/runtime.js"></script>')
+    injections.push('<script src="/__jotl/runtime.js"></script>')
   }
-  injections.push('<script src="/__jeml/livereload.js"></script>')
+  injections.push('<script src="/__jotl/livereload.js"></script>')
 
   const tag = injections.join('\n')
   if (html.includes('</body>')) {
@@ -223,7 +223,7 @@ function errorDocument(message: string): string {
     .replaceAll('>', '&gt;')
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"/><title>JEML compile error</title></head>
+<head><meta charset="utf-8"/><title>JOTL compile error</title></head>
 <body>
   <pre style="font-family: ui-monospace, monospace; padding: 1rem; white-space: pre-wrap;">${safe}</pre>
 </body>
@@ -263,7 +263,7 @@ function openBrowser(url: string): void {
         : `xdg-open ${JSON.stringify(url)}`
   exec(command, (error) => {
     if (error) {
-      console.warn('[jeml] could not open browser:', error.message)
+      console.warn('[jotl] could not open browser:', error.message)
     }
   })
 }

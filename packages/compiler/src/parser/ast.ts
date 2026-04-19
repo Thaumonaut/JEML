@@ -1,4 +1,4 @@
-export type JEMLDocument = {
+export type JotlDocument = {
   directives: DirectiveNode[]
 }
 
@@ -8,6 +8,8 @@ export type DirectiveNode =
   | ImportDirective
   | DocumentDirective
   | ScriptDirective
+  | ComponentDirective
+  | PropsDirective
 
 export type MetaDirective = {
   type: 'meta'
@@ -36,6 +38,37 @@ export type DocumentDirective = {
 
 export type ScriptDirective = {
   type: 'script'
+  attributes: Attribute[]
+  body: string
+}
+
+/**
+ * `>> component Name [attrs]:` … `<< component`
+ *
+ * A meta-wrapper whose body is a list of nested directives (>> props,
+ * >> script, >> style, >> document, …). Mirrors Vue's SFC structure.
+ *
+ * Codegen rules (see solid-jotl):
+ *  - The first declared component in a file becomes the default export.
+ *  - Authors override with `[export=default]` to pin a specific component.
+ *  - The standalone HTML codegen (jotl) treats this directive as a
+ *    no-op so existing single-document files stay unaffected.
+ */
+export type ComponentDirective = {
+  type: 'component'
+  name: string
+  attributes: Attribute[]
+  directives: DirectiveNode[]
+}
+
+/**
+ * `>> props [attrs]: { …TS interface body… }`
+ *
+ * The body is captured verbatim and emitted as a TypeScript interface body
+ * by solid-jotl. Standalone HTML mode ignores it.
+ */
+export type PropsDirective = {
+  type: 'props'
   attributes: Attribute[]
   body: string
 }

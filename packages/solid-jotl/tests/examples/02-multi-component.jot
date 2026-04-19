@@ -1,0 +1,23 @@
+>> script: {
+  let totalClicks = signal(0)
+}
+
+>> component Counter:
+  >> script: {
+    let count = signal(0)
+    function tap() {
+      count = count() + 1
+      totalClicks = totalClicks() + 1
+    }
+  }
+  >> document:
+    > text: Local: &count <
+    > button [on_press=@tap]: Tap <
+  << document
+<< component
+
+>> component Stats:
+  >> document:
+    > text: Total: &totalClicks <
+  << document
+<< component

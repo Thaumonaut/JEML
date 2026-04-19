@@ -23,7 +23,7 @@ const HELLO_OPT_IN = `>> style [preset=base]
 `
 
 const HELLO_OVERRIDE = `>> style: {
-  :root { --jeml-lk-1: #ff6f3c; }
+  :root { --jotl-lk-1: #ff6f3c; }
 }
 
 >> document:
@@ -36,21 +36,21 @@ describe('preset injection', () => {
     expect(typeof BASE_CSS).toBe('string')
     expect(BASE_CSS.length).toBeGreaterThan(1000)
     expect(BASE_CSS).toContain(':root')
-    expect(BASE_CSS).toContain('--jeml-lk-1')
-    expect(BASE_CSS).toContain('.jeml-card')
+    expect(BASE_CSS).toContain('--jotl-lk-1')
+    expect(BASE_CSS).toContain('.jotl-card')
   })
 
   it('auto-injects the preset when no opt-out is present', () => {
     const html = compile(HELLO)
-    expect(html).toContain('<style data-jeml-preset="base">')
-    expect(html).toContain('--jeml-lk-1')
-    expect(html).toContain('.jeml-grid')
+    expect(html).toContain('<style data-jotl-preset="base">')
+    expect(html).toContain('--jotl-lk-1')
+    expect(html).toContain('.jotl-grid')
   })
 
   it('honors >> style [preset=none] and skips injection', () => {
     const html = compile(HELLO_OPT_OUT)
-    expect(html).not.toContain('data-jeml-preset')
-    expect(html).not.toContain('--jeml-lk-1')
+    expect(html).not.toContain('data-jotl-preset')
+    expect(html).not.toContain('--jotl-lk-1')
     expect(html).not.toContain('<style')
   })
 
@@ -62,8 +62,8 @@ describe('preset injection', () => {
 
   it('injects the preset block before any author <style> blocks (override semantics)', () => {
     const html = compile(HELLO_OVERRIDE)
-    const presetIdx = html.indexOf('data-jeml-preset="base"')
-    const authorIdx = html.indexOf('--jeml-lk-1: #ff6f3c')
+    const presetIdx = html.indexOf('data-jotl-preset="base"')
+    const authorIdx = html.indexOf('--jotl-lk-1: #ff6f3c')
     expect(presetIdx).toBeGreaterThan(-1)
     expect(authorIdx).toBeGreaterThan(presetIdx)
   })
@@ -71,7 +71,7 @@ describe('preset injection', () => {
   it('injects the preset before <link> stylesheets so authors win the cascade', () => {
     const src = `>> style [ref="/site.css"]\n\n>> document:\n  > heading.1: Hi <\n<< document\n`
     const html = compile(src)
-    const presetIdx = html.indexOf('data-jeml-preset="base"')
+    const presetIdx = html.indexOf('data-jotl-preset="base"')
     const linkIdx = html.indexOf('href="/site.css"')
     expect(presetIdx).toBeGreaterThan(-1)
     expect(linkIdx).toBeGreaterThan(presetIdx)
@@ -80,7 +80,7 @@ describe('preset injection', () => {
   it('still emits a <link> when a single style directive combines preset=none and ref', () => {
     const src = `>> style [preset=none ref="/site.css"]\n\n>> document:\n  > heading.1: Hi <\n<< document\n`
     const html = compile(src)
-    expect(html).not.toContain('data-jeml-preset')
+    expect(html).not.toContain('data-jotl-preset')
     expect(html).toContain('<link rel="stylesheet" href="/site.css">')
   })
 
@@ -100,6 +100,6 @@ describe('preset injection', () => {
   it('a single preset=none anywhere in the document wins over preset=base', () => {
     const src = `>> style [preset=base]\n>> style [preset=none]\n\n>> document:\n  > heading.1: Hi <\n<< document\n`
     const html = compile(src)
-    expect(html).not.toContain('data-jeml-preset')
+    expect(html).not.toContain('data-jotl-preset')
   })
 })

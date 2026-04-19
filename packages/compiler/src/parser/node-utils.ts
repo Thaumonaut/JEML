@@ -1,12 +1,12 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { parse } from './parser'
-import type { JEMLDocument } from './ast'
+import type { JotlDocument } from './ast'
 
-export function parseFromFile(path: string): JEMLDocument {
+export function parseFromFile(path: string): JotlDocument {
   return parse(readFileSync(path, 'utf8'))
 }
 
 export function getGrammarSource(): string {
-  return readFileSync(join(process.cwd(), 'src/grammar/jeml.pegjs'), 'utf8')
+  return readFileSync(join(process.cwd(), 'src/grammar/jotl.pegjs'), 'utf8')
 }

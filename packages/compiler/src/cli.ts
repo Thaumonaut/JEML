@@ -5,11 +5,11 @@ import { compile } from './compiler/index'
 import { serve } from './cli/serve'
 
 function printHelp(): void {
-  console.log(`jeml — compile JEML to HTML
+  console.log(`jotl — compile JOTL to HTML
 
 Usage:
-  jeml compile <input.jeml> [options]
-  jeml serve <input.jeml> [options]   (alias: server)
+  jotl compile <input.jot> [options]
+  jotl serve <input.jot> [options]   (alias: server)
 
 compile options:
   -o, --output <file>   Write HTML to this file (default: stdout)
@@ -23,8 +23,8 @@ Global:
   -h, --help            Show this help
 
 Examples:
-  jeml compile page.jeml -o page.html
-  jeml serve page.jeml --open
+  jotl compile page.jot -o page.html
+  jotl serve page.jot --open
 `)
 }
 

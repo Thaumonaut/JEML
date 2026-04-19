@@ -1,0 +1,38 @@
+>> script: {
+  let totalClicks = signal(0)
+}
+
+>> component Counter:
+  >> props: {
+    initial?: number
+  }
+
+  >> script: {
+    let count = signal(props.initial ?? 0)
+
+    function increment() {
+      count = count + 1
+      totalClicks = totalClicks + 1
+    }
+
+    function reset() {
+      count = props.initial ?? 0
+    }
+  }
+
+  >> document:
+    > heading.1: Counter <
+    > text: Clicks: &count <
+    > group:
+      > button [on_press=@increment]: Add <
+      > button [on_press=@reset]: Reset <
+    < group
+    !> Stats
+  << document
+<< component
+
+>> component Stats:
+  >> document:
+    > text: Total clicks across all counters: &totalClicks <
+  << document
+<< component

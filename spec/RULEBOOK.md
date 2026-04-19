@@ -1,8 +1,8 @@
-# JEML v0.4 Rule Book
+# JOTL v0.4 Rule Book
 
-**Jacob's Easy Markup Language — Draft Specification**
+**JOTL — Draft Specification**
 
-This document is the working specification for JEML v0.4. It captures every design decision made so far and flags the open questions that still need resolution. Rules are numbered so they can be referenced and amended individually.
+This document is the working specification for JOTL v0.4. It captures every design decision made so far and flags the open questions that still need resolution. Rules are numbered so they can be referenced and amended individually.
 
 *Revision history:*
 - *v0.4 — directives moved to `>>`/`<<`; inline moved to `/>`/`</`; `!>` repurposed for void elements (no body, no closer); `/` and `|` self-close forms removed; `|>`/`<|` reserved for future structural additions; `.variant` syntax added for enumerated variants; component/inline unification; unquoted numeric/boolean/identifier attribute values; responsive overrides via `^(breakpoint)=value`; layout/style attribute distinction.*
@@ -33,9 +33,9 @@ This document is the working specification for JEML v0.4. It captures every desi
 
 ## 2. File Structure
 
-2.1. A JEML file is a **single-file component**. Each file defines exactly one component by default, exported as the default.
+2.1. A JOTL file is a **single-file component**. Each file defines exactly one component by default, exported as the default.
 
-2.2. A JEML file consists of one or more **directives**, each opened with `>>` and closed with `<<`.
+2.2. A JOTL file consists of one or more **directives**, each opened with `>>` and closed with `<<`.
 
 2.3. Standard directives:
 - `>> meta` — document metadata
@@ -52,7 +52,7 @@ This document is the working specification for JEML v0.4. It captures every desi
 ```
 >> meta [title="Page"]                          % attrs only, no body, no closer
 >> style [type="css" ref="main.css"]            % attrs only, no body, no closer
->> import [from="./button.jeml"]: Button        % content after attrs
+>> import [from="./button.jot"]: Button        % content after attrs
 >> style [type="css"]: { .foo {} } <<           % inline CSS body
 >> document:                                    % multi-line markup body
   ...
@@ -139,7 +139,7 @@ There is no single-line self-closing form for blocks. For truly bodyless element
 - Layout: `stack`, `row`, `grid`, `group`, `card`, `block`
 - Dynamic: `row` (in tables), `columns`
 
-4.8. Unknown tag names compile to web components (`<jeml-tagname>`) unless imported.
+4.8. Unknown tag names compile to web components (`<jotl-tagname>`) unless imported.
 
 4.9. **Examples:**
 
@@ -201,7 +201,7 @@ There is no single-line self-closing form for blocks. For truly bodyless element
 | `!> image` | `<img>` | `url` or `src` required |
 | `!> field` | `<label>` wrapping `<input>`/`<textarea>`/`<select>` | `type` attribute determines kind |
 | `!> break` | `<br>` | No attributes |
-| `!> spacer` | `<div class="jeml-spacer">` | `size` attribute |
+| `!> spacer` | `<div class="jotl-spacer">` | `size` attribute |
 | `!> divider` | `<hr>` | |
 | `!> icon` | `<i class="icon">` | Block-level; for inline use `/> icon: </` |
 
@@ -309,12 +309,12 @@ The explicit form is unambiguous; the implicit form is shorthand for cases where
 
 This compiles to:
 ```css
-.jeml-grid { --cols: 1; --gap: sm; }
+.jotl-grid { --cols: 1; --gap: sm; }
 @media (min-width: 768px) {
-  .jeml-grid { --cols: 2; --gap: md; }
+  .jotl-grid { --cols: 2; --gap: md; }
 }
 @media (min-width: 1024px) {
-  .jeml-grid { --cols: 3; }
+  .jotl-grid { --cols: 3; }
 }
 ```
 
@@ -332,7 +332,7 @@ The implicit `^(1024px)=3` still binds to `cols` because the explicit override i
 
 ### 8.7. Layout vs Style Attributes
 
-JEML distinguishes two categories of attributes with different semantics:
+JOTL distinguishes two categories of attributes with different semantics:
 
 **Layout attributes** describe *where* things are placed and how they behave at different viewport sizes. Responsive overrides are permitted on these.
 
@@ -537,7 +537,7 @@ handle_delete (id, event) { /* ... */ }
 17.1. Imports use `>> import`:
 
 ```
->> import [from="./components/button.jeml"]: Button
+>> import [from="./components/button.jot"]: Button
 >> import [from="./lib/utils"]: { format_date }
 >> import [from="@std/format"]: * as fmt
 ```
@@ -623,7 +623,7 @@ handle_delete (id, event) { /* ... */ }
 
 ## 20. Versioning
 
-20.1. This is JEML v0.4 draft. Breaking changes permitted before v1.0.
+20.1. This is JOTL v0.4 draft. Breaking changes permitted before v1.0.
 
 20.2. Post-1.0 breaking changes require v2.0 and a migration tool.
 
@@ -687,7 +687,7 @@ handle_delete (id, event) { /* ... */ }
   description="Displays a user's profile with edit controls"
 ]
 
->> import [from="./components/avatar.jeml"]: Avatar
+>> import [from="./components/avatar.jot"]: Avatar
 >> import [from="@std/format"]: { format_date }
 
 >> style [type=css]: {
@@ -764,6 +764,107 @@ handle_delete (id, event) { /* ... */ }
 }
 <<
 ```
+
+---
+
+## Appendix C: `>> component` and `>> props` (Reactive Targets)
+
+The `>> component:` and `>> props:` directives extend JOTL for compilers that
+emit reactive UI frameworks (currently `solid-jotl`). The standalone
+HTML compiler ignores them (no-op), so a `.jot` file can be authored once and
+consumed by either pipeline.
+
+### C.1 `>> component Name:`
+
+A `>> component:` directive is a **meta-wrapper**. Unlike other directives, its
+body contains *other directives* — typically a `>> props:` block, a
+`>> script:` block, an optional `>> style:` block, and a `>> document:` block.
+
+```
+>> component Counter:
+  >> props: {
+    initial: number
+  }
+
+  >> script [type=typescript]: {
+    let count = signal(props.initial)
+
+    increment () {
+      count = count() + 1
+    }
+  }
+  <<
+
+  >> document:
+    > heading.1: Counter <
+    > text: Clicks: &count <
+    > button [on_press=@increment]: Add <
+  << document
+<< component
+```
+
+C.1.1. The component name **must** be a valid identifier and is conventionally
+       PascalCase. It becomes the exported symbol from the compiled module.
+
+C.1.2. A file may contain any number of `>> component:` blocks. Each is emitted
+       as a separate exported component.
+
+C.1.3. A file with no `>> component:` blocks but a top-level `>> document:` is
+       treated by reactive compilers as a single implicit component named
+       `Default`.
+
+C.1.4. Mixing top-level `>> document:` with one or more `>> component:` blocks
+       in the same file is an error.
+
+C.1.5. A nested `>> script:` runs once per component instance. A top-level
+       `>> script:` (outside any component) runs once at module scope and is
+       shared by every component in the file.
+
+C.1.6. A nested `>> style:` is emitted in scope only for the surrounding
+       component (when the target supports scoped styles); a top-level
+       `>> style:` is treated as a global stylesheet.
+
+### C.2 `>> props:`
+
+The `>> props:` directive captures the public interface of a component using
+TypeScript-like syntax. Its body is opaque to the JOTL parser and is forwarded
+verbatim to the target compiler, which may emit `interface` declarations,
+JSDoc `@typedef`s, runtime validators, or whatever its host language requires.
+
+```
+>> props: {
+  initial?: number
+  label: string
+  on_change?: (value: number) => void
+}
+```
+
+C.2.1. `>> props:` is only meaningful inside a `>> component:` block.
+
+C.2.2. Field names are conventionally `snake_case` to match JOTL attribute
+       naming, but any valid TypeScript property name is accepted.
+
+C.2.3. Inside the surrounding `>> script:`, props are addressed as
+       `props.field_name`. Inside markup, they are addressed with the standard
+       reference sigil — `&props.field_name` — or interpolated as
+       `{props.field_name}`.
+
+### C.3 Reactivity primitives (target-specific)
+
+Reactive compilers may define a small set of script-level primitives that are
+rewritten into the host framework's reactivity API. The current set used by
+`solid-jotl` is:
+
+| You write                            | Lowered to                                  |
+|--------------------------------------|---------------------------------------------|
+| `let x = signal(initial)`            | A reactive cell; reads call `x()`           |
+| `let m = memo(() => …)`              | A derived reactive value                    |
+| `let r = resource(loader)`           | An async reactive value                     |
+| `effect(() => …)`                    | A subscription that re-runs on dep change   |
+| `x = x() + 1`                        | A setter call on the underlying signal      |
+
+These primitives are conventional, not part of the core grammar — a different
+target may pick a different surface.
 
 ---
 

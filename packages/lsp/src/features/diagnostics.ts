@@ -35,7 +35,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           : DiagnosticSeverity.Warning,
       range: toLspRange(err.range),
       message: err.message,
-      source: 'jeml',
+      source: 'jotl',
     });
   }
 
@@ -57,7 +57,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           severity: DiagnosticSeverity.Information,
           range: toLspRange(t.range),
           message: `Unknown tag '${t.text}'. If this is a user-defined component, consider using a capitalized name.`,
-          source: 'jeml',
+          source: 'jotl',
         });
       }
       continue;
@@ -71,7 +71,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           severity: DiagnosticSeverity.Error,
           range: toLspRange(v.range),
           message: `Tag '${t.text}' does not accept variants.`,
-          source: 'jeml',
+          source: 'jotl',
         });
       } else {
         const allowed = tagDef.variants.map(vd => vd.name);
@@ -80,7 +80,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(v.range),
             message: `Unknown variant '${v.text}' for tag '${t.text}'. Valid variants: ${allowed.join(', ')}.`,
-            source: 'jeml',
+            source: 'jotl',
           });
         }
       }
@@ -103,7 +103,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
         severity: DiagnosticSeverity.Warning,
         range: toLspRange(tokens[i].range),
         message: `Responsive override on style attribute '${attrName.text}' is discouraged. Layout attributes accept overrides; for theming, use a design token system instead. (Rulebook §8.7)`,
-        source: 'jeml',
+        source: 'jotl',
       });
     }
   }
@@ -200,14 +200,14 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Directive close '<<' with no matching '>>' open.",
-            source: 'jeml',
+            source: 'jotl',
           });
         } else if (popped.kind !== 'directive') {
           diagnostics.push({
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: `Directive close '<<' but the innermost open is a ${popped.kind}.`,
-            source: 'jeml',
+            source: 'jotl',
           });
           // Put it back — the '<<' may actually close something outer
           stack.push(popped);
@@ -221,7 +221,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Block close '<' with no matching '>' open.",
-            source: 'jeml',
+            source: 'jotl',
           });
         } else if (popped.kind === 'directive') {
           // Directive with body should close with '<<', not '<'. But people
@@ -231,7 +231,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Block close '<' used to close a directive — use '<<' instead.",
-            source: 'jeml',
+            source: 'jotl',
           });
           stack.push(popped);
         }
@@ -244,7 +244,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Inline close '</' with no matching '/>' open.",
-            source: 'jeml',
+            source: 'jotl',
           });
         } else if (popped.kind !== 'inline') {
           // Mismatch — put back
@@ -268,7 +268,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
       severity: DiagnosticSeverity.Error,
       range: toLspRange(entry.token.range),
       message: `Unclosed ${word}. Add '${closer}' to close it.`,
-      source: 'jeml',
+      source: 'jotl',
     });
   }
 

@@ -152,7 +152,7 @@ function rootDirectiveCompletions(): CompletionItem[] {
       label: '>> import',
       kind: CompletionItemKind.Keyword,
       detail: 'Import a component or module',
-      insertText: '>> import [from="${1:./component.jeml}"]: ${2:Name}\n$0',
+      insertText: '>> import [from="${1:./component.jot}"]: ${2:Name}\n$0',
       insertTextFormat: InsertTextFormat.Snippet,
     },
     {

@@ -1,14 +1,14 @@
-# JEML — monorepo
+# JOTL — monorepo
 
-Jacob's Easy Markup Language — a markup language for UI templating that compiles to HTML.
+JOTL — a markup language for UI templating that compiles to HTML.
 
 This repository is organized as an npm workspaces monorepo with three packages:
 
 | Package | Description |
 |---------|-------------|
-| [`@jeml/compiler`](./packages/compiler) | The JEML → HTML compiler (reference implementation, TypeScript + Peggy) |
-| [`@jeml/lsp`](./packages/lsp) | Language Server Protocol implementation for editor intelligence |
-| [`jeml-language`](./packages/vscode-extension) | VS Code extension — grammar + bundled LSP client |
+| [`@jotl/compiler`](./packages/compiler) | The JOTL → HTML compiler (reference implementation, TypeScript + Peggy) |
+| [`jotl-lsp`](./packages/lsp) | Language Server Protocol implementation for editor intelligence |
+| [`jotl-language`](./packages/vscode-extension) | VS Code extension — grammar + bundled LSP client |
 
 Documentation lives in `docs/` and the authoritative language spec in `spec/RULEBOOK.md`.
 
@@ -51,11 +51,11 @@ node test/e2e-lsp.js
 ## Documentation
 
 - [`spec/RULEBOOK.md`](./spec/RULEBOOK.md) — authoritative language specification
-- [`spec/ELEMENT_MAPPING.md`](./spec/ELEMENT_MAPPING.md) — JEML → HTML compilation table
+- [`spec/ELEMENT_MAPPING.md`](./spec/ELEMENT_MAPPING.md) — JOTL → HTML compilation table
 - [`docs/TUTORIAL.md`](./docs/TUTORIAL.md) — introductory tutorial in markdown
 - [`docs/tutorial.html`](./docs/tutorial.html) — illustrated HTML tutorial with live previews
 - [`KICKOFF.md`](./KICKOFF.md) — implementation briefing for contributors
-- [`INTEGRATION.md`](./INTEGRATION.md) — how to migrate an existing JEML fork to this monorepo
+- [`INTEGRATION.md`](./INTEGRATION.md) — how to migrate an existing JOTL fork to this monorepo
 
 ## License
 

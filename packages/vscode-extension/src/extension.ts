@@ -1,7 +1,7 @@
 /**
  * VS Code extension entry point.
  *
- * Spawns the JEML language server as a child process and establishes an LSP
+ * Spawns the JOTL language server as a child process and establishes an LSP
  * connection over stdio. The extension itself does almost nothing — all
  * language intelligence lives in the server.
  */
@@ -18,7 +18,7 @@ import {
 let client: LanguageClient | undefined;
 
 export function activate(context: ExtensionContext): void {
-  // Path to the bundled LSP server. esbuild produces this from @jeml/lsp's
+  // Path to the bundled LSP server. esbuild produces this from jotl-lsp's
   // server.js entry point, with all its dependencies inlined.
   const serverModule = context.asAbsolutePath(path.join('out', 'server.js'));
 
@@ -32,15 +32,15 @@ export function activate(context: ExtensionContext): void {
   };
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'jeml' }],
+    documentSelector: [{ scheme: 'file', language: 'jotl' }],
     synchronize: {
-      fileEvents: workspace.createFileSystemWatcher('**/*.jeml'),
+      fileEvents: workspace.createFileSystemWatcher('**/*.jot'),
     },
   };
 
   client = new LanguageClient(
-    'jemlLanguageServer',
-    'JEML Language Server',
+    'jotlLanguageServer',
+    'JOTL Language Server',
     serverOptions,
     clientOptions,
   );

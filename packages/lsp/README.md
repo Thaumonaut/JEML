@@ -1,6 +1,6 @@
-# @jeml/lsp
+# jotl-lsp
 
-The JEML Language Server — implements the Language Server Protocol (LSP) to provide editor intelligence for `.jeml` files in any editor that supports LSP.
+The JOTL Language Server — implements the Language Server Protocol (LSP) to provide editor intelligence for `.jot` files in any editor that supports LSP.
 
 ## What it provides
 
@@ -11,16 +11,16 @@ The JEML Language Server — implements the Language Server Protocol (LSP) to pr
 ## Installation
 
 ```bash
-npm install -g @jeml/lsp
+npm install -g jotl-lsp
 ```
 
-This installs the `jeml-lsp` binary, which communicates over stdio (the default transport for LSP).
+This installs the `jotl-lsp` binary, which communicates over stdio (the default transport for LSP).
 
 ## Editor setup
 
 ### VS Code / Cursor
 
-Install the [JEML Language Support extension](../vscode-extension) — it bundles this server internally. No separate installation needed.
+Install the [JOTL Language Support extension](../vscode-extension) — it bundles this server internally. No separate installation needed.
 
 ### Neovim (nvim-lspconfig)
 
@@ -28,18 +28,18 @@ Install the [JEML Language Support extension](../vscode-extension) — it bundle
 local lspconfig = require('lspconfig')
 local configs = require('lspconfig.configs')
 
-if not configs.jeml then
-  configs.jeml = {
+if not configs.jotl then
+  configs.jotl = {
     default_config = {
-      cmd = { 'jeml-lsp', '--stdio' },
-      filetypes = { 'jeml' },
+      cmd = { 'jotl-lsp', '--stdio' },
+      filetypes = { 'jotl' },
       root_dir = lspconfig.util.root_pattern('package.json', '.git'),
       settings = {},
     },
   }
 end
 
-lspconfig.jeml.setup({})
+lspconfig.jotl.setup({})
 ```
 
 ### Zed
@@ -49,14 +49,14 @@ In your `settings.json`:
 ```json
 {
   "languages": {
-    "JEML": {
-      "language_servers": ["jeml-lsp"]
+    "JOTL": {
+      "language_servers": ["jotl-lsp"]
     }
   },
   "lsp": {
-    "jeml-lsp": {
+    "jotl-lsp": {
       "binary": {
-        "path": "jeml-lsp",
+        "path": "jotl-lsp",
         "arguments": ["--stdio"]
       }
     }
@@ -70,13 +70,13 @@ In your `languages.toml`:
 
 ```toml
 [[language]]
-name = "jeml"
-scope = "source.jeml"
-file-types = ["jeml"]
-language-servers = ["jeml-lsp"]
+name = "jotl"
+scope = "source.jotl"
+file-types = ["jot"]
+language-servers = ["jotl-lsp"]
 
-[language-server.jeml-lsp]
-command = "jeml-lsp"
+[language-server.jotl-lsp]
+command = "jotl-lsp"
 args = ["--stdio"]
 ```
 
@@ -84,7 +84,7 @@ args = ["--stdio"]
 
 The server has three layers:
 
-1. **Data** (`src/data/`) — static registries of sigils, tags, and attributes. The canonical source of truth for what JEML knows about itself.
+1. **Data** (`src/data/`) — static registries of sigils, tags, and attributes. The canonical source of truth for what JOTL knows about itself.
 2. **Parser** (`src/parser/`) — a lightweight token-stream tokenizer with position indexing. This is separate from the compiler's Peggy grammar because LSP needs per-character classification for hover and cursor queries, not full AST construction.
 3. **Features** (`src/features/`) — diagnostics, completions, and hover providers. Each consumes the token stream and data registries to produce LSP responses.
 

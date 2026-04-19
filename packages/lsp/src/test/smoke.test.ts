@@ -1,4 +1,4 @@
-// Smoke test — runs the tokenizer and diagnostics on sample JEML and prints results.
+// Smoke test — runs the tokenizer and diagnostics on sample JOTL and prints results.
 // Run with: node dist/test/smoke.test.js
 
 import { tokenize } from '../parser/tokenizer';

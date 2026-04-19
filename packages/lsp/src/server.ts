@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * JEML Language Server.
+ * JOTL Language Server.
  *
  * Entry point for the LSP. Handles initialization, document lifecycle, and
  * dispatches requests to feature providers.
@@ -79,14 +79,14 @@ connection.onInitialize((_params: InitializeParams): InitializeResult => {
       },
     },
     serverInfo: {
-      name: 'jeml-lsp',
+      name: 'jotl-lsp',
       version: '0.1.0',
     },
   };
 });
 
 connection.onInitialized(() => {
-  connection.console.log('JEML language server initialized.');
+  connection.console.log('JOTL language server initialized.');
 });
 
 // ─────────────────────────────────────────────────────

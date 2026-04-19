@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning JEML — an illustrated tutorial</title>
+<title>Learning JOTL — an illustrated tutorial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -351,7 +351,7 @@
     border-radius: 50%;
   }
 
-  .triptych-header .dot-jeml { background: var(--rust-soft); }
+  .triptych-header .dot-jotl { background: var(--rust-soft); }
   .triptych-header .dot-html { background: var(--sky); filter: saturate(1.5) brightness(1.3); }
   .triptych-header .dot-render { background: var(--moss); filter: saturate(1.5) brightness(1.3); }
 
@@ -385,7 +385,7 @@
     font-size: 12px;
   }
 
-  /* Syntax highlighting tokens (for JEML pane) */
+  /* Syntax highlighting tokens (for JOTL pane) */
   .t-dir { color: #b8502a; font-weight: 600; }
   .t-block { color: #3b6b8e; font-weight: 600; }
   .t-inline { color: #4a6a3d; font-weight: 600; }
@@ -697,14 +697,14 @@
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
 <section class="hero">
   <div class="hero-mark">
-    <span class="hero-mark-logo">JEML</span>
-    <span class="hero-mark-version">v0.4.1 · tutorial edition</span>
+    <span class="hero-mark-logo">JOTL</span>
+    <span class="hero-mark-version">v0.5.0 · tutorial edition</span>
   </div>
 
   <h1>Markup, <em>rewritten</em> for humans.</h1>
 
   <p class="hero-lede">
-    A three-column tour of JEML — the source on the left, the HTML it compiles to in the middle, and what it actually looks like on the right. Everything you see rendered is real, with Tailwind doing the styling.
+    A three-column tour of JOTL — the source on the left, the HTML it compiles to in the middle, and what it actually looks like on the right. Everything you see rendered is real, with Tailwind doing the styling.
   </p>
 
   <dl class="hero-meta">
@@ -718,7 +718,7 @@
     </div>
     <div>
       <dt>Install</dt>
-      <dd><code style="font-family: var(--font-mono); font-size: 13px; background: var(--paper-deep); padding: 2px 8px; border-radius: 3px; color: var(--rust-deep);">npm i -g @jekdev/jeml</code></dd>
+      <dd><code style="font-family: var(--font-mono); font-size: 13px; background: var(--paper-deep); padding: 2px 8px; border-radius: 3px; color: var(--rust-deep);">npm i -g jotl</code></dd>
     </div>
     <div>
       <dt>Editor support</dt>
@@ -734,7 +734,7 @@
 <!-- ═══════════════════════ TABLE OF CONTENTS ═══════════════════════ -->
 <section class="toc-section">
   <div class="toc-wrap">
-    <div class="toc-label">Contents — 15 chapters</div>
+    <div class="toc-label">Contents — 16 chapters</div>
     <nav class="toc-grid">
       <a href="#s1" class="toc-item">
         <span class="toc-num">§ 01</span>
@@ -796,6 +796,10 @@
         <span class="toc-num">§ 15</span>
         <span class="toc-title">CLI &amp; tooling</span>
       </a>
+      <a href="#s16" class="toc-item">
+        <span class="toc-num">§ 16</span>
+        <span class="toc-title">Reactivity with Solid</span>
+      </a>
     </nav>
   </div>
 </section>
@@ -806,16 +810,16 @@
     <div class="section-num">§ 01</div>
     <div class="section-head-inner">
       <h2>Your <em>first</em> document</h2>
-      <p class="kicker">A JEML document is a set of directives. One of them is always the markup tree. Everything else — DOCTYPE, html, head, body — is generated for you.</p>
+      <p class="kicker">A JOTL document is a set of directives. One of them is always the markup tree. Everything else — DOCTYPE, html, head, body — is generated for you.</p>
     </div>
   </div>
 
   <div class="section-body">
-    <p>The simplest possible JEML file has one directive — <code>&gt;&gt; document</code> — containing whatever you want rendered. The compiler wraps the result in a full HTML skeleton automatically.</p>
+    <p>The simplest possible JOTL file has one directive — <code>&gt;&gt; document</code> — containing whatever you want rendered. The compiler wraps the result in a full HTML skeleton automatically.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML source</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL source</div>
         <div><span class="triptych-header-dot dot-html"></span>Generated HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -836,7 +840,7 @@
       </div>
     </div>
 
-    <p>Three things are happening here. The <code>&gt;&gt;</code> and <code>&lt;&lt;</code> pair is the <strong>directive</strong> sigil — the widest structural bracket in JEML, used for document-level sections. The <code>&gt;</code> and <code>&lt;</code> pair is the <strong>block element</strong> sigil, used for everything inside the markup tree. And the <code>.1</code> after <code>heading</code> is a <strong>variant</strong>, a suffix that tells the compiler this is level 1 rather than level 2 or 3.</p>
+    <p>Three things are happening here. The <code>&gt;&gt;</code> and <code>&lt;&lt;</code> pair is the <strong>directive</strong> sigil — the widest structural bracket in JOTL, used for document-level sections. The <code>&gt;</code> and <code>&lt;</code> pair is the <strong>block element</strong> sigil, used for everything inside the markup tree. And the <code>.1</code> after <code>heading</code> is a <strong>variant</strong>, a suffix that tells the compiler this is level 1 rather than level 2 or 3.</p>
 
     <p>The colon after each opener is mandatory — it's the moment where tag declaration ends and content begins. This consistency matters: whether a block is one line or fifty, the structure reads the same way.</p>
   </div>
@@ -848,7 +852,7 @@
     <div class="section-num">§ 02</div>
     <div class="section-head-inner">
       <h2>Three <em>flavors</em> of element</h2>
-      <p class="kicker">HTML has block, inline, and void elements, but uses the same <code>&lt;tag&gt;&lt;/tag&gt;</code> syntax for all three. JEML gives each its own sigil, so you can tell at a glance what kind of thing you're looking at.</p>
+      <p class="kicker">HTML has block, inline, and void elements, but uses the same <code>&lt;tag&gt;&lt;/tag&gt;</code> syntax for all three. JOTL gives each its own sigil, so you can tell at a glance what kind of thing you're looking at.</p>
     </div>
   </div>
 
@@ -860,7 +864,7 @@
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -891,7 +895,7 @@
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -904,7 +908,7 @@
         <div class="code-pane code-html"><span class="h-tag">&lt;p&gt;</span>This paragraph has
 <span class="h-tag">&lt;span</span> <span class="h-attr">class</span>=<span class="h-val">"highlight"</span><span class="h-tag">&gt;</span>emphasized
 <span class="h-tag">&lt;/span&gt;</span> text, plus
-<span class="h-tag">&lt;span</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-badge
+<span class="h-tag">&lt;span</span> <span class="h-attr">class</span>=<span class="h-val">"jotl-badge
 warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/span&gt;</span>.
 <span class="h-tag">&lt;/p&gt;</span></div>
         <div class="render-pane">
@@ -918,11 +922,11 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <h3>Void — no body, no closer</h3>
 
-    <p>Some elements are complete on their own — an image, a line break, a form field. In HTML these are called "void" elements. JEML gives them a third sigil, <code>!&gt;</code>, with no closer. The exclamation point visually announces: <em>this element is finished</em>.</p>
+    <p>Some elements are complete on their own — an image, a line break, a form field. In HTML these are called "void" elements. JOTL gives them a third sigil, <code>!&gt;</code>, with no closer. The exclamation point visually announces: <em>this element is finished</em>.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -955,7 +959,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <div class="callout">
       <div class="callout-label">Why three flavors?</div>
-      <p>HTML's single <code>&lt;tag&gt;</code> syntax makes you read documentation to know what kind of element you're dealing with. Is <code>&lt;progress&gt;</code> block? Inline? Void? In JEML, the sigil tells you immediately. <code>&gt; progress &lt;</code> is a block. <code>/&gt; progress &lt;/</code> is inline. <code>!&gt; progress</code> is void. No spec lookup required.</p>
+      <p>HTML's single <code>&lt;tag&gt;</code> syntax makes you read documentation to know what kind of element you're dealing with. Is <code>&lt;progress&gt;</code> block? Inline? Void? In JOTL, the sigil tells you immediately. <code>&gt; progress &lt;</code> is a block. <code>/&gt; progress &lt;/</code> is inline. <code>!&gt; progress</code> is void. No spec lookup required.</p>
     </div>
   </div>
 </section>
@@ -966,7 +970,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
     <div class="section-num">§ 03</div>
     <div class="section-head-inner">
       <h2><em>Attributes</em> in brackets</h2>
-      <p class="kicker">Attributes describe properties of an element. JEML puts them in square brackets after the tag name, and accepts unquoted values for simple cases — numbers, booleans, identifiers, and CSS lengths.</p>
+      <p class="kicker">Attributes describe properties of an element. JOTL puts them in square brackets after the tag name, and accepts unquoted values for simple cases — numbers, booleans, identifiers, and CSS lengths.</p>
     </div>
   </div>
 
@@ -978,7 +982,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -992,7 +996,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
   <span class="h-attr">type</span>=<span class="h-val">"email"</span>
   <span class="h-attr">name</span>=<span class="h-val">"work-email"</span>
 <span class="h-tag">&gt;&lt;/label&gt;</span>
-<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-grid"</span>
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jotl-grid"</span>
   <span class="h-attr">style</span>=<span class="h-val">"--cols:3;
   --gap:md"</span><span class="h-tag">&gt;</span> ...<span class="h-tag">&lt;/div&gt;</span>
 <span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/about us"</span><span class="h-tag">&gt;</span>
@@ -1018,7 +1022,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <div class="callout">
       <div class="callout-label">Important — bare identifiers are strings</div>
-      <p>In JEML, <code>style=primary</code> means the string <code>"primary"</code>, not a variable called <code>primary</code>. Variables always use the <code>&amp;</code> sigil: <code>style=&amp;theme_name</code>. This keeps the two clearly distinct — no context switching required.</p>
+      <p>In JOTL, <code>style=primary</code> means the string <code>"primary"</code>, not a variable called <code>primary</code>. Variables always use the <code>&amp;</code> sigil: <code>style=&amp;theme_name</code>. This keeps the two clearly distinct — no context switching required.</p>
     </div>
 
     <h3>Multi-line attribute lists</h3>
@@ -1027,7 +1031,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1059,16 +1063,16 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
     <div class="section-num">§ 04</div>
     <div class="section-head-inner">
       <h2>Tag <em>variants</em></h2>
-      <p class="kicker">Many HTML elements are really sub-types — h1 and h2, primary and secondary buttons, small and large cards. JEML unifies these as variants on a single tag name using a <code>.name</code> suffix.</p>
+      <p class="kicker">Many HTML elements are really sub-types — h1 and h2, primary and secondary buttons, small and large cards. JOTL unifies these as variants on a single tag name using a <code>.name</code> suffix.</p>
     </div>
   </div>
 
   <div class="section-body">
-    <p>Variants are part of a tag's identity, not metadata about it. A level-2 heading isn't "a heading with a level attribute" — it's <code>h2</code>, a distinct semantic thing that deserves its own name. Variants keep JEML tight.</p>
+    <p>Variants are part of a tag's identity, not metadata about it. A level-2 heading isn't "a heading with a level attribute" — it's <code>h2</code>, a distinct semantic thing that deserves its own name. Variants keep JOTL tight.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1095,7 +1099,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
   Learn more<span class="h-tag">&lt;/button&gt;</span>
 
 <span class="h-tag">&lt;button</span> <span class="h-attr">class</span>=<span class="h-val">"primary
-  jeml-size-lg"</span><span class="h-tag">&gt;</span>
+  jotl-size-lg"</span><span class="h-tag">&gt;</span>
   Start free trial<span class="h-tag">&lt;/button&gt;</span></div>
         <div class="render-pane">
           <div class="space-y-3">
@@ -1136,11 +1140,11 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <h3>Lists, both kinds</h3>
 
-    <p>HTML has <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code> — two different tags for bullet versus numbered. JEML uses one tag (<code>list</code>) with a variant. Switching from bullets to numbers is a one-character change, not a rewrite.</p>
+    <p>HTML has <code>&lt;ul&gt;</code> and <code>&lt;ol&gt;</code> — two different tags for bullet versus numbered. JOTL uses one tag (<code>list</code>) with a variant. Switching from bullets to numbers is a one-character change, not a rewrite.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1184,11 +1188,11 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <h3>Navigation with semantic parts</h3>
 
-    <p>A nav has a brand (logo + name) and a set of links. JEML gives each its own tag inside <code>&gt; nav &lt;</code>, so the structure is self-documenting.</p>
+    <p>A nav has a brand (logo + name) and a set of links. JOTL gives each its own tag inside <code>&gt; nav &lt;</code>, so the structure is self-documenting.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1204,7 +1208,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 <span class="t-block">&lt;</span> <span class="t-tag">nav</span></div>
         <div class="code-pane code-html"><span class="h-tag">&lt;nav</span> <span class="h-attr">id</span>=<span class="h-val">"main-nav"</span><span class="h-tag">&gt;</span>
   <span class="h-tag">&lt;div</span>
-    <span class="h-attr">class</span>=<span class="h-val">"jeml-brand"</span><span class="h-tag">&gt;</span>
+    <span class="h-attr">class</span>=<span class="h-val">"jotl-brand"</span><span class="h-tag">&gt;</span>
     Streamline<span class="h-tag">&lt;/div&gt;</span>
   <span class="h-tag">&lt;ul&gt;</span>
     <span class="h-tag">&lt;li&gt;&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/"</span><span class="h-tag">&gt;</span>
@@ -1239,7 +1243,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
     <div class="section-num">§ 06</div>
     <div class="section-head-inner">
       <h2>Tables and <em>forms</em></h2>
-      <p class="kicker">The places where HTML is most verbose. JEML cuts the line count roughly in half while making the visual structure match the data structure.</p>
+      <p class="kicker">The places where HTML is most verbose. JOTL cuts the line count roughly in half while making the visual structure match the data structure.</p>
     </div>
   </div>
 
@@ -1247,11 +1251,11 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <h3>Tables by shape</h3>
 
-    <p>A JEML table is written the way a table actually looks — columns across the top, rows beneath. The <code>-</code> sibling marker separates cells within each row, positioned to match the column order.</p>
+    <p>A JOTL table is written the way a table actually looks — columns across the top, rows beneath. The <code>-</code> sibling marker separates cells within each row, positioned to match the column order.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1316,7 +1320,7 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1387,14 +1391,14 @@ warning"</span><span class="h-tag">&gt;</span>a badge<span class="h-tag">&lt;/sp
     <div class="section-num">§ 07</div>
     <div class="section-head-inner">
       <h2>Text, <em>Markdown-style</em></h2>
-      <p class="kicker">Inside content, JEML uses Markdown's familiar sigils for bold, italic, and inline code. These are shortcuts for the full inline forms — use whichever fits the situation.</p>
+      <p class="kicker">Inside content, JOTL uses Markdown's familiar sigils for bold, italic, and inline code. These are shortcuts for the full inline forms — use whichever fits the situation.</p>
     </div>
   </div>
 
   <div class="section-body">
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1435,7 +1439,7 @@ function greet(name: string) {
 
     <div class="callout">
       <div class="callout-label">Fenced code is opaque</div>
-      <p>Content inside triple-backtick blocks is preserved exactly — no JEML parsing happens inside. You don't need to escape <code>&amp;</code>, <code>&lt;</code>, <code>*</code>, or anything else. The text is safe.</p>
+      <p>Content inside triple-backtick blocks is preserved exactly — no JOTL parsing happens inside. You don't need to escape <code>&amp;</code>, <code>&lt;</code>, <code>*</code>, or anything else. The text is safe.</p>
     </div>
   </div>
 </section>
@@ -1453,7 +1457,7 @@ function greet(name: string) {
   <div class="section-body">
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1488,7 +1492,7 @@ function greet(name: string) {
 
 <span class="h-tag">&lt;a</span> <span class="h-attr">href</span>=<span class="h-val">"/intro"</span><span class="h-tag">&gt;</span>
   <span class="h-tag">&lt;div</span>
-    <span class="h-attr">class</span>=<span class="h-val">"jeml-card elevated"</span><span class="h-tag">&gt;</span>
+    <span class="h-attr">class</span>=<span class="h-val">"jotl-card elevated"</span><span class="h-tag">&gt;</span>
     <span class="h-tag">&lt;h3&gt;</span>Introduction<span class="h-tag">&lt;/h3&gt;</span>
   <span class="h-tag">&lt;/div&gt;</span>
 <span class="h-tag">&lt;/a&gt;</span></div>
@@ -1522,11 +1526,11 @@ function greet(name: string) {
   </div>
 
   <div class="section-body">
-    <p>A complete JEML file typically has four or five directives: <code>&gt;&gt; meta</code> for the head, <code>&gt;&gt; style</code> for CSS, <code>&gt;&gt; import</code> for components, <code>&gt;&gt; document</code> for the markup tree, and <code>&gt;&gt; script</code> for reactive logic.</p>
+    <p>A complete JOTL file typically has four or five directives: <code>&gt;&gt; meta</code> for the head, <code>&gt;&gt; style</code> for CSS, <code>&gt;&gt; import</code> for components, <code>&gt;&gt; document</code> for the markup tree, and <code>&gt;&gt; script</code> for reactive logic.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1539,7 +1543,7 @@ function greet(name: string) {
 
 <span class="t-dir">&gt;&gt;</span> <span class="t-tag">style</span> <span class="t-punct">[</span><span class="t-attr-key">type</span><span class="t-punct">=</span><span class="t-ident">css</span> <span class="t-attr-key">ref</span><span class="t-punct">=</span><span class="t-string">"/style.css"</span><span class="t-punct">]</span>
 
-<span class="t-dir">&gt;&gt;</span> <span class="t-tag">import</span> <span class="t-punct">[</span><span class="t-attr-key">from</span><span class="t-punct">=</span><span class="t-string">"./button.jeml"</span><span class="t-punct">]:</span> Button
+<span class="t-dir">&gt;&gt;</span> <span class="t-tag">import</span> <span class="t-punct">[</span><span class="t-attr-key">from</span><span class="t-punct">=</span><span class="t-string">"./button.jot"</span><span class="t-punct">]:</span> Button
 
 <span class="t-dir">&gt;&gt;</span> <span class="t-tag">document</span><span class="t-punct">:</span>
   <span class="t-block">&gt;</span> <span class="t-tag">heading</span><span class="t-variant">.1</span><span class="t-punct">:</span> My page <span class="t-block">&lt;</span>
@@ -1591,14 +1595,14 @@ function greet(name: string) {
     <div class="section-num">§ 10</div>
     <div class="section-head-inner">
       <h2>Comments and <em>escaping</em></h2>
-      <p class="kicker">JEML uses <code>%</code> for comments — not <code>//</code> or <code>#</code> — and <code>\</code> to escape any sigil. Simple, consistent, unusual in a good way.</p>
+      <p class="kicker">JOTL uses <code>%</code> for comments — not <code>//</code> or <code>#</code> — and <code>\</code> to escape any sigil. Simple, consistent, unusual in a good way.</p>
     </div>
   </div>
 
   <div class="section-body">
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1642,7 +1646,7 @@ a sigil, _ escapes underscore.
     <div class="section-num">§ 11</div>
     <div class="section-head-inner">
       <h2>Responsive, <em>built in</em></h2>
-      <p class="kicker">The part that makes JEML shine. Mobile-first responsive overrides live right next to the attribute they modify — no media queries to hand-write, no Tailwind prefixes to memorize.</p>
+      <p class="kicker">The part that makes JOTL shine. Mobile-first responsive overrides live right next to the attribute they modify — no media queries to hand-write, no Tailwind prefixes to memorize.</p>
     </div>
   </div>
 
@@ -1689,7 +1693,7 @@ a sigil, _ escapes underscore.
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL</div>
         <div><span class="triptych-header-dot dot-html"></span>HTML + CSS</div>
         <div><span class="triptych-header-dot dot-render"></span>At 900px+</div>
       </div>
@@ -1703,19 +1707,19 @@ a sigil, _ escapes underscore.
   <span class="t-block">&gt;</span> <span class="t-tag">article</span><span class="t-punct">:</span> Main <span class="t-block">&lt;</span>
   <span class="t-block">&gt;</span> <span class="t-tag">aside</span><span class="t-punct">:</span> Related <span class="t-block">&lt;</span>
 <span class="t-block">&lt;</span></div>
-        <div class="code-pane code-html"><span class="h-tag">&lt;div</span> <span class="h-attr">data-jeml-r</span>=<span class="h-val">"r1"</span>
-  <span class="h-attr">class</span>=<span class="h-val">"jeml-group"</span><span class="h-tag">&gt;</span>
+        <div class="code-pane code-html"><span class="h-tag">&lt;div</span> <span class="h-attr">data-jotl-r</span>=<span class="h-val">"r1"</span>
+  <span class="h-attr">class</span>=<span class="h-val">"jotl-group"</span><span class="h-tag">&gt;</span>
   <span class="h-tag">&lt;article&gt;</span>Main<span class="h-tag">&lt;/article&gt;</span>
   <span class="h-tag">&lt;aside&gt;</span>Related<span class="h-tag">&lt;/aside&gt;</span>
 <span class="h-tag">&lt;/div&gt;</span>
 
 <span class="h-tag">&lt;style&gt;</span>
-[data-jeml-r="r1"] {
+[data-jotl-r="r1"] {
   --layout: column;
   --gap: md;
 }
 @media (min-width: 900px) {
-  [data-jeml-r="r1"] {
+  [data-jotl-r="r1"] {
     --layout: row;
     --gap: xl;
   }
@@ -1743,9 +1747,9 @@ a sigil, _ escapes underscore.
 
     <h3>Versus Tailwind</h3>
 
-    <p>Tailwind handles responsive with prefixes: <code>grid-cols-1 md:grid-cols-2 lg:grid-cols-4</code>. That's six classes for one concern. In JEML the same thing is <code>cols=1 ^(768px)=2 ^(1024px)=4</code> — still three values, but living on one attribute, and with the breakpoint values explicit in the source.</p>
+    <p>Tailwind handles responsive with prefixes: <code>grid-cols-1 md:grid-cols-2 lg:grid-cols-4</code>. That's six classes for one concern. In JOTL the same thing is <code>cols=1 ^(768px)=2 ^(1024px)=4</code> — still three values, but living on one attribute, and with the breakpoint values explicit in the source.</p>
 
-    <p>The trade-off: Tailwind's named breakpoints (sm, md, lg, xl, 2xl) are shared across a whole project, so they're consistent. JEML's pixel values are explicit in every file, which is more honest but requires discipline to keep consistent across a codebase. For a small project, JEML wins on clarity. For a large project, you'd want to factor breakpoints into a shared config — a feature planned for v0.5.</p>
+    <p>The trade-off: Tailwind's named breakpoints (sm, md, lg, xl, 2xl) are shared across a whole project, so they're consistent. JOTL's pixel values are explicit in every file, which is more honest but requires discipline to keep consistent across a codebase. For a small project, JOTL wins on clarity. For a large project, you'd want to factor breakpoints into a shared config — a feature planned for v0.5.</p>
   </div>
 </section>
 
@@ -1755,7 +1759,7 @@ a sigil, _ escapes underscore.
     <div class="section-num">§ 12</div>
     <div class="section-head-inner">
       <h2>Components &amp; <em>references</em></h2>
-      <p class="kicker">Reactive state, control flow, and the three reference sigils. Shipped in v0.4.1 — the example below compiles and runs today. Skip it if you're writing pure static pages; read on when you're ready for interactivity.</p>
+      <p class="kicker">Reactive state, control flow, and the three reference sigils. Shipped in v0.5.0 — the example below compiles and runs today. Skip it if you're writing pure static pages; read on when you're ready for interactivity.</p>
     </div>
   </div>
 
@@ -1763,11 +1767,11 @@ a sigil, _ escapes underscore.
 
     <h3>Three reference sigils</h3>
 
-    <p>JEML uses three distinct sigils for three kinds of references — values, functions, and loop iterators. The distinction makes sigil-confusion impossible: a reader always knows what kind of thing they're looking at.</p>
+    <p>JOTL uses three distinct sigils for three kinds of references — values, functions, and loop iterators. The distinction makes sigil-confusion impossible: a reader always knows what kind of thing they're looking at.</p>
 
     <div class="triptych">
       <div class="triptych-header">
-        <div><span class="triptych-header-dot dot-jeml"></span>JEML source</div>
+        <div><span class="triptych-header-dot dot-jotl"></span>JOTL source</div>
         <div><span class="triptych-header-dot dot-html"></span>After evaluation</div>
         <div><span class="triptych-header-dot dot-render"></span>Rendered</div>
       </div>
@@ -1804,10 +1808,10 @@ a sigil, _ escapes underscore.
   Add one
 <span class="h-tag">&lt;/button&gt;</span>
 
-<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-card"</span><span class="h-tag">&gt;</span>
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jotl-card"</span><span class="h-tag">&gt;</span>
   Alice
 <span class="h-tag">&lt;/div&gt;</span>
-<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jeml-card"</span><span class="h-tag">&gt;</span>
+<span class="h-tag">&lt;div</span> <span class="h-attr">class</span>=<span class="h-val">"jotl-card"</span><span class="h-tag">&gt;</span>
   Ben
 <span class="h-tag">&lt;/div&gt;</span></div>
         <div class="render-pane">
@@ -1834,7 +1838,7 @@ a sigil, _ escapes underscore.
     <div class="section-num">§ 13</div>
     <div class="section-head-inner">
       <h2>Idiomatic <em>style</em></h2>
-      <p class="kicker">A collection of small conventions that make JEML pleasant to read. Follow them when you can; violate them when you have a reason.</p>
+      <p class="kicker">A collection of small conventions that make JOTL pleasant to read. Follow them when you can; violate them when you have a reason.</p>
     </div>
   </div>
 
@@ -1867,7 +1871,7 @@ a sigil, _ escapes underscore.
   <div class="section-header">
     <div class="section-num">§ 14</div>
     <div class="section-head-inner">
-      <h2>HTML → JEML <em>cheat sheet</em></h2>
+      <h2>HTML → JOTL <em>cheat sheet</em></h2>
       <p class="kicker">A quick translation table for people moving between the two. Bookmark this page and come back when you've forgotten how something maps.</p>
     </div>
   </div>
@@ -1877,7 +1881,7 @@ a sigil, _ escapes underscore.
     <h3>Document structure</h3>
     <div class="compare">
       <div class="compare-row compare-head">
-        <div>HTML</div><div>JEML</div>
+        <div>HTML</div><div>JOTL</div>
       </div>
       <div class="compare-row"><div>&lt;!DOCTYPE html&gt;</div><div>(compiler generates)</div></div>
       <div class="compare-row"><div>&lt;html&gt; / &lt;/html&gt;</div><div>(compiler generates)</div></div>
@@ -1888,7 +1892,7 @@ a sigil, _ escapes underscore.
     <h3>Block elements</h3>
     <div class="compare">
       <div class="compare-row compare-head">
-        <div>HTML</div><div>JEML</div>
+        <div>HTML</div><div>JOTL</div>
       </div>
       <div class="compare-row"><div>&lt;h1&gt;Text&lt;/h1&gt;</div><div>&gt; heading.1: Text &lt;</div></div>
       <div class="compare-row"><div>&lt;h2&gt;Text&lt;/h2&gt;</div><div>&gt; heading.2: Text &lt;</div></div>
@@ -1904,7 +1908,7 @@ a sigil, _ escapes underscore.
     <h3>Inline elements</h3>
     <div class="compare">
       <div class="compare-row compare-head">
-        <div>HTML</div><div>JEML</div>
+        <div>HTML</div><div>JOTL</div>
       </div>
       <div class="compare-row"><div>&lt;strong&gt;bold&lt;/strong&gt;</div><div>**bold** or /&gt; strong: bold &lt;/</div></div>
       <div class="compare-row"><div>&lt;em&gt;italic&lt;/em&gt;</div><div>_italic_ or /&gt; em: italic &lt;/</div></div>
@@ -1916,7 +1920,7 @@ a sigil, _ escapes underscore.
     <h3>Void elements</h3>
     <div class="compare">
       <div class="compare-row compare-head">
-        <div>HTML</div><div>JEML</div>
+        <div>HTML</div><div>JOTL</div>
       </div>
       <div class="compare-row"><div>&lt;img src="/x.png" alt="y"&gt;</div><div>!&gt; image [src="/x.png" alt=y]</div></div>
       <div class="compare-row"><div>&lt;br&gt;</div><div>!&gt; break</div></div>
@@ -1924,10 +1928,10 @@ a sigil, _ escapes underscore.
       <div class="compare-row"><div>&lt;input type="email"&gt;</div><div>!&gt; field [type=email]</div></div>
     </div>
 
-    <h3>Responsive — unique to JEML</h3>
+    <h3>Responsive — unique to JOTL</h3>
     <div class="compare">
       <div class="compare-row compare-head">
-        <div>Tailwind</div><div>JEML</div>
+        <div>Tailwind</div><div>JOTL</div>
       </div>
       <div class="compare-row"><div>class="grid-cols-1 md:grid-cols-2 lg:grid-cols-4"</div><div>cols=1 ^(768px)=2 ^(1024px)=4</div></div>
       <div class="compare-row"><div>class="flex-col md:flex-row"</div><div>layout=column ^(768px)=row</div></div>
@@ -1942,7 +1946,7 @@ a sigil, _ escapes underscore.
     <div class="section-num">§ 15</div>
     <div class="section-head-inner">
       <h2>CLI &amp; <em>tooling</em></h2>
-      <p class="kicker">JEML ships as a small command-line compiler, a development server with live reload, and a syntax-highlighting extension for VS Code and Cursor. New in v0.4.1.</p>
+      <p class="kicker">JOTL ships as a small command-line compiler, a development server with live reload, and a syntax-highlighting extension for VS Code and Cursor.</p>
     </div>
   </div>
 
@@ -1950,46 +1954,46 @@ a sigil, _ escapes underscore.
 
     <h3>Install the compiler</h3>
 
-    <p>The compiler is published to npm as <code>@jekdev/jeml</code>. Install it globally to get the <code>jeml</code> command on your PATH.</p>
+    <p>The compiler is published to npm as <code>jotl</code>. Install it globally to get the <code>jotl</code> command on your PATH.</p>
 
     <div class="compare">
       <div class="compare-row compare-head">
         <div>Goal</div><div>Command</div>
       </div>
-      <div class="compare-row"><div>Install globally</div><div>npm i -g @jekdev/jeml</div></div>
-      <div class="compare-row"><div>Compile one file</div><div>jeml compile page.jeml -o page.html</div></div>
-      <div class="compare-row"><div>Watch a folder</div><div>jeml watch src/ -o build/</div></div>
-      <div class="compare-row"><div>Local dev server</div><div>jeml serve page.jeml --port 4321</div></div>
-      <div class="compare-row"><div>Print version</div><div>jeml --version</div></div>
+      <div class="compare-row"><div>Install globally</div><div>npm i -g jotl</div></div>
+      <div class="compare-row"><div>Compile one file</div><div>jotl compile page.jot -o page.html</div></div>
+      <div class="compare-row"><div>Watch a folder</div><div>jotl watch src/ -o build/</div></div>
+      <div class="compare-row"><div>Local dev server</div><div>jotl serve page.jot --port 4321</div></div>
+      <div class="compare-row"><div>Print version</div><div>jotl --version</div></div>
     </div>
 
-    <h3>Develop with <code>jeml serve</code></h3>
+    <h3>Develop with <code>jotl serve</code></h3>
 
-    <p>Pointing the dev server at a JEML file (or a folder with an <em>index.jeml</em>) compiles on every save, splits the output into pure HTML plus linked <em>runtime.js</em> and <em>styles.css</em>, and injects a live-reload script that calls <code>location.reload()</code> the moment the file changes. No iframes, no build tooling, no framework — just a real browser viewing real HTML.</p>
+    <p>Pointing the dev server at a JOTL file (or a folder with an <em>index.jot</em>) compiles on every save, splits the output into pure HTML plus linked <em>runtime.js</em> and <em>styles.css</em>, and injects a live-reload script that calls <code>location.reload()</code> the moment the file changes. No iframes, no build tooling, no framework — just a real browser viewing real HTML.</p>
 
     <div class="callout">
       <div class="callout-label">What gets served at <code>/</code></div>
-      <p>The compiled HTML body, with two <code>&lt;script&gt;</code> tags appended: one pointing at <code>/__jeml/runtime.js</code> (the reactive runtime plus your transpiled <code>&gt;&gt; script</code> body) and one at <code>/__jeml/livereload.js</code> (a 12-line EventSource client). Inline <code>&gt;&gt; style</code> bodies are extracted to <code>/__jeml/styles.css</code>. View source and you'll see plain HTML — exactly what would ship to production.</p>
+      <p>The compiled HTML body, with two <code>&lt;script&gt;</code> tags appended: one pointing at <code>/__jotl/runtime.js</code> (the reactive runtime plus your transpiled <code>&gt;&gt; script</code> body) and one at <code>/__jotl/livereload.js</code> (a 12-line EventSource client). Inline <code>&gt;&gt; style</code> bodies are extracted to <code>/__jotl/styles.css</code>. View source and you'll see plain HTML — exactly what would ship to production.</p>
     </div>
 
     <h3>Editor support</h3>
 
-    <p>The <em>jeml-language</em> extension works in both VS Code and Cursor. Syntax highlighting handles every directive, sigil, and control-flow keyword — including embedded TypeScript, JavaScript, and CSS inside <code>&gt;&gt; script</code> and <code>&gt;&gt; style</code> blocks. The Language Server provides diagnostics, hover tooltips, and completions.</p>
+    <p>The <em>jotl-language</em> extension works in both VS Code and Cursor. Syntax highlighting handles every directive, sigil, and control-flow keyword — including embedded TypeScript, JavaScript, and CSS inside <code>&gt;&gt; script</code> and <code>&gt;&gt; style</code> blocks. The Language Server provides diagnostics, hover tooltips, and completions.</p>
 
     <div class="compare">
       <div class="compare-row compare-head">
         <div>Editor</div><div>Install command</div>
       </div>
-      <div class="compare-row"><div>VS Code</div><div>code --install-extension jeml.jeml-language</div></div>
-      <div class="compare-row"><div>Cursor</div><div>cursor --install-extension jeml.jeml-language</div></div>
+      <div class="compare-row"><div>VS Code</div><div>code --install-extension jotl.jotl-language</div></div>
+      <div class="compare-row"><div>Cursor</div><div>cursor --install-extension jotl.jotl-language</div></div>
       <div class="compare-row"><div>Either, manually</div><div>open the .vsix file from the marketplace</div></div>
     </div>
 
     <h3>Default styles</h3>
 
-    <p>Every JEML document is rendered with a small <em>preset stylesheet</em> baked in by the compiler — roughly 9&nbsp;KB inlined, no external requests. The foundation is <a href="https://newcss.net/">new.css</a> by Xz (MIT-licensed, vendored), which classlessly styles raw HTML elements with a centered 750&nbsp;px content rail. On top of that we layer a small set of JEML primitives that match the structural classes the compiler emits — <code>.jeml-grid</code>, <code>.jeml-stack</code>, <code>.jeml-group</code>, <code>.jeml-card</code> — plus a handful of quality-of-life rules (e.g. horizontal spacing between sibling <code>&lt;button&gt;</code> elements). Light and dark mode come for free via <code>prefers-color-scheme</code>.</p>
+    <p>Every JOTL document is rendered with a small <em>preset stylesheet</em> baked in by the compiler — roughly 9&nbsp;KB inlined, no external requests. The foundation is <a href="https://newcss.net/">new.css</a> by Xz (MIT-licensed, vendored), which classlessly styles raw HTML elements with a centered 750&nbsp;px content rail. On top of that we layer a small set of JOTL primitives that match the structural classes the compiler emits — <code>.jotl-grid</code>, <code>.jotl-stack</code>, <code>.jotl-group</code>, <code>.jotl-card</code> — plus a handful of quality-of-life rules (e.g. horizontal spacing between sibling <code>&lt;button&gt;</code> elements). Light and dark mode come for free via <code>prefers-color-scheme</code>.</p>
 
-    <p>Re-skinning is one variable away. Every visual decision routes through a CSS custom property under the <code>--jeml-*</code> namespace (<code>--jeml-bg-1</code>, <code>--jeml-tx-1</code>, <code>--jeml-lk-1</code>, <code>--jeml-radius</code>, …), so overriding a single token in your own stylesheet re-paints the document without touching selectors.</p>
+    <p>Re-skinning is one variable away. Every visual decision routes through a CSS custom property under the <code>--jotl-*</code> namespace (<code>--jotl-bg-1</code>, <code>--jotl-tx-1</code>, <code>--jotl-lk-1</code>, <code>--jotl-radius</code>, …), so overriding a single token in your own stylesheet re-paints the document without touching selectors.</p>
 
     <div class="compare">
       <div class="compare-row compare-head">
@@ -1998,34 +2002,136 @@ a sigil, _ escapes underscore.
       <div class="compare-row"><div>(do nothing)</div><div>The preset auto-injects as the first <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code></div></div>
       <div class="compare-row"><div><code>&gt;&gt; style [preset=base]</code></div><div>Same as above, just signposted in source</div></div>
       <div class="compare-row"><div><code>&gt;&gt; style [preset=none]</code></div><div>Opt out — no preset CSS is injected</div></div>
-      <div class="compare-row"><div><code>&gt;&gt; style [ref="/jeml.css"]</code></div><div>Link your own copy (a fork from <em>node_modules/@jekdev/jeml/styles/jeml.css</em>)</div></div>
+      <div class="compare-row"><div><code>&gt;&gt; style [ref="/jotl.css"]</code></div><div>Link your own copy (a fork from <em>node_modules/jotl/styles/jotl.css</em>)</div></div>
     </div>
 
-    <p>The cascade is engineered so authors always win: the preset is emitted first, then any <code>&gt;&gt; style [ref=...]</code> links, then inline <code>&gt;&gt; style: { ... }</code> bodies, then the compiler's responsive scope rules. Override <code>--jeml-lk-1</code>, <code>--jeml-bg-1</code>, <code>--jeml-radius</code>, or any of the other tokens documented in <em>packages/compiler/styles/README.md</em>.</p>
+    <p>The cascade is engineered so authors always win: the preset is emitted first, then any <code>&gt;&gt; style [ref=...]</code> links, then inline <code>&gt;&gt; style: { ... }</code> bodies, then the compiler's responsive scope rules. Override <code>--jotl-lk-1</code>, <code>--jotl-bg-1</code>, <code>--jotl-radius</code>, or any of the other tokens documented in <em>packages/compiler/styles/README.md</em>.</p>
 
     <div class="callout">
       <div class="callout-label">Forking the preset</div>
-      <p>If you outgrow the defaults, copy <em>styles/jeml.css</em> from the npm package, opt out with <code>&gt;&gt; style [preset=none]</code>, and link your fork. There's nothing magical about the preset — it's plain CSS targeting the same selectors the compiler emits.</p>
+      <p>If you outgrow the defaults, copy <em>styles/jotl.css</em> from the npm package, opt out with <code>&gt;&gt; style [preset=none]</code>, and link your fork. There's nothing magical about the preset — it's plain CSS targeting the same selectors the compiler emits.</p>
     </div>
 
     <h3>Project layout</h3>
 
-    <p>JEML lives as a small monorepo. The compiler, the language server, and the editor extension each have their own <code>package.json</code> and can be released independently.</p>
+    <p>JOTL lives as a small monorepo. The compiler, the language server, and the editor extension each have their own <code>package.json</code> and can be released independently.</p>
 
     <div class="compare">
       <div class="compare-row compare-head">
         <div>Path</div><div>What's inside</div>
       </div>
-      <div class="compare-row"><div>packages/compiler/</div><div>@jekdev/jeml — parser, codegen, CLI</div></div>
-      <div class="compare-row"><div>packages/lsp/</div><div>@jeml/lsp — diagnostics &amp; completions</div></div>
-      <div class="compare-row"><div>packages/vscode-extension/</div><div>jeml-language — TextMate grammar &amp; client</div></div>
+      <div class="compare-row"><div>packages/compiler/</div><div>jotl — parser, codegen, CLI</div></div>
+      <div class="compare-row"><div>packages/lsp/</div><div>jotl-lsp — diagnostics &amp; completions</div></div>
+      <div class="compare-row"><div>packages/vscode-extension/</div><div>jotl-language — TextMate grammar &amp; client</div></div>
       <div class="compare-row"><div>packages/compiler/tests/examples/</div><div>Source fixtures, one per feature</div></div>
       <div class="compare-row"><div>packages/compiler/tests/expected/</div><div>Golden HTML snapshots used in CI</div></div>
     </div>
 
     <div class="callout">
       <div class="callout-label">Where to start</div>
-      <p>If you've never run JEML locally before — install the package globally, save any of the <code>&gt;</code>-block examples from §1–§7 of this tutorial as <em>hello.jeml</em>, then run <code>jeml serve hello.jeml</code> and open the URL. Edit the file, save, and watch the page reload.</p>
+      <p>If you've never run JOTL locally before — install the package globally, save any of the <code>&gt;</code>-block examples from §1–§7 of this tutorial as <em>hello.jot</em>, then run <code>jotl serve hello.jot</code> and open the URL. Edit the file, save, and watch the page reload.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ SECTION 16 ═══════════════════════ -->
+<section class="section" id="s16">
+  <div class="section-header">
+    <div class="section-num">§ 16</div>
+    <div class="section-head-inner">
+      <h2>Reactivity with <em>Solid</em></h2>
+      <p class="kicker">A second compiler — <code>solid-jotl</code> — emits SolidJS components from the same JOTL grammar. Use it when you want fine-grained reactivity, components, signals, and a full SPA build pipeline. New in v0.5.0.</p>
+    </div>
+  </div>
+
+  <div class="section-body">
+
+    <h3>What it is</h3>
+
+    <p>The standalone <code>jotl</code> compiler emits static HTML and a tiny runtime — perfect for content sites and progressively enhanced pages. The sibling package <code>solid-jotl</code> takes the same <em>.jot</em> source and compiles it to <a href="https://www.solidjs.com/">SolidJS</a> components instead, so you get reactive signals, derived memos, effects, and idiomatic JSX control flow — written entirely in JOTL's whitespace-sigil syntax.</p>
+
+    <p>Authoring stays the same: <code>&gt; heading.1: Counter &lt;</code>, <code>&amp;count</code>, <code>@increment</code>, <code>~ if</code>, <code>~ for</code>. What changes is the output. <code>solid-jotl</code> emits a Solid component (TSX/JSX) per <code>&gt;&gt; component:</code> block, plain JavaScript at module scope for top-level <code>&gt;&gt; script:</code>, and global stylesheet injection for any <code>&gt;&gt; style:</code> body.</p>
+
+    <h3>The component-mode file</h3>
+
+    <p>The new <code>&gt;&gt; component Name:</code> directive is a meta-wrapper — it can contain its own <code>&gt;&gt; props:</code>, <code>&gt;&gt; script:</code>, <code>&gt;&gt; style:</code>, and <code>&gt;&gt; document:</code> blocks. One <em>.jot</em> file may declare any number of components, each emitted as an exported function.</p>
+
+<div class="code-pane">&gt;&gt; component Counter:
+  &gt;&gt; props: {
+    initial: number
+  }
+
+  &gt;&gt; script [type=typescript]: {
+    import { signal } from "solid-js"
+
+    let count = signal(props.initial)
+
+    increment () {
+      count = count() + 1
+    }
+
+    reset () {
+      count = 0
+    }
+  }
+  &lt;&lt;
+
+  &gt;&gt; document:
+    &gt; heading.1: Counter &lt;
+    &gt; text: Clicks: &amp;count &lt;
+    &gt; button [on_press=@increment]: Add &lt;
+    &gt; button [on_press=@reset]: Reset &lt;
+  &lt;&lt; document
+&lt;&lt; component</div>
+
+    <p>A file with no <code>&gt;&gt; component:</code> blocks but a top-level <code>&gt;&gt; document:</code> still works — the compiler emits a single exported component called <code>Default</code>. This makes the simplest case (one component per file) require zero ceremony.</p>
+
+    <h3>Explicit reactivity</h3>
+
+    <p>JOTL-Solid is <em>explicit</em> by design: the variables you want to be reactive are declared with the <code>signal()</code>, <code>memo()</code>, or <code>resource()</code> helpers, and effects use <code>effect(...)</code>. The compiler rewrites those calls into Solid's primitives, hoists ES <code>import</code>s out of the script body, and turns assignments to signals into setter calls.</p>
+
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>You write</div><div>Compiler emits</div>
+      </div>
+      <div class="compare-row"><div>let count = signal(0)</div><div>const [count, setCount] = createSignal(0)</div></div>
+      <div class="compare-row"><div>let total = memo(() =&gt; a() + b())</div><div>const total = createMemo(() =&gt; a() + b())</div></div>
+      <div class="compare-row"><div>let user = resource(fetchUser)</div><div>const [user] = createResource(fetchUser)</div></div>
+      <div class="compare-row"><div>effect(() =&gt; console.log(count()))</div><div>createEffect(() =&gt; console.log(count()))</div></div>
+      <div class="compare-row"><div>count = count() + 1</div><div>setCount(count() + 1)</div></div>
+    </div>
+
+    <p>Reads call the signal — <code>count()</code> in expressions, exactly the Solid convention. Writes look like ordinary assignments because the compiler rewrites them. Inside JOTL markup, <code>&amp;count</code> automatically calls the signal too, so the same reference works in both places.</p>
+
+    <h3>Control flow lowers to Solid components</h3>
+
+    <p>JOTL's <code>~ if</code> / <code>~ elif</code> / <code>~ else</code> and <code>~ for</code> become Solid's <code>&lt;Show&gt;</code>, <code>&lt;Switch&gt;</code> / <code>&lt;Match&gt;</code>, and <code>&lt;For&gt;</code>. This means you get fine-grained DOM updates without a virtual DOM diff — a single signal change updates only the affected node.</p>
+
+    <h3>Use it in Vite</h3>
+
+    <p>The package ships a Vite plugin under <code>solid-jotl/vite</code>. Drop it next to <code>vite-plugin-solid</code> and import <em>.jot</em> files like any other module.</p>
+
+<div class="code-pane">// vite.config.ts
+import { defineConfig } from 'vite'
+import solid from 'vite-plugin-solid'
+import solidJotl from 'solid-jotl/vite'
+
+export default defineConfig({
+  plugins: [
+    solidJotl(),
+    solid({ extensions: ['.jot'] }),
+  ],
+})</div>
+
+<div class="code-pane">// src/main.tsx
+import { render } from 'solid-js/web'
+import { Counter } from './Counter.jot'
+
+render(() =&gt; &lt;Counter initial={0} /&gt;, document.getElementById('root')!)</div>
+
+    <div class="callout">
+      <div class="callout-label">When to pick which compiler</div>
+      <p>Use <code>jotl</code> for documents, marketing sites, and anything you'd otherwise write in static HTML or a small static-site generator. Use <code>solid-jotl</code> when the page is an application — interactive forms, real-time data, multi-component UIs that need reactivity.</p>
     </div>
   </div>
 </section>
@@ -2033,14 +2139,14 @@ a sigil, _ escapes underscore.
 <!-- ═══════════════════════ COLOPHON ═══════════════════════ -->
 <section class="colophon">
   <div class="colophon-inner">
-    <div class="colophon-mark">JEML</div>
+    <div class="colophon-mark">JOTL</div>
     <p>Made for people who write markup by hand, prefer short sigils to long tags, and want their responsive design to live next to the layout attribute it modifies.</p>
-    <p>This tutorial covers JEML v0.4.1. The full specification is in <em>spec/RULEBOOK.md</em>; the compiler reference is in <em>spec/ELEMENT_MAPPING.md</em>; the example corpus lives in <em>packages/compiler/tests/examples/</em> and <em>packages/compiler/tests/expected/</em>. The compiler is published as <em>@jekdev/jeml</em> on npm; the editor extension as <em>jeml-language</em> on the VS Code marketplace.</p>
+    <p>This tutorial covers JOTL v0.5.0. The full specification is in <em>spec/RULEBOOK.md</em>; the compiler reference is in <em>spec/ELEMENT_MAPPING.md</em>; the example corpus lives in <em>packages/compiler/tests/examples/</em> and <em>packages/compiler/tests/expected/</em>. The compiler is published as <em>jotl</em> on npm; the editor extension as <em>jotl-language</em> on the VS Code marketplace.</p>
     <div class="colophon-meta">
       <span><strong>Typography</strong> Fraunces & Inter Tight</span>
       <span><strong>Code</strong> JetBrains Mono</span>
       <span><strong>Styling</strong> Tailwind CSS v3</span>
-      <span><strong>Version</strong> tutorial 0.4.1</span>
+      <span><strong>Version</strong> tutorial 0.5.0</span>
     </div>
   </div>
 </section>

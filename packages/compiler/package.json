@@ -1,9 +1,9 @@
 {
-  "name": "@jekdev/jeml",
-  "version": "0.4.0",
-  "description": "Jacob's Easy Markup Language — compile .jeml files to HTML (v0.4 static compiler + CLI)",
+  "name": "jotl",
+  "version": "0.5.0",
+  "description": "JOTL — compile .jot files to HTML (static compiler + CLI)",
   "keywords": [
-    "jeml",
+    "jotl",
     "markup",
     "compiler",
     "html",
@@ -13,11 +13,21 @@
   "engines": {
     "node": ">=18"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
-    "jeml": "dist/jeml.mjs"
+    "jotl": "dist/jotl.mjs"
   },
   "files": [
-    "dist/jeml.mjs",
+    "dist/",
     "styles/",
     "README.md",
     "scripts/prepare-cli.mjs",
@@ -25,25 +35,26 @@
   ],
   "scripts": {
     "dev": "vite src/playground",
-    "build": "npm run build:cli",
+    "build": "npm run build:lib && npm run build:cli",
+    "build:lib": "esbuild src/index.ts --bundle --platform=neutral --format=esm --outfile=dist/index.js --external:chokidar --external:peggy && tsc -p tsconfig.build.json",
     "build:styles": "node scripts/bundle-styles.mjs",
     "prebuild:cli": "npm run build:styles",
-    "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jeml.mjs",
+    "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jotl.mjs",
     "build:playground": "vite build src/playground --outDir ../../dist/playground",
     "prepare": "node scripts/prepare-cli.mjs",
-    "prepack": "npm run build:styles && npm run build:cli",
-    "pretest": "npm run build:styles",
+    "prepack": "npm run build:styles && npm run build:lib && npm run build:cli",
+    "pretest": "npm run build:styles && npm run build:lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Thaumonaut/jeml-project.git",
+    "url": "git+https://github.com/Thaumonaut/jotl-project.git",
     "directory": "packages/compiler"
   },
-  "homepage": "https://github.com/Thaumonaut/jeml-project#readme",
+  "homepage": "https://github.com/Thaumonaut/jotl-project#readme",
   "bugs": {
-    "url": "https://github.com/Thaumonaut/jeml-project/issues"
+    "url": "https://github.com/Thaumonaut/jotl-project/issues"
   },
   "publishConfig": {
     "access": "public"

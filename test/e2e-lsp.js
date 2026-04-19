@@ -85,8 +85,8 @@ async function run() {
     method: 'textDocument/didOpen',
     params: {
       textDocument: {
-        uri: 'file:///test.jeml',
-        languageId: 'jeml',
+        uri: 'file:///test.jot',
+        languageId: 'jotl',
         version: 1,
         text: SAMPLE,
       },
@@ -103,8 +103,8 @@ async function run() {
     method: 'textDocument/didOpen',
     params: {
       textDocument: {
-        uri: 'file:///completion.jeml',
-        languageId: 'jeml',
+        uri: 'file:///completion.jot',
+        languageId: 'jotl',
         version: 1,
         text: completionSample,
       },
@@ -118,7 +118,7 @@ async function run() {
     id: id++,
     method: 'textDocument/completion',
     params: {
-      textDocument: { uri: 'file:///completion.jeml' },
+      textDocument: { uri: 'file:///completion.jot' },
       position: { line: 1, character: 12 },
     },
   });
@@ -130,7 +130,7 @@ async function run() {
     id: pullDiagId,
     method: 'textDocument/diagnostic',
     params: {
-      textDocument: { uri: 'file:///test.jeml' },
+      textDocument: { uri: 'file:///test.jot' },
     },
   });
 
@@ -140,7 +140,7 @@ async function run() {
     id: id++,
     method: 'textDocument/hover',
     params: {
-      textDocument: { uri: 'file:///test.jeml' },
+      textDocument: { uri: 'file:///test.jot' },
       position: { line: 1, character: 5 },
     },
   });

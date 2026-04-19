@@ -1,12 +1,12 @@
-# JEML → HTML Element Mapping (v0.4)
+# JOTL → HTML Element Mapping (v0.4)
 
-This document defines how JEML tags compile to HTML elements. The compiler uses this as its authoritative reference.
+This document defines how JOTL tags compile to HTML elements. The compiler uses this as its authoritative reference.
 
 **Note on syntax:** This document uses v0.4 syntax with `>>`/`<<` directives, `>`/`<` blocks, `/>`/`</` inline, and `!>` void elements. See RULEBOOK for syntax rules.
 
 ## Block elements
 
-| JEML tag | HTML element | Notes |
+| JOTL tag | HTML element | Notes |
 |----------|--------------|-------|
 | `heading.N` (N=1-6) | `<hN>` | Variant selector determines level; default level is 1 |
 | `text` | `<p>` | Base tag |
@@ -34,23 +34,23 @@ This document defines how JEML tags compile to HTML elements. The compiler uses 
 | `button.ghost` | `<button class="ghost">` | |
 | `button.danger` | `<button class="danger">` | |
 | `button.sm` / `.md` / `.lg` | Size class appended | Stackable with style variants |
-| `card` | `<div class="jeml-card">` | |
-| `card.elevated` | `<div class="jeml-card elevated">` | |
-| `card.bordered` | `<div class="jeml-card bordered">` | |
-| `card.flat` | `<div class="jeml-card flat">` | |
-| `stack` | `<div class="jeml-stack">` | Layout utility |
-| `row` (outside table) | `<div class="jeml-row">` | |
-| `grid` | `<div class="jeml-grid">` | |
-| `group` | `<div class="jeml-group">` | |
+| `card` | `<div class="jotl-card">` | |
+| `card.elevated` | `<div class="jotl-card elevated">` | |
+| `card.bordered` | `<div class="jotl-card bordered">` | |
+| `card.flat` | `<div class="jotl-card flat">` | |
+| `stack` | `<div class="jotl-stack">` | Layout utility |
+| `row` (outside table) | `<div class="jotl-row">` | |
+| `grid` | `<div class="jotl-grid">` | |
+| `group` | `<div class="jotl-group">` | |
 | `block` | `<div>` | Generic container |
 | `link` | `<a>` | Block-level link; use `#'...'` for inline |
 | `links` (inside `nav`) | `<ul>`, each `-` item becomes `<li>` | |
-| `brand` (inside `nav`) | `<div class="jeml-brand">` | |
+| `brand` (inside `nav`) | `<div class="jotl-brand">` | |
 | `code` | `<pre><code>` wrapper | For fenced blocks with body |
 
 ## Inline elements
 
-| JEML tag | HTML element | Notes |
+| JOTL tag | HTML element | Notes |
 |----------|--------------|-------|
 | `/> strong: ... </` / `**text**` | `<strong>` | |
 | `/> em: ... </` / `_text_` | `<em>` | |
@@ -58,18 +58,18 @@ This document defines how JEML tags compile to HTML elements. The compiler uses 
 | `/> link [url="..."]: ... </` / `#'text'[url]` | `<a>` | `url` → `href` |
 | `/> span [...]: ... </` | `<span>` | |
 | `/> icon [name="..."]: </` | `<i class="icon" data-icon="NAME">` | Empty-content form |
-| `/> badge.VARIANT: ... </` | `<span class="jeml-badge VARIANT">` | |
-| `/> avatar [src="..."]: </` | `<img class="jeml-avatar">` | Inline avatar |
+| `/> badge.VARIANT: ... </` | `<span class="jotl-badge VARIANT">` | |
+| `/> avatar [src="..."]: </` | `<img class="jotl-avatar">` | Inline avatar |
 | `/> time [value="..."]: ... </` | `<time>` | `value` → `datetime` |
 
 ## Void elements
 
-| JEML tag | HTML element | Notes |
+| JOTL tag | HTML element | Notes |
 |----------|-----------------|-------|
 | `!> image` | `<img>` | `url` or `src` attribute required |
 | `!> field` | `<label>` wrapping input element | See field types below |
 | `!> break` | `<br>` | |
-| `!> spacer` | `<div class="jeml-spacer">` | `size` attribute |
+| `!> spacer` | `<div class="jotl-spacer">` | `size` attribute |
 | `!> divider` | `<hr>` | |
 | `!> icon` | `<i class="icon">` | Block-level icon |
 
@@ -90,23 +90,23 @@ The `!> field` element wraps a `<label>` plus an input whose type depends on the
 | `select` | `<label>LABEL<select name="NAME"></select></label>` |
 | `file` | `<label>LABEL<input type="file" name="NAME"></label>` |
 
-Additional field attributes pass through: `required`, `disabled`, `placeholder`, `min`, `max`, `step`, `rows`, `pattern`, `accept`. The `label` attribute becomes label text. `name` is required. `help` attribute becomes `<small class="jeml-help">` after the input.
+Additional field attributes pass through: `required`, `disabled`, `placeholder`, `min`, `max`, `step`, `rows`, `pattern`, `accept`. The `label` attribute becomes label text. `name` is required. `help` attribute becomes `<small class="jotl-help">` after the input.
 
 ## Attribute mappings
 
-| JEML attr | HTML attr | Applies to |
+| JOTL attr | HTML attr | Applies to |
 |-----------|-----------|------------|
 | `id` | `id` | all |
-| `style` | `class` | all — JEML `style` is a CSS class hook, not inline style |
+| `style` | `class` | all — JOTL `style` is a CSS class hook, not inline style |
 | `url` | `href` | links |
 | `src` | `src` | images, avatars |
 | `type` | `type` | fields, buttons |
-| `layout` | `class` | adds `jeml-layout-ROW/COLUMN` |
-| `gap` | `class` | adds `jeml-gap-SIZE` |
-| `align` | `class` | adds `jeml-align-VALUE` |
-| `size` | `class` | adds `jeml-size-VALUE` |
-| `color` | `class` | adds `jeml-color-VALUE` |
-| `columns` (on `grid`) | `class` + inline style | adds `jeml-cols-N` and `style="--cols: N"` |
+| `layout` | `class` | adds `jotl-layout-ROW/COLUMN` |
+| `gap` | `class` | adds `jotl-gap-SIZE` |
+| `align` | `class` | adds `jotl-align-VALUE` |
+| `size` | `class` | adds `jotl-size-VALUE` |
+| `color` | `class` | adds `jotl-color-VALUE` |
+| `columns` (on `grid`) | `class` + inline style | adds `jotl-cols-N` and `style="--cols: N"` |
 | `level` (on legacy `heading`) | n/a | deprecated; use `.N` variant |
 | `target`, `title`, `rel` | same | passed through on links |
 | `required`, `disabled` | same | boolean attributes |
@@ -116,7 +116,7 @@ Additional field attributes pass through: `required`, `disabled`, `placeholder`,
 
 ## Document structure
 
-A compiled JEML document produces a complete HTML5 document:
+A compiled JOTL document produces a complete HTML5 document:
 
 ```
 <!DOCTYPE html>
@@ -133,7 +133,7 @@ A compiled JEML document produces a complete HTML5 document:
 
 ### Meta directive mapping
 
-| JEML meta attr | HTML head element |
+| JOTL meta attr | HTML head element |
 |----------------|-------------------|
 | `title="..."` | `<title>...</title>` |
 | `description="..."` | `<meta name="description" content="...">` |
@@ -156,4 +156,4 @@ A compiled JEML document produces a complete HTML5 document:
 
 ## Unknown tags
 
-Unknown tag names compile to `<jeml-TAGNAME>` custom elements, with all attributes preserved. Variants on unknown tags become classes: `> foo.bar:` → `<jeml-foo class="bar">`.
+Unknown tag names compile to `<jotl-TAGNAME>` custom elements, with all attributes preserved. Variants on unknown tags become classes: `> foo.bar:` → `<jotl-foo class="bar">`.

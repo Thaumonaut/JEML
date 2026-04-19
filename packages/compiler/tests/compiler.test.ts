@@ -8,10 +8,10 @@ describe('fixture corpus', () => {
     const examplesDir = join(process.cwd(), 'tests/examples')
     const expectedDir = join(process.cwd(), 'tests/expected')
 
-    const examples = collectFilesRecursive(examplesDir, '.jeml').map((path) => relative(examplesDir, path)).sort()
+    const examples = collectFilesRecursive(examplesDir, '.jot').map((path) => relative(examplesDir, path)).sort()
     const expected = collectFilesRecursive(expectedDir, '.html').map((path) => relative(expectedDir, path)).sort()
 
-    const expectedFromExamples = examples.map((file) => file.replace(/\.jeml$/u, '.html'))
+    const expectedFromExamples = examples.map((file) => file.replace(/\.jot$/u, '.html'))
 
     expect(examples.length).toBeGreaterThan(0)
     expect(expected).toEqual(expectedFromExamples)
@@ -20,14 +20,14 @@ describe('fixture corpus', () => {
   it('compiles all examples to expected html', () => {
     const examplesDir = join(process.cwd(), 'tests/examples')
     const expectedDir = join(process.cwd(), 'tests/expected')
-    const examples = collectFilesRecursive(examplesDir, '.jeml').sort()
+    const examples = collectFilesRecursive(examplesDir, '.jot').sort()
 
     for (const examplePath of examples) {
       const fixtureKey = relative(examplesDir, examplePath)
       if (fixtureKey.includes('13-responsive')) {
         continue
       }
-      const htmlFile = fixtureKey.replace(/\.jeml$/u, '.html')
+      const htmlFile = fixtureKey.replace(/\.jot$/u, '.html')
       const source = readFileSync(examplePath, 'utf8')
       const expected = readFileSync(join(expectedDir, htmlFile), 'utf8')
       const actual = compile(source)

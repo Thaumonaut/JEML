@@ -1,0 +1,11 @@
+>> script: {
+  let name = signal("world")
+  function greet() {
+    name = "JOTL"
+  }
+}
+
+>> document:
+  > heading.1: Hello, &name! <
+  > button [on_press=@greet]: Greet <
+<< document

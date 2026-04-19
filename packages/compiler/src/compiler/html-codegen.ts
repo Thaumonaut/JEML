@@ -5,7 +5,7 @@ import type {
   ControlIfNode,
   DocumentDirective,
   ImportDirective,
-  JEMLDocument,
+  JotlDocument,
   Node,
   ScriptDirective,
   SiblingItemNode,
@@ -26,7 +26,7 @@ type HtmlGenContext = {
 
 let activeDynamic = false
 
-export function generateHtml(ast: JEMLDocument): string {
+export function generateHtml(ast: JotlDocument): string {
   const dynamic = documentIsDynamic(ast)
   const ctx: HtmlGenContext = { responsiveRules: [], nextR: 0, dynamic }
   const priorDynamic = activeDynamic
@@ -38,12 +38,12 @@ export function generateHtml(ast: JEMLDocument): string {
   }
 }
 
-function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: boolean): string {
+function generateHtmlInner(ast: JotlDocument, ctx: HtmlGenContext, dynamic: boolean): string {
   const headLines: string[] = []
   const documentDirective = ast.directives.find((directive): directive is DocumentDirective => directive.type === 'document')
 
   if (resolvePresetMode(ast) === 'base') {
-    headLines.push('<style data-jeml-preset="base">')
+    headLines.push('<style data-jotl-preset="base">')
     headLines.push(BASE_CSS.trim())
     headLines.push('</style>')
   }
@@ -114,7 +114,7 @@ function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: bool
  * Explicit `>> style [preset=base]` is honored as a no-op against the default,
  * but a single `[preset=none]` anywhere in the document wins.
  */
-function resolvePresetMode(ast: JEMLDocument): 'base' | 'none' {
+function resolvePresetMode(ast: JotlDocument): 'base' | 'none' {
   for (const directive of ast.directives) {
     if (directive.type !== 'style') continue
     const styleDirective = directive as StyleDirective
@@ -124,7 +124,7 @@ function resolvePresetMode(ast: JEMLDocument): 'base' | 'none' {
   return 'base'
 }
 
-function documentIsDynamic(ast: JEMLDocument): boolean {
+function documentIsDynamic(ast: JotlDocument): boolean {
   for (const directive of ast.directives) {
     if (directive.type === 'script' || directive.type === 'import') return true
     if (directive.type === 'document' && nodesContainDynamic(directive.children)) return true
@@ -163,7 +163,7 @@ function textHasRefs(value: string): boolean {
 const DYNAMIC_TEXT_RE =
   /(?<![\w\\])(?:&[a-zA-Z_][\w.]*|@[a-zA-Z_][\w.]*|\$[a-zA-Z_][\w.]*)|(?<!\\)\{[^{}]*\}/u
 
-function buildClientScriptTag(ast: JEMLDocument): string | null {
+function buildClientScriptTag(ast: JotlDocument): string | null {
   const scriptDirective = ast.directives.find((d): d is ScriptDirective => d.type === 'script')
   const imports = ast.directives.filter((d): d is ImportDirective => d.type === 'import')
 
@@ -175,8 +175,8 @@ function buildClientScriptTag(ast: JEMLDocument): string | null {
 
   const importLines: string[] = []
   for (const imp of imports) {
-    if (imp.from.endsWith('.jeml')) {
-      importLines.push(`// [jeml] import of ${JSON.stringify(imp.from)} skipped: .jeml imports are not yet supported`)
+    if (imp.from.endsWith('.jot')) {
+      importLines.push(`// [jotl] import of ${JSON.stringify(imp.from)} skipped: .jot imports are not yet supported`)
       continue
     }
     if (imp.kind === 'default') {
@@ -190,7 +190,7 @@ function buildClientScriptTag(ast: JEMLDocument): string | null {
 
   const body = [importLines.join('\n'), userBody].filter(Boolean).join('\n').trim()
   const injected = body || '/* no user script */'
-  const runtime = CLIENT_RUNTIME.replace('__JEML_USER_SCRIPT__', () => injected)
+  const runtime = CLIENT_RUNTIME.replace('__JOTL_USER_SCRIPT__', () => injected)
   const safe = runtime.replaceAll('</script>', '<\\/script>')
   return `<script>${safe}</script>`
 }
@@ -285,7 +285,7 @@ function buildGridResponsiveCss(attrs: Attribute[], id: string): string {
 
   let state = { cols: baseCols, gap: baseGap }
   const out: string[] = []
-  out.push(`[data-jeml-r="${id}"] { --cols: ${state.cols}; --gap: ${state.gap}; }`)
+  out.push(`[data-jotl-r="${id}"] { --cols: ${state.cols}; --gap: ${state.gap}; }`)
 
   for (const bp of sorted) {
     const next = { ...state }
@@ -296,7 +296,7 @@ function buildGridResponsiveCss(attrs: Attribute[], id: string): string {
     if (next.gap !== state.gap) props.push(`--gap: ${next.gap}`)
     state = next
     if (props.length > 0) {
-      out.push(`@media (min-width: ${bp}) { [data-jeml-r="${id}"] { ${props.join('; ')}; } }`)
+      out.push(`@media (min-width: ${bp}) { [data-jotl-r="${id}"] { ${props.join('; ')}; } }`)
     }
   }
   return out.join('\n')
@@ -341,7 +341,7 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
   }
 
   if (node.tag === 'brand') {
-    return [`<div class="jeml-brand">${renderChildrenInlineCtx(node.children, node.tag, ctx)}</div>`]
+    return [`<div class="jotl-brand">${renderChildrenInlineCtx(node.children, node.tag, ctx)}</div>`]
   }
 
   if (node.tag === 'links') {
@@ -383,14 +383,14 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
   }
 
   if (node.tag === 'stack') {
-    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jeml-stack')}>`]
+    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jotl-stack')}>`]
     lines.push(...emitNodes(node.children, node.tag, ctx))
     lines.push('</div>')
     return lines
   }
 
   if (node.tag === 'group') {
-    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jeml-group')}>`]
+    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jotl-group')}>`]
     lines.push(...emitNodes(node.children, node.tag, ctx))
     lines.push('</div>')
     return lines
@@ -401,19 +401,19 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
     if (responsive) {
       const id = nextResponsiveId(ctx)
       ctx.responsiveRules.push(buildGridResponsiveCss(node.attributes, id))
-      const lines = [`<div class="jeml-grid" data-jeml-r="${id}">`]
+      const lines = [`<div class="jotl-grid" data-jotl-r="${id}">`]
       lines.push(...emitNodes(node.children, node.tag, ctx))
       lines.push('</div>')
       return lines
     }
-    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jeml-grid', true)}>`]
+    const lines = [`<div${renderDivClassAttrs(node.attributes, 'jotl-grid', true)}>`]
     lines.push(...emitNodes(node.children, node.tag, ctx))
     lines.push('</div>')
     return lines
   }
 
   if (node.tag === 'card') {
-    const cardClasses = ['jeml-card', ...cardVariantClasses(variants)]
+    const cardClasses = ['jotl-card', ...cardVariantClasses(variants)]
     const lines = [`<div${renderAttrs(node.attributes, { prependClasses: cardClasses })}>`]
     lines.push(...emitNodes(node.children, node.tag, ctx))
     lines.push('</div>')
@@ -439,7 +439,7 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
   }
 
   const unknownClasses = variants.length > 0 ? ` class="${escapeAttr(variants.join(' '))}"` : ''
-  const customTag = `jeml-${node.tag}`
+  const customTag = `jotl-${node.tag}`
   if (node.children.some((c) => c.type === 'block' || c.type === 'void' || c.type === 'sibling-item' || c.type === 'fenced-code')) {
     const lines = [`<${customTag}${unknownClasses}${renderAttrs(node.attributes)}>`]
     lines.push(...emitNodes(node.children, node.tag, ctx))
@@ -450,10 +450,10 @@ function emitBlock(node: BlockNode, parentTag: string | null, ctx: HtmlGenContex
 }
 
 function emitControlIf(node: ControlIfNode, parentTag: string | null, ctx: HtmlGenContext): string[] {
-  const lines: string[] = ['<div class="jeml-if" data-jeml-if>']
+  const lines: string[] = ['<div class="jotl-if" data-jotl-if>']
   for (const branch of node.branches) {
     const caseExpr = branch.condition ? transformExpression(branch.condition) : ''
-    lines.push(`<template data-jeml-case="${escapeAttr(caseExpr)}">`)
+    lines.push(`<template data-jotl-case="${escapeAttr(caseExpr)}">`)
     lines.push(...emitNodes(branch.children, parentTag, ctx))
     lines.push('</template>')
   }
@@ -464,11 +464,11 @@ function emitControlIf(node: ControlIfNode, parentTag: string | null, ctx: HtmlG
 function emitControlFor(node: ControlForNode, parentTag: string | null, ctx: HtmlGenContext): string[] {
   const iterable = transformExpression(node.iterable)
   const attrs = [
-    `data-jeml-for="${escapeAttr(iterable)}"`,
-    `data-jeml-item="${escapeAttr(node.item)}"`,
+    `data-jotl-for="${escapeAttr(iterable)}"`,
+    `data-jotl-item="${escapeAttr(node.item)}"`,
   ]
-  if (node.index) attrs.push(`data-jeml-index="${escapeAttr(node.index)}"`)
-  const lines = [`<div class="jeml-for" ${attrs.join(' ')}>`]
+  if (node.index) attrs.push(`data-jotl-index="${escapeAttr(node.index)}"`)
+  const lines = [`<div class="jotl-for" ${attrs.join(' ')}>`]
   lines.push('<template>')
   lines.push(...emitNodes(node.children, parentTag, ctx))
   lines.push('</template>')
@@ -511,7 +511,7 @@ function listTagAndClass(variants: string[]): { tag: 'ul' | 'ol'; listClass?: st
 function buttonVariantClasses(variants: string[]): string[] {
   const classes: string[] = []
   for (const v of variants) {
-    if (v === 'sm' || v === 'md' || v === 'lg') classes.push(`jeml-size-${v}`)
+    if (v === 'sm' || v === 'md' || v === 'lg') classes.push(`jotl-size-${v}`)
     else if (['primary', 'secondary', 'ghost', 'danger'].includes(v)) classes.push(v)
   }
   return classes
@@ -537,7 +537,7 @@ function emitLayoutRow(node: BlockNode, ctx: HtmlGenContext): string[] {
   if (node.children.some((child) => child.type === 'sibling-item')) {
     return emitTableRow(node, ctx)
   }
-  const lines = [`<div${renderDivClassAttrs(node.attributes, 'jeml-row')}>`]
+  const lines = [`<div${renderDivClassAttrs(node.attributes, 'jotl-row')}>`]
   lines.push(...emitNodes(node.children, node.tag, ctx))
   lines.push('</div>')
   return lines
@@ -582,7 +582,7 @@ function emitVoid(node: VoidNode, ctx: HtmlGenContext): string[] {
     return ['<hr>']
   }
   if (tag === 'spacer') {
-    return [`<div${renderAttrs(attrs, { prependClasses: ['jeml-spacer'] })}></div>`]
+    return [`<div${renderAttrs(attrs, { prependClasses: ['jotl-spacer'] })}></div>`]
   }
   if (tag === 'icon') {
     const name = findAttribute(attrs, 'name') ?? ''
@@ -703,16 +703,16 @@ function renderInlineElementResult(tag: string, attrs: Attribute[], contentRaw: 
     return `<i class="icon" data-icon="${escapeAttr(name)}"></i>`
   }
   if (tag === 'avatar') {
-    return `<img class="jeml-avatar"${renderAttrs(attrs, { omit: ['style'], rename: { url: 'href' } })}>`
+    return `<img class="jotl-avatar"${renderAttrs(attrs, { omit: ['style'], rename: { url: 'href' } })}>`
   }
   if (tag === 'badge') {
     const variant = attrs.length > 0 && attrs[0]?.boolean === false && attrs[0]?.key ? attrs[0].key : ''
     const color = findAttribute(attrs, 'color')
     const cls = color
-      ? `jeml-badge jeml-badge-${color}`
+      ? `jotl-badge jotl-badge-${color}`
       : variant
-        ? `jeml-badge ${escapeAttr(variant)}`
-        : 'jeml-badge'
+        ? `jotl-badge ${escapeAttr(variant)}`
+        : 'jotl-badge'
     return `<span class="${cls}">${content}</span>`
   }
   if (tag === 'time') {
@@ -767,11 +767,11 @@ function renderMarkdownToken(token: string): string {
   }
   if (activeDynamic && (token.startsWith('&') || token.startsWith('@') || token.startsWith('$'))) {
     const expr = transformExpression(token)
-    return `<span data-jeml-text="${escapeAttr(expr)}"></span>`
+    return `<span data-jotl-text="${escapeAttr(expr)}"></span>`
   }
   if (activeDynamic && token.startsWith('{') && token.endsWith('}')) {
     const expr = transformExpression(token.slice(1, -1).trim())
-    return `<span data-jeml-text="${escapeAttr(expr)}"></span>`
+    return `<span data-jotl-text="${escapeAttr(expr)}"></span>`
   }
   return escapeHtml(token)
 }
@@ -797,7 +797,7 @@ function renderAttrs(
       if (activeDynamic && attr.value !== undefined) {
         const eventName = attr.key.slice('on_'.length)
         const expr = transformExpression(attr.value)
-        parts.push(`data-jeml-on-${escapeAttrKey(eventName)}="${escapeAttr(expr)}"`)
+        parts.push(`data-jotl-on-${escapeAttrKey(eventName)}="${escapeAttr(expr)}"`)
       }
       continue
     }
@@ -806,38 +806,38 @@ function renderAttrs(
         ? transformExpression(attr.value.slice(1, -1).trim())
         : transformExpression(attr.value)
       const boundName = rename[attr.key] ?? mapAttr(attr.key)
-      parts.push(`data-jeml-bind-${escapeAttrKey(boundName)}="${escapeAttr(expr)}"`)
+      parts.push(`data-jotl-bind-${escapeAttrKey(boundName)}="${escapeAttr(expr)}"`)
       continue
     }
 
     const key = rename[attr.key] ?? mapAttr(attr.key)
     if (attr.key === 'layout' && attr.value) {
-      classes.push(`jeml-layout-${attr.value}`)
+      classes.push(`jotl-layout-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
     if (attr.key === 'gap' && attr.value) {
-      classes.push(`jeml-gap-${attr.value}`)
+      classes.push(`jotl-gap-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
     if (attr.key === 'size' && attr.value) {
-      classes.push(`jeml-size-${attr.value}`)
+      classes.push(`jotl-size-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
     if (attr.key === 'align' && attr.value) {
-      classes.push(`jeml-align-${attr.value}`)
+      classes.push(`jotl-align-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
     if (attr.key === 'color' && attr.value) {
-      classes.push(`jeml-color-${attr.value}`)
+      classes.push(`jotl-color-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
     if ((attr.key === 'columns' || attr.key === 'cols') && attr.value) {
-      classes.push(`jeml-cols-${attr.value}`)
+      classes.push(`jotl-cols-${attr.value}`)
       classInsertIndex ??= parts.length
       continue
     }
@@ -886,24 +886,24 @@ function renderDivClassAttrs(attrs: Attribute[], baseClass: string, addColsStyle
       continue
     }
     if (attr.key === 'layout' && attr.value) {
-      classes.push(`jeml-layout-${attr.value}`)
+      classes.push(`jotl-layout-${attr.value}`)
       continue
     }
     if (attr.key === 'gap' && attr.value) {
-      classes.push(`jeml-gap-${attr.value}`)
+      classes.push(`jotl-gap-${attr.value}`)
       continue
     }
     if (attr.key === 'size' && attr.value) {
-      classes.push(`jeml-size-${attr.value}`)
+      classes.push(`jotl-size-${attr.value}`)
       continue
     }
     if (attr.key === 'align' && attr.value) {
-      classes.push(`jeml-align-${attr.value}`)
+      classes.push(`jotl-align-${attr.value}`)
       continue
     }
     if ((attr.key === 'columns' || attr.key === 'cols') && attr.value) {
       columns = attr.value
-      classes.push(`jeml-cols-${attr.value}`)
+      classes.push(`jotl-cols-${attr.value}`)
       continue
     }
     remaining.push(attr)

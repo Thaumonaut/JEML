@@ -1,0 +1,14 @@
+>> meta [
+  title="Counter App"
+  description="A tiny demo of solid-jotl"
+  charset="utf-8"
+  viewport="width=device-width, initial-scale=1"
+  og_title="Counter"
+  twitter_card="summary"
+  canonical="https://example.com/counter"
+]
+
+>> document:
+  > heading.1: Counter <
+  > text: Hello, world. <
+<< document

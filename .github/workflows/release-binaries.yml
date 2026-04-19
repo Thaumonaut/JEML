@@ -30,15 +30,15 @@ jobs:
       matrix:
         include:
           - target: bun-linux-x64
-            asset: jeml-linux-x64
+            asset: jotl-linux-x64
           - target: bun-linux-arm64
-            asset: jeml-linux-arm64
+            asset: jotl-linux-arm64
           - target: bun-darwin-arm64
-            asset: jeml-darwin-arm64
+            asset: jotl-darwin-arm64
           - target: bun-darwin-x64
-            asset: jeml-darwin-x64
+            asset: jotl-darwin-x64
           - target: bun-windows-x64
-            asset: jeml-windows-x64.exe
+            asset: jotl-windows-x64.exe
 
     steps:
       - uses: actions/checkout@v4
@@ -89,7 +89,7 @@ jobs:
         run: |
           set -e
           rm -f SHA256SUMS.txt
-          for f in jeml-*; do
+          for f in jotl-*; do
             [ -f "$f" ] || continue
             sha256sum "$f" >> SHA256SUMS.txt
           done

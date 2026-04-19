@@ -9732,7 +9732,7 @@ var require_tags = __commonJS({
         name: "brand",
         flavor: "block",
         description: "The brand/logo area within a `nav`.",
-        htmlMapping: '<div class="jeml-brand">',
+        htmlMapping: '<div class="jotl-brand">',
         variants: [],
         attributes: []
       },
@@ -9755,8 +9755,8 @@ var require_tags = __commonJS({
           { name: "secondary", description: "Secondary action button", emits: 'class="secondary"' },
           { name: "ghost", description: "Minimal/outlined button", emits: 'class="ghost"' },
           { name: "danger", description: "Destructive action button", emits: 'class="danger"' },
-          { name: "sm", description: "Small size", emits: 'class="jeml-size-sm"' },
-          { name: "lg", description: "Large size", emits: 'class="jeml-size-lg"' }
+          { name: "sm", description: "Small size", emits: 'class="jotl-size-sm"' },
+          { name: "lg", description: "Large size", emits: 'class="jotl-size-lg"' }
         ],
         attributes: ["type", "disabled", "on_press", "title"]
       },
@@ -9774,7 +9774,7 @@ var require_tags = __commonJS({
         name: "card",
         flavor: "block",
         description: "A bounded content group, typically with a border or shadow.",
-        htmlMapping: '<div class="jeml-card">',
+        htmlMapping: '<div class="jotl-card">',
         variants: [
           { name: "elevated", description: "Raised with a shadow", emits: 'class="elevated"' },
           { name: "bordered", description: "Flat with a border", emits: 'class="bordered"' },
@@ -9786,7 +9786,7 @@ var require_tags = __commonJS({
         name: "group",
         flavor: "block",
         description: "A flexbox container. Use layout attributes (`layout`, `gap`, `align`, `justify`) to control arrangement.",
-        htmlMapping: '<div class="jeml-group">',
+        htmlMapping: '<div class="jotl-group">',
         variants: [],
         attributes: ["layout", "gap", "align", "justify", "wrap"]
       },
@@ -9794,7 +9794,7 @@ var require_tags = __commonJS({
         name: "stack",
         flavor: "block",
         description: "A vertical group. Shorthand for `group [layout=column]`.",
-        htmlMapping: '<div class="jeml-stack">',
+        htmlMapping: '<div class="jotl-stack">',
         variants: [],
         attributes: ["gap", "align"]
       },
@@ -9802,7 +9802,7 @@ var require_tags = __commonJS({
         name: "grid",
         flavor: "block",
         description: "A CSS Grid container. Use `cols`, `rows`, `gap` \u2014 and responsive overrides.",
-        htmlMapping: '<div class="jeml-grid">',
+        htmlMapping: '<div class="jotl-grid">',
         variants: [],
         attributes: ["cols", "rows", "gap", "align", "justify"],
         specSection: "\xA78.7"
@@ -9902,7 +9902,7 @@ var require_tags = __commonJS({
         name: "badge",
         flavor: "inline",
         description: "A small inline badge or tag.",
-        htmlMapping: '<span class="jeml-badge">',
+        htmlMapping: '<span class="jotl-badge">',
         variants: [
           { name: "info", description: "Informational badge" },
           { name: "success", description: "Success state badge" },
@@ -9948,7 +9948,7 @@ var require_tags = __commonJS({
         name: "spacer",
         flavor: "void",
         description: "An empty layout spacer.",
-        htmlMapping: '<div class="jeml-spacer">',
+        htmlMapping: '<div class="jotl-spacer">',
         variants: [],
         attributes: ["size"]
       }
@@ -10349,7 +10349,7 @@ var require_diagnostics = __commonJS({
           severity: err.severity === "error" ? node_12.DiagnosticSeverity.Error : node_12.DiagnosticSeverity.Warning,
           range: toLspRange(err.range),
           message: err.message,
-          source: "jeml"
+          source: "jotl"
         });
       }
       const tokens = result.tokens;
@@ -10364,7 +10364,7 @@ var require_diagnostics = __commonJS({
               severity: node_12.DiagnosticSeverity.Information,
               range: toLspRange(t.range),
               message: `Unknown tag '${t.text}'. If this is a user-defined component, consider using a capitalized name.`,
-              source: "jeml"
+              source: "jotl"
             });
           }
           continue;
@@ -10376,7 +10376,7 @@ var require_diagnostics = __commonJS({
               severity: node_12.DiagnosticSeverity.Error,
               range: toLspRange(v.range),
               message: `Tag '${t.text}' does not accept variants.`,
-              source: "jeml"
+              source: "jotl"
             });
           } else {
             const allowed = tagDef.variants.map((vd) => vd.name);
@@ -10385,7 +10385,7 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(v.range),
                 message: `Unknown variant '${v.text}' for tag '${t.text}'. Valid variants: ${allowed.join(", ")}.`,
-                source: "jeml"
+                source: "jotl"
               });
             }
           }
@@ -10403,7 +10403,7 @@ var require_diagnostics = __commonJS({
             severity: node_12.DiagnosticSeverity.Warning,
             range: toLspRange(tokens[i].range),
             message: `Responsive override on style attribute '${attrName.text}' is discouraged. Layout attributes accept overrides; for theming, use a design token system instead. (Rulebook \xA78.7)`,
-            source: "jeml"
+            source: "jotl"
           });
         }
       }
@@ -10465,14 +10465,14 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Directive close '<<' with no matching '>>' open.",
-                source: "jeml"
+                source: "jotl"
               });
             } else if (popped.kind !== "directive") {
               diagnostics.push({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: `Directive close '<<' but the innermost open is a ${popped.kind}.`,
-                source: "jeml"
+                source: "jotl"
               });
               stack.push(popped);
             }
@@ -10485,14 +10485,14 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Block close '<' with no matching '>' open.",
-                source: "jeml"
+                source: "jotl"
               });
             } else if (popped.kind === "directive") {
               diagnostics.push({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Block close '<' used to close a directive \u2014 use '<<' instead.",
-                source: "jeml"
+                source: "jotl"
               });
               stack.push(popped);
             }
@@ -10505,7 +10505,7 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Inline close '</' with no matching '/>' open.",
-                source: "jeml"
+                source: "jotl"
               });
             } else if (popped.kind !== "inline") {
               stack.push(popped);
@@ -10521,7 +10521,7 @@ var require_diagnostics = __commonJS({
           severity: node_12.DiagnosticSeverity.Error,
           range: toLspRange(entry.token.range),
           message: `Unclosed ${word}. Add '${closer}' to close it.`,
-          source: "jeml"
+          source: "jotl"
         });
       }
       return diagnostics;
@@ -10649,7 +10649,7 @@ var require_completions = __commonJS({
           label: ">> import",
           kind: node_12.CompletionItemKind.Keyword,
           detail: "Import a component or module",
-          insertText: '>> import [from="${1:./component.jeml}"]: ${2:Name}\n$0',
+          insertText: '>> import [from="${1:./component.jot}"]: ${2:Name}\n$0',
           insertTextFormat: node_12.InsertTextFormat.Snippet
         },
         {
@@ -11173,13 +11173,13 @@ connection.onInitialize((_params) => {
       }
     },
     serverInfo: {
-      name: "jeml-lsp",
+      name: "jotl-lsp",
       version: "0.1.0"
     }
   };
 });
 connection.onInitialized(() => {
-  connection.console.log("JEML language server initialized.");
+  connection.console.log("JOTL language server initialized.");
 });
 documents.onDidChangeContent((change) => {
   const analysis = analyze(change.document);

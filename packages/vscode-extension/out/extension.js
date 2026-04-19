@@ -18126,14 +18126,14 @@ function activate(context) {
     }
   };
   const clientOptions = {
-    documentSelector: [{ scheme: "file", language: "jeml" }],
+    documentSelector: [{ scheme: "file", language: "jotl" }],
     synchronize: {
-      fileEvents: import_vscode.workspace.createFileSystemWatcher("**/*.jeml")
+      fileEvents: import_vscode.workspace.createFileSystemWatcher("**/*.jot")
     }
   };
   client = new import_node.LanguageClient(
-    "jemlLanguageServer",
-    "JEML Language Server",
+    "jotlLanguageServer",
+    "JOTL Language Server",
     serverOptions,
     clientOptions
   );

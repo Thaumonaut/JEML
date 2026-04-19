@@ -13,7 +13,7 @@ function fixture(name: string): string {
 
 describe('script directive', () => {
   it('parses >> script body and preserves source fidelity in AST', () => {
-    const ast = parse(fixture('script-counter.jeml'))
+    const ast = parse(fixture('script-counter.jot'))
     const script = ast.directives.find((d) => d.type === 'script')
     expect(script).toBeDefined()
     expect(script && script.type === 'script' && script.body).toContain('let count = 0')
@@ -21,7 +21,7 @@ describe('script directive', () => {
   })
 
   it('emits a runtime-backed <script> tag with transpiled state and handlers', () => {
-    const html = compile(fixture('script-counter.jeml'))
+    const html = compile(fixture('script-counter.jot'))
     expect(html).toContain('<script>')
     expect(html).toContain('state.count = 0')
     expect(html).toContain('handlers.increment = function')
@@ -29,38 +29,38 @@ describe('script directive', () => {
     expect(html).toContain('handlers.reset = function')
   })
 
-  it('rewrites &ref in text to a data-jeml-text placeholder', () => {
-    const html = compile(fixture('script-counter.jeml'))
-    expect(html).toContain('data-jeml-text="state.count"')
+  it('rewrites &ref in text to a data-jotl-text placeholder', () => {
+    const html = compile(fixture('script-counter.jot'))
+    expect(html).toContain('data-jotl-text="state.count"')
   })
 
-  it('rewrites on_press to a data-jeml-on-press binding', () => {
-    const html = compile(fixture('script-counter.jeml'))
-    expect(html).toContain('data-jeml-on-press="handlers.increment"')
-    expect(html).toContain('data-jeml-on-press="handlers.reset"')
+  it('rewrites on_press to a data-jotl-on-press binding', () => {
+    const html = compile(fixture('script-counter.jot'))
+    expect(html).toContain('data-jotl-on-press="handlers.increment"')
+    expect(html).toContain('data-jotl-on-press="handlers.reset"')
   })
 })
 
 describe('control flow', () => {
-  it('emits a jeml-if container with case templates', () => {
-    const html = compile(fixture('control-flow.jeml'))
-    expect(html).toContain('class="jeml-if" data-jeml-if')
-    expect(html).toContain('data-jeml-case="state.show_admin"')
-    expect(html).toContain('data-jeml-case=""')
+  it('emits a jotl-if container with case templates', () => {
+    const html = compile(fixture('control-flow.jot'))
+    expect(html).toContain('class="jotl-if" data-jotl-if')
+    expect(html).toContain('data-jotl-case="state.show_admin"')
+    expect(html).toContain('data-jotl-case=""')
   })
 
-  it('emits a jeml-for container with body template and scope metadata', () => {
-    const html = compile(fixture('control-flow.jeml'))
-    expect(html).toContain('class="jeml-for"')
-    expect(html).toContain('data-jeml-for="state.items"')
-    expect(html).toContain('data-jeml-item="item"')
-    expect(html).toContain('data-jeml-text="$scope.item"')
+  it('emits a jotl-for container with body template and scope metadata', () => {
+    const html = compile(fixture('control-flow.jot'))
+    expect(html).toContain('class="jotl-for"')
+    expect(html).toContain('data-jotl-for="state.items"')
+    expect(html).toContain('data-jotl-item="item"')
+    expect(html).toContain('data-jotl-text="$scope.item"')
   })
 })
 
 describe('imports', () => {
   it('parses default, named, and namespace forms', () => {
-    const ast = parse(fixture('imports.jeml'))
+    const ast = parse(fixture('imports.jot'))
     const imports = ast.directives.filter((d) => d.type === 'import')
     expect(imports).toHaveLength(3)
     if (imports[0]?.type === 'import') {
@@ -77,9 +77,9 @@ describe('imports', () => {
     }
   })
 
-  it('skips .jeml imports with a comment until the resolver lands', () => {
-    const html = compile(fixture('imports.jeml'))
-    expect(html).toContain('import of "./components/avatar.jeml"')
+  it('skips .jot imports with a comment until the resolver lands', () => {
+    const html = compile(fixture('imports.jot'))
+    expect(html).toContain('import of "./components/avatar.jot"')
     expect(html).toContain('skipped')
   })
 })

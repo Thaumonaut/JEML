@@ -1,7 +1,7 @@
 /**
  * Runs during `npm install` / `npm install -g`:
- * - From a git checkout: build dist/jeml.mjs so the `jeml` bin works immediately.
- * - From the published npm tarball (no src/): no-op — prepack already shipped dist/jeml.mjs.
+ * - From a git checkout: build dist/jotl.mjs so the `jotl` bin works immediately.
+ * - From the published npm tarball (no src/): no-op — prepack already shipped dist/jotl.mjs.
  */
 import { existsSync } from 'node:fs'
 
@@ -17,5 +17,5 @@ await build({
   bundle: true,
   platform: 'node',
   format: 'esm',
-  outfile: 'dist/jeml.mjs',
+  outfile: 'dist/jotl.mjs',
 })

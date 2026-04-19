@@ -1,4 +1,4 @@
->> import [from="./components/avatar.jeml"]: Avatar
+>> import [from="./components/avatar.jot"]: Avatar
 >> import [from="@std/format"]: { format_date, format_money }
 >> import [from="@std/util"]: * as util
 

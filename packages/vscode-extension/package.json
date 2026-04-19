@@ -1,9 +1,9 @@
 {
-  "name": "jeml-language",
-  "displayName": "JEML Language Support",
-  "description": "Syntax highlighting, diagnostics, completions, and hover for JEML (Jacob's Easy Markup Language)",
-  "version": "0.4.1",
-  "publisher": "jeml",
+  "name": "jotl-language",
+  "displayName": "JOTL Language Support",
+  "description": "Syntax highlighting, diagnostics, completions, and hover for JOTL.",
+  "version": "0.5.0",
+  "publisher": "jotl",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -11,12 +11,12 @@
     "Programming Languages"
   ],
   "keywords": [
-    "jeml",
+    "jotl",
     "markup",
     "html",
     "templating"
   ],
-  "icon": "icons/jeml-logo.png",
+  "icon": "icons/jotl-logo.png",
   "galleryBanner": {
     "color": "#0F1D2E",
     "theme": "dark"
@@ -26,33 +26,33 @@
   "contributes": {
     "languages": [
       {
-        "id": "jeml",
+        "id": "jotl",
         "aliases": [
-          "JEML",
-          "jeml"
+          "JOTL",
+          "jotl"
         ],
         "extensions": [
-          ".jeml"
+          ".jot"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "light": "./icons/jeml-logo.png",
-          "dark": "./icons/jeml-logo.png"
+          "light": "./icons/jotl-logo.png",
+          "dark": "./icons/jotl-logo.png"
         }
       }
     ],
     "grammars": [
       {
-        "language": "jeml",
-        "scopeName": "source.jeml",
-        "path": "./syntaxes/jeml.tmLanguage.json"
+        "language": "jotl",
+        "scopeName": "source.jotl",
+        "path": "./syntaxes/jotl.tmLanguage.json"
       }
     ],
     "configuration": {
       "type": "object",
-      "title": "JEML",
+      "title": "JOTL",
       "properties": {
-        "jeml.trace.server": {
+        "jotl.trace.server": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -61,7 +61,7 @@
             "verbose"
           ],
           "default": "off",
-          "description": "Traces the communication between VS Code and the JEML language server."
+          "description": "Traces the communication between VS Code and the JOTL language server."
         }
       }
     }
@@ -85,7 +85,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Thaumonaut/JEML.git"
+    "url": "https://github.com/Thaumonaut/JOTL.git"
   },
   "license": "MIT"
 }

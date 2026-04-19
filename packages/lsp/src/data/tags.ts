@@ -1,5 +1,5 @@
 /**
- * Tag registry — every tag JEML understands, what variants it accepts, what
+ * Tag registry — every tag JOTL understands, what variants it accepts, what
  * attributes it takes, and what HTML it compiles to.
  *
  * This is the canonical source of truth for IDE assistance. The compiler's
@@ -21,7 +21,7 @@ export interface TagVariant {
 }
 
 export interface TagDefinition {
-  /** The tag name as written in JEML */
+  /** The tag name as written in JOTL */
   name: string;
   /** Which syntactic positions this tag accepts */
   flavor: TagFlavor;
@@ -198,7 +198,7 @@ export const TAGS: TagDefinition[] = [
     name: 'brand',
     flavor: 'block',
     description: 'The brand/logo area within a `nav`.',
-    htmlMapping: '<div class="jeml-brand">',
+    htmlMapping: '<div class="jotl-brand">',
     variants: [],
     attributes: [],
   },
@@ -222,8 +222,8 @@ export const TAGS: TagDefinition[] = [
       { name: 'secondary', description: 'Secondary action button', emits: 'class="secondary"' },
       { name: 'ghost', description: 'Minimal/outlined button', emits: 'class="ghost"' },
       { name: 'danger', description: 'Destructive action button', emits: 'class="danger"' },
-      { name: 'sm', description: 'Small size', emits: 'class="jeml-size-sm"' },
-      { name: 'lg', description: 'Large size', emits: 'class="jeml-size-lg"' },
+      { name: 'sm', description: 'Small size', emits: 'class="jotl-size-sm"' },
+      { name: 'lg', description: 'Large size', emits: 'class="jotl-size-lg"' },
     ],
     attributes: ['type', 'disabled', 'on_press', 'title'],
   },
@@ -242,7 +242,7 @@ export const TAGS: TagDefinition[] = [
     name: 'card',
     flavor: 'block',
     description: 'A bounded content group, typically with a border or shadow.',
-    htmlMapping: '<div class="jeml-card">',
+    htmlMapping: '<div class="jotl-card">',
     variants: [
       { name: 'elevated', description: 'Raised with a shadow', emits: 'class="elevated"' },
       { name: 'bordered', description: 'Flat with a border', emits: 'class="bordered"' },
@@ -255,7 +255,7 @@ export const TAGS: TagDefinition[] = [
     flavor: 'block',
     description:
       'A flexbox container. Use layout attributes (`layout`, `gap`, `align`, `justify`) to control arrangement.',
-    htmlMapping: '<div class="jeml-group">',
+    htmlMapping: '<div class="jotl-group">',
     variants: [],
     attributes: ['layout', 'gap', 'align', 'justify', 'wrap'],
   },
@@ -263,7 +263,7 @@ export const TAGS: TagDefinition[] = [
     name: 'stack',
     flavor: 'block',
     description: 'A vertical group. Shorthand for `group [layout=column]`.',
-    htmlMapping: '<div class="jeml-stack">',
+    htmlMapping: '<div class="jotl-stack">',
     variants: [],
     attributes: ['gap', 'align'],
   },
@@ -271,7 +271,7 @@ export const TAGS: TagDefinition[] = [
     name: 'grid',
     flavor: 'block',
     description: 'A CSS Grid container. Use `cols`, `rows`, `gap` — and responsive overrides.',
-    htmlMapping: '<div class="jeml-grid">',
+    htmlMapping: '<div class="jotl-grid">',
     variants: [],
     attributes: ['cols', 'rows', 'gap', 'align', 'justify'],
     specSection: '§8.7',
@@ -375,7 +375,7 @@ export const TAGS: TagDefinition[] = [
     name: 'badge',
     flavor: 'inline',
     description: 'A small inline badge or tag.',
-    htmlMapping: '<span class="jeml-badge">',
+    htmlMapping: '<span class="jotl-badge">',
     variants: [
       { name: 'info', description: 'Informational badge' },
       { name: 'success', description: 'Success state badge' },
@@ -422,7 +422,7 @@ export const TAGS: TagDefinition[] = [
     name: 'spacer',
     flavor: 'void',
     description: 'An empty layout spacer.',
-    htmlMapping: '<div class="jeml-spacer">',
+    htmlMapping: '<div class="jotl-spacer">',
     variants: [],
     attributes: ['size'],
   },

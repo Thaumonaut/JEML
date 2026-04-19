@@ -1,6 +1,6 @@
-# JEML Language Support for VS Code
+# JOTL Language Support for VS Code
 
-Syntax highlighting, diagnostics, completions, and hover documentation for [JEML](https://github.com/Thaumonaut/JEML) — Jacob's Easy Markup Language.
+Syntax highlighting, diagnostics, completions, and hover documentation for [JOTL](https://github.com/Thaumonaut/JOTL) — a structured markup language with whitespace-sigil syntax.
 
 Works in VS Code and Cursor.
 
@@ -37,37 +37,37 @@ Hover any token for rich markdown documentation:
 
 ### From VSIX
 ```bash
-code --install-extension jeml-language-0.4.0.vsix
+code --install-extension jotl-language-0.5.0.vsix
 ```
 
 For Cursor:
 ```bash
-cursor --install-extension jeml-language-0.4.0.vsix
+cursor --install-extension jotl-language-0.5.0.vsix
 ```
 
 ### From source (development)
 ```bash
-git clone https://github.com/Thaumonaut/JEML
-cd JEML
+git clone https://github.com/Thaumonaut/JOTL
+cd JOTL
 npm install
-npm run build --workspace=@jeml/lsp
-npm run build --workspace=jeml-language
+npm run build --workspace=jotl-lsp
+npm run build --workspace=jotl-language
 cd packages/vscode-extension
 npx vsce package --allow-missing-repository --no-dependencies
-code --install-extension jeml-language-0.4.0.vsix
+code --install-extension jotl-language-0.5.0.vsix
 ```
 
 ## Architecture
 
-This extension is a thin client for the [@jeml/lsp](../lsp) language server. The grammar handles syntax highlighting (TextMate regex-based), while the language server handles everything semantic (parse tree analysis, diagnostics, completions, hover). Both bundles ship together in the `.vsix`.
+This extension is a thin client for the [jotl-lsp](../lsp) language server. The grammar handles syntax highlighting (TextMate regex-based), while the language server handles everything semantic (parse tree analysis, diagnostics, completions, hover). Both bundles ship together in the `.vsix`.
 
-When you open a `.jeml` file, the extension spawns the LSP server as a child process and establishes a JSON-RPC connection over stdio. All language intelligence lives in the server; this extension is ~30 lines of glue.
+When you open a `.jot` file, the extension spawns the LSP server as a child process and establishes a JSON-RPC connection over stdio. All language intelligence lives in the server; this extension is ~30 lines of glue.
 
 ## Configuration
 
 | Setting | Values | Description |
 |---------|--------|-------------|
-| `jeml.trace.server` | `off`, `messages`, `verbose` | Trace LSP traffic for debugging |
+| `jotl.trace.server` | `off`, `messages`, `verbose` | Trace LSP traffic for debugging |
 
 ## License
 

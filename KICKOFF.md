@@ -1,8 +1,8 @@
-# JEML Project — Claude Code Kickoff (v0.4)
+# JOTL Project — Claude Code Kickoff (v0.4)
 
 ## What this project is
 
-JEML (Jacob's Easy Markup Language) is a markup language designed to replace HTML, XML, and JSON for UI and templating. It compiles to HTML (v1 target). It is a single-file component format like Svelte or Vue.
+JOTL (JOTL) is a markup language designed to replace HTML, XML, and JSON for UI and templating. It compiles to HTML (v1 target). It is a single-file component format like Svelte or Vue.
 
 The language spec is in `spec/RULEBOOK.md`. Read it completely before writing any code — it is the source of truth.
 
@@ -12,7 +12,7 @@ The language spec is in `spec/RULEBOOK.md`. Read it completely before writing an
 - **Extensibility:** architecture must make it possible for others to add script-language targets (Python, Rust, Dart) without modifying core parsing or HTML codegen.
 - **Open source:** MIT-licensed.
 
-## ⚠️ Critical syntax rules — JEML v0.4
+## ⚠️ Critical syntax rules — JOTL v0.4
 
 ### Four structural sigil pairs
 
@@ -119,7 +119,7 @@ Two binding forms: explicit (`cols^(768px)=3`) and implicit (`^(768px)=3` binds 
 
 ## First milestone
 
-**A minimal JEML → HTML compiler for the STATIC subset only, with a browser playground.**
+**A minimal JOTL → HTML compiler for the STATIC subset only, with a browser playground.**
 
 Static subset includes:
 - `>> meta` directives (rendered into `<head>`)
@@ -154,7 +154,7 @@ References in examples during this phase render as literal text (`&user.name` �
 ## Tech stack
 
 - **Language:** TypeScript strict
-- **Parser generator:** Peggy (`npm install peggy`). Grammar in `src/grammar/jeml.pegjs`.
+- **Parser generator:** Peggy (`npm install peggy`). Grammar in `src/grammar/jotl.pegjs`.
 - **Runtime:** Node 20+ for the compiler, vanilla browser for the playground.
 - **Testing:** Vitest. Snapshot tests against `tests/expected/`.
 - **Playground:** Vite + vanilla TS.
@@ -162,10 +162,10 @@ References in examples during this phase render as literal text (`&user.name` �
 ## Repository structure
 
 ```
-jeml/
+jotl/
 ├── src/
 │   ├── grammar/
-│   │   └── jeml.pegjs
+│   │   └── jotl.pegjs
 │   ├── parser/
 │   │   ├── parser.ts
 │   │   └── ast.ts
@@ -208,7 +208,7 @@ jeml/
 After each change:
 1. `npm run test` — all tests must pass
 2. `npm run typecheck` — no type errors
-3. For new features: add paired `examples/NN-feature.jeml` + `expected/NN-feature.html` first
+3. For new features: add paired `examples/NN-feature.jot` + `expected/NN-feature.html` first
 
 ## When to stop and ask
 
@@ -227,7 +227,7 @@ Do NOT stop for:
 
 - `npm run test` passes (excluding test 13, which is the responsive milestone-2 example)
 - `npm run dev` launches the playground
-- Pasting `tests/examples/12-full-landing.jeml` produces `tests/expected/12-full-landing.html`, with responsive overrides ignored or stripped cleanly
+- Pasting `tests/examples/12-full-landing.jot` produces `tests/expected/12-full-landing.html`, with responsive overrides ignored or stripped cleanly
 - README has "Getting started" enabling another developer to run the playground in <5 min
 - `src/compiler/targets/typescript/` exists as extension point
 
@@ -235,8 +235,8 @@ Do NOT stop for:
 
 **Milestone 2 — Responsive & CSS codegen:**
 - CSS codegen pass that reads responsive overrides from the AST and emits `<style>` blocks with CSS custom properties + media queries
-- `data-jeml-r` anchor attribute generation for responsive elements
-- Test 13 (`13-responsive.jeml`) becomes the acceptance test for this milestone
+- `data-jotl-r` anchor attribute generation for responsive elements
+- Test 13 (`13-responsive.jot`) becomes the acceptance test for this milestone
 - Test 12 gains its `<style>` block for the responsive grids
 
 **Milestone 3+ — Reactivity and dynamic content:**
@@ -250,17 +250,17 @@ Do NOT stop for:
 
 The compiler now parses `>> script`, `>> import`, `~ if`, `~ for`, and the
 `&`/`@`/`$`/`{…}` reference sigils. For files that use any of these, the
-emitted HTML includes `data-jeml-*` markers and a `<script>` tag carrying a
+emitted HTML includes `data-jotl-*` markers and a `<script>` tag carrying a
 ~3 KB client runtime plus the transpiled `>> script` body.
 
 - State (`let name = …`) is reactive via a `Proxy`; writes schedule a render.
 - Handlers (`name () { … }`) become `handlers.name` and wire through
-  `data-jeml-on-EVENT` attributes (`on_press` maps to `click`).
+  `data-jotl-on-EVENT` attributes (`on_press` maps to `click`).
 - `~ if` / `~ for` emit `<template>`-based containers that the runtime
   stamps into the DOM with a loop scope (`$scope.item`, `$scope.index`).
 - `>> import` is parsed but cross-file resolution is not yet implemented;
-  `.jeml` imports emit a commented skip marker in the output script.
+  `.jot` imports emit a commented skip marker in the output script.
 
 See `src/compiler/targets/typescript/transpile.ts` for the script transform
-(the JEML script body is **not** valid JS on its own) and
+(the JOTL script body is **not** valid JS on its own) and
 `src/runtime/embed.ts` for the runtime text that gets inlined.

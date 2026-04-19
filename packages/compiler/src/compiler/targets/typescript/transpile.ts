@@ -1,5 +1,5 @@
 /**
- * Transpile a JEML `>> script` body into JavaScript that populates
+ * Transpile a JOTL `>> script` body into JavaScript that populates
  * `state` (reactive) and `handlers` (bound callbacks) objects supplied
  * by the runtime. See RULEBOOK §18 for the source surface:
  *

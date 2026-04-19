@@ -1,0 +1,17 @@
+>> component Counter:
+  >> props: {
+    initial?: number
+  }
+
+  >> script: {
+    let count = signal(props.initial ?? 0)
+    function increment() {
+      count = count() + 1
+    }
+  }
+
+  >> document:
+    > text: Clicks: &count <
+    > button [on_press=@increment]: Add <
+  << document
+<< component

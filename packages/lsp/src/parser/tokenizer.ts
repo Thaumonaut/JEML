@@ -1,5 +1,5 @@
 /**
- * JEML tokenizer for LSP purposes.
+ * JOTL tokenizer for LSP purposes.
  *
  * Character-stream tokenizer that produces a flat stream of tokens with
  * position information. This is NOT the compiler's parser — it's a simpler
