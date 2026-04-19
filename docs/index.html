@@ -1985,6 +1985,29 @@ a sigil, _ escapes underscore.
       <div class="compare-row"><div>Either, manually</div><div>open the .vsix file from the marketplace</div></div>
     </div>
 
+    <h3>Default styles</h3>
+
+    <p>Every JEML document is rendered with a small <em>preset stylesheet</em> baked in by the compiler — roughly 9&nbsp;KB inlined, no external requests. The foundation is <a href="https://newcss.net/">new.css</a> by Xz (MIT-licensed, vendored), which classlessly styles raw HTML elements with a centered 750&nbsp;px content rail. On top of that we layer a small set of JEML primitives that match the structural classes the compiler emits — <code>.jeml-grid</code>, <code>.jeml-stack</code>, <code>.jeml-group</code>, <code>.jeml-card</code> — plus a handful of quality-of-life rules (e.g. horizontal spacing between sibling <code>&lt;button&gt;</code> elements). Light and dark mode come for free via <code>prefers-color-scheme</code>.</p>
+
+    <p>Re-skinning is one variable away. Every visual decision routes through a CSS custom property under the <code>--jeml-*</code> namespace (<code>--jeml-bg-1</code>, <code>--jeml-tx-1</code>, <code>--jeml-lk-1</code>, <code>--jeml-radius</code>, …), so overriding a single token in your own stylesheet re-paints the document without touching selectors.</p>
+
+    <div class="compare">
+      <div class="compare-row compare-head">
+        <div>How you use it</div><div>What it does</div>
+      </div>
+      <div class="compare-row"><div>(do nothing)</div><div>The preset auto-injects as the first <code>&lt;style&gt;</code> in <code>&lt;head&gt;</code></div></div>
+      <div class="compare-row"><div><code>&gt;&gt; style [preset=base]</code></div><div>Same as above, just signposted in source</div></div>
+      <div class="compare-row"><div><code>&gt;&gt; style [preset=none]</code></div><div>Opt out — no preset CSS is injected</div></div>
+      <div class="compare-row"><div><code>&gt;&gt; style [ref="/jeml.css"]</code></div><div>Link your own copy (a fork from <em>node_modules/@jekdev/jeml/styles/jeml.css</em>)</div></div>
+    </div>
+
+    <p>The cascade is engineered so authors always win: the preset is emitted first, then any <code>&gt;&gt; style [ref=...]</code> links, then inline <code>&gt;&gt; style: { ... }</code> bodies, then the compiler's responsive scope rules. Override <code>--jeml-lk-1</code>, <code>--jeml-bg-1</code>, <code>--jeml-radius</code>, or any of the other tokens documented in <em>packages/compiler/styles/README.md</em>.</p>
+
+    <div class="callout">
+      <div class="callout-label">Forking the preset</div>
+      <p>If you outgrow the defaults, copy <em>styles/jeml.css</em> from the npm package, opt out with <code>&gt;&gt; style [preset=none]</code>, and link your fork. There's nothing magical about the preset — it's plain CSS targeting the same selectors the compiler emits.</p>
+    </div>
+
     <h3>Project layout</h3>
 
     <p>JEML lives as a small monorepo. The compiler, the language server, and the editor extension each have their own <code>package.json</code> and can be released independently.</p>

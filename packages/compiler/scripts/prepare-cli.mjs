@@ -9,6 +9,8 @@ if (!existsSync('src/cli.ts')) {
   process.exit(0)
 }
 
+await import('./bundle-styles.mjs')
+
 const { build } = await import('esbuild')
 await build({
   entryPoints: ['src/cli.ts'],

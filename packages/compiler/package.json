@@ -18,16 +18,21 @@
   },
   "files": [
     "dist/jeml.mjs",
+    "styles/",
     "README.md",
-    "scripts/prepare-cli.mjs"
+    "scripts/prepare-cli.mjs",
+    "scripts/bundle-styles.mjs"
   ],
   "scripts": {
     "dev": "vite src/playground",
     "build": "npm run build:cli",
+    "build:styles": "node scripts/bundle-styles.mjs",
+    "prebuild:cli": "npm run build:styles",
     "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --outfile=dist/jeml.mjs",
     "build:playground": "vite build src/playground --outDir ../../dist/playground",
     "prepare": "node scripts/prepare-cli.mjs",
-    "prepack": "npm run build:cli",
+    "prepack": "npm run build:styles && npm run build:cli",
+    "pretest": "npm run build:styles",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

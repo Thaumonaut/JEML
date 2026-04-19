@@ -6,6 +6,8 @@
   from the compiled output entirely.
 %}
 
+>> style [preset=none]
+
 >> document:
   > heading.1: Syntax reference <
 

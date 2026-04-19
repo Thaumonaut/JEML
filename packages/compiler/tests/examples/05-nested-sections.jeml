@@ -1,3 +1,5 @@
+>> style [preset=none]
+
 >> document:
   > section [id="hero"]:
     > heading.1: Welcome to the site <

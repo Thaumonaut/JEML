@@ -3,6 +3,8 @@
   description="Demonstrates mobile-first responsive overrides"
 ]
 
+>> style [preset=none]
+
 >> document:
   > section [id=products]:
     > heading.2: Featured products <

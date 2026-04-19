@@ -1,3 +1,5 @@
+>> style [preset=none]
+
 >> document:
   > text:
     Check out the #'documentation'[url="/docs"] for more info.

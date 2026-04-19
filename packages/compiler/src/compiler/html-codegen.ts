@@ -9,10 +9,12 @@ import type {
   Node,
   ScriptDirective,
   SiblingItemNode,
+  StyleDirective,
   VoidNode,
 } from '../parser/ast'
 import { parseAttributes } from '../parser/attributes'
 import { CLIENT_RUNTIME } from '../runtime/embed'
+import { BASE_CSS } from './preset-styles'
 import { transpileScript } from './targets/typescript/transpile'
 
 type HtmlGenContext = {
@@ -39,6 +41,13 @@ export function generateHtml(ast: JEMLDocument): string {
 function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: boolean): string {
   const headLines: string[] = []
   const documentDirective = ast.directives.find((directive): directive is DocumentDirective => directive.type === 'document')
+
+  if (resolvePresetMode(ast) === 'base') {
+    headLines.push('<style data-jeml-preset="base">')
+    headLines.push(BASE_CSS.trim())
+    headLines.push('</style>')
+  }
+
   for (const directive of ast.directives) {
     if (directive.type === 'meta') {
       for (const attr of directive.attributes) {
@@ -57,6 +66,9 @@ function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: bool
       }
     }
     if (directive.type === 'style') {
+      // The `preset` attribute is consumed by resolvePresetMode and produces
+      // no per-directive output; skip it so a bare `>> style [preset=none]`
+      // doesn't leak an empty <style> block.
       const ref = findAttribute(directive.attributes, 'ref')
       if (ref) {
         headLines.push(`<link rel="stylesheet" href="${escapeAttr(ref)}">`)
@@ -91,6 +103,25 @@ function generateHtmlInner(ast: JEMLDocument, ctx: HtmlGenContext, dynamic: bool
   }
   output.push('</body>', '</html>')
   return `${output.join('\n')}\n`
+}
+
+/**
+ * Decide whether to inject the base preset stylesheet.
+ *
+ *  - `base` (default): no `>> style` directive opts out, so we ship the preset
+ *  - `none`: at least one `>> style [preset=none]` directive is present
+ *
+ * Explicit `>> style [preset=base]` is honored as a no-op against the default,
+ * but a single `[preset=none]` anywhere in the document wins.
+ */
+function resolvePresetMode(ast: JEMLDocument): 'base' | 'none' {
+  for (const directive of ast.directives) {
+    if (directive.type !== 'style') continue
+    const styleDirective = directive as StyleDirective
+    const preset = findAttribute(styleDirective.attributes, 'preset')
+    if (preset === 'none') return 'none'
+  }
+  return 'base'
 }
 
 function documentIsDynamic(ast: JEMLDocument): boolean {

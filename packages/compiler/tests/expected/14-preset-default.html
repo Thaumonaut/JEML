@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-jeml-preset="base">
+/*
+ * JEML — default stylesheet (preset: base)
+ *
+ * Foundation: new.css v1.1.3 by Xz (https://newcss.net) — MIT License.
+ * A classless CSS framework that styles raw HTML elements directly.
+ * We've vendored it here (renamed --nc-* tokens to --jeml-* for a single
+ * theming surface) so JEML output stays self-contained with zero external
+ * requests — no font CDN, no <link>, just one inline <style> block.
+ *
+ * On top of new.css we add a thin JEML primitives layer for the structural
+ * classes the compiler emits (.jeml-grid, .jeml-stack, .jeml-group,
+ * .jeml-card) plus a few quality-of-life rules that are tailored to JEML's
+ * codegen (e.g. horizontal spacing between sibling <button> elements so
+ * casual `> button: Add < > button: Reset <` layouts look right without a
+ * `> group:` wrapper).
+ *
+ * Override any --jeml-* token from your own stylesheet to re-skin the
+ * document. Opt out entirely with `>> style [preset=none]`.
+ *
+ * Upstream new.css source: https://newcss.net/new.min.css
+ * Upstream license:        https://github.com/xz/new.css/blob/master/LICENSE
+ */
+
+/* ─── Tokens ──────────────────────────────────────────────────────────────── */
+
+:root {
+  --jeml-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --jeml-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monaco,
+    "Ubuntu Mono", "Liberation Mono", "Courier New", Courier, monospace;
+
+  --jeml-tx-1: #000;
+  --jeml-tx-2: #1a1a1a;
+  --jeml-bg-1: #fff;
+  --jeml-bg-2: #f6f8fa;
+  --jeml-bg-3: #e5e7eb;
+  --jeml-lk-1: #0070f3;
+  --jeml-lk-2: #0366d6;
+  --jeml-lk-tx: #fff;
+  --jeml-ac-1: #79ffe1;
+  --jeml-ac-tx: #0c4047;
+
+  /* JEML-primitive tokens (used by .jeml-grid, .jeml-stack, .jeml-card, …) */
+  --jeml-gap-sm: 0.5rem;
+  --jeml-gap-md: 1rem;
+  --jeml-gap-lg: 1.5rem;
+  --jeml-radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --jeml-tx-1: #fff;
+    --jeml-tx-2: #eee;
+    --jeml-bg-1: #000;
+    --jeml-bg-2: #111;
+    --jeml-bg-3: #222;
+    --jeml-lk-1: #3291ff;
+    --jeml-lk-2: #0070f3;
+    --jeml-lk-tx: #fff;
+    --jeml-ac-1: #7928ca;
+    --jeml-ac-tx: #fff;
+  }
+}
+
+[data-theme="dark"] {
+  --jeml-tx-1: #fff;
+  --jeml-tx-2: #eee;
+  --jeml-bg-1: #000;
+  --jeml-bg-2: #111;
+  --jeml-bg-3: #222;
+  --jeml-lk-1: #3291ff;
+  --jeml-lk-2: #0070f3;
+  --jeml-lk-tx: #fff;
+  --jeml-ac-1: #7928ca;
+  --jeml-ac-tx: #fff;
+}
+
+/* ─── new.css foundation (verbatim, with --nc-* → --jeml-*) ───────────────── */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+address, area, article, aside, audio, blockquote, datalist, details, dl,
+fieldset, figure, form, input, iframe, img, meter, nav, ol, optgroup, option,
+output, p, pre, progress, ruby, section, table, textarea, ul, video {
+  margin-bottom: 1rem;
+}
+
+html, input, select, button {
+  font-family: var(--jeml-font-sans);
+}
+
+body {
+  margin: 0 auto;
+  max-width: 750px;
+  padding: 2rem;
+  border-radius: 6px;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  background: var(--jeml-bg-1);
+  color: var(--jeml-tx-2);
+  font-size: 1.03rem;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--jeml-ac-1);
+  color: var(--jeml-ac-tx);
+}
+
+p { margin-bottom: 1rem; }
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1;
+  color: var(--jeml-tx-1);
+  padding-top: 0.875rem;
+}
+
+h1, h2, h3 {
+  color: var(--jeml-tx-1);
+  padding-bottom: 2px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--jeml-bg-2);
+}
+
+h4, h5, h6 { margin-bottom: 0.3rem; }
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.85rem; }
+h3 { font-size: 1.55rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.875rem; }
+
+a            { color: var(--jeml-lk-1); }
+a:hover      { color: var(--jeml-lk-2); }
+abbr:hover   { cursor: help; }
+abbr         { cursor: help; }
+
+blockquote {
+  padding: 1.5rem;
+  background: var(--jeml-bg-2);
+  border-left: 5px solid var(--jeml-bg-3);
+}
+blockquote :last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+header {
+  background: var(--jeml-bg-2);
+  border-bottom: 1px solid var(--jeml-bg-3);
+  padding: 2rem 1.5rem;
+  margin: -2rem calc(0px - (50vw - 50%)) 2rem;
+  padding-left: calc(50vw - 50%);
+  padding-right: calc(50vw - 50%);
+}
+header h1, header h2, header h3 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+header > :first-child { margin-top: 0; padding-top: 0; }
+header > :last-child  { margin-bottom: 0; }
+
+a button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  font-size: 1rem;
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--jeml-lk-1);
+  color: var(--jeml-lk-tx);
+  border: 0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+a button[disabled],
+button[disabled],
+input[type="submit"][disabled],
+input[type="reset"][disabled],
+input[type="button"][disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+a button:focus, a button:hover,
+button:focus, button:hover,
+input[type="submit"]:focus, input[type="submit"]:hover,
+input[type="reset"]:focus,  input[type="reset"]:hover,
+input[type="button"]:focus, input[type="button"]:hover {
+  background: var(--jeml-lk-2);
+}
+
+code, pre, kbd, samp { font-family: var(--jeml-font-mono); }
+
+code, samp, kbd, pre {
+  background: var(--jeml-bg-2);
+  border: 1px solid var(--jeml-bg-3);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 0.9rem;
+}
+
+kbd { border-bottom: 3px solid var(--jeml-bg-3); }
+
+pre {
+  padding: 1rem 1.4rem;
+  max-width: 100%;
+  overflow: auto;
+}
+pre code {
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+code pre {
+  display: inline;
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+details {
+  padding: 0.6rem 1rem;
+  background: var(--jeml-bg-2);
+  border: 1px solid var(--jeml-bg-3);
+  border-radius: 4px;
+}
+summary { cursor: pointer; font-weight: 700; }
+details[open] { padding-bottom: 0.75rem; }
+details[open] summary { margin-bottom: 6px; }
+details[open] > :last-child { margin-bottom: 0; }
+
+dt { font-weight: 700; }
+dd::before { content: '→ '; }
+
+hr {
+  border: 0;
+  border-bottom: 1px solid var(--jeml-bg-3);
+  margin: 1rem auto;
+}
+
+fieldset {
+  margin-top: 1rem;
+  padding: 2rem;
+  border: 1px solid var(--jeml-bg-3);
+  border-radius: 4px;
+}
+legend { padding: auto 0.5rem; }
+
+table { border-collapse: collapse; width: 100%; }
+td, th {
+  border: 1px solid var(--jeml-bg-3);
+  text-align: left;
+  padding: 0.5rem;
+}
+th { background: var(--jeml-bg-2); }
+tr:nth-child(even) { background: var(--jeml-bg-2); }
+table caption { font-weight: 700; margin-bottom: 0.5rem; }
+
+textarea { max-width: 100%; }
+
+ol, ul { padding-left: 2rem; }
+li { margin-top: 0.4rem; }
+ul ul, ol ul, ul ol, ol ol { margin-bottom: 0; }
+
+mark {
+  padding: 3px 6px;
+  background: var(--jeml-ac-1);
+  color: var(--jeml-ac-tx);
+}
+
+textarea, select, input {
+  padding: 6px 12px;
+  margin-bottom: 0.5rem;
+  background: var(--jeml-bg-2);
+  color: var(--jeml-tx-2);
+  border: 1px solid var(--jeml-bg-2);
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+textarea:focus, select:focus, input[type]:focus {
+  border: 1px solid var(--jeml-bg-3);
+  outline: 0;
+}
+
+img { max-width: 100%; }
+
+/* ─── JEML primitives layer (codegen-tied, not part of new.css) ──────────── */
+
+/* Casual sibling buttons need a horizontal gap when they sit next to each
+ * other inline (e.g. `> button: Add < > button: Reset <` without a wrapper). */
+button + button,
+button + a,
+a + button,
+input + button,
+button + input {
+  margin-left: var(--jeml-gap-sm);
+}
+
+/* Restore breathing room between paragraphs/headings and adjacent
+ * inline-block buttons that immediately follow them. */
+p + button,
+p + a {
+  margin-top: 0;
+}
+
+/* JEML grid primitive: CSS grid with author-controllable column count + gap. */
+.jeml-grid {
+  display: grid;
+  gap: var(--jeml-gap-md);
+  grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+}
+
+/* Responsive grids carry a textual --gap token (e.g. "md") that CSS can't
+ * resolve into a length, so we just use the default gap and let authors
+ * override per-id when they need finer control. */
+.jeml-grid[data-jeml-r] { gap: var(--jeml-gap-md); }
+
+/* JEML stack: vertical flex with a uniform gap. */
+.jeml-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--jeml-gap-md);
+}
+
+/* JEML group: horizontal flex with a uniform gap, wraps on overflow. */
+.jeml-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--jeml-gap-sm);
+}
+
+/* JEML card: padded surface with subtle border + rounded corners. */
+.jeml-card {
+  padding: var(--jeml-gap-lg);
+  background: var(--jeml-bg-1);
+  border: 1px solid var(--jeml-bg-3);
+  border-radius: var(--jeml-radius);
+}
+
+/* When an .icon class lands on a tag, treat it as inline media and stop
+ * it from inheriting button/link visuals. */
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+</style>
+<title>Preset showcase</title>
+<meta name="description" content="Every JEML primitive rendered with the default preset">
+</head>
+<body>
+<nav>
+<div class="jeml-brand"><i class="icon" data-icon="logo"></i> JEML</div>
+<ul>
+<li><a href="#tokens">Tokens</a></li>
+<li><a href="#primitives">Primitives</a></li>
+<li><a href="#variants">Variants</a></li>
+</ul>
+<button class="primary">Get started</button>
+</nav>
+<section id="tokens">
+<h1>Default preset showcase</h1>
+<p class="lead">A single stylesheet that styles every JEML primitive with restraint. Override any <strong>--jeml-</strong>* token to re-skin without rewriting selectors.</p>
+<p class="muted">System-minimal aesthetic. No webfonts. Light + dark via prefers-color-scheme.</p>
+</section>
+<section id="primitives">
+<h2>Layout primitives</h2>
+<div class="jeml-grid jeml-cols-3 jeml-gap-md" style="--cols: 3">
+<div class="jeml-card">
+<h3>Card</h3>
+<p>A card sits on a raised surface with a soft border.</p>
+</div>
+<div class="jeml-card elevated">
+<h3>Elevated</h3>
+<p>Same card with a shadow instead of a border.</p>
+</div>
+<div class="jeml-card flat">
+<h3>Flat</h3>
+<p>A muted surface card with no border.</p>
+</div>
+</div>
+<h3>Stack &amp; group</h3>
+<div class="jeml-stack jeml-gap-sm">
+<p>Stacks lay children out vertically with a configurable gap.</p>
+<div class="jeml-group jeml-gap-sm">
+<button class="primary">Primary</button>
+<button class="secondary">Secondary</button>
+<button class="ghost">Ghost</button>
+<button class="danger">Danger</button>
+</div>
+</div>
+</section>
+<section id="variants">
+<h2>Foundation styles</h2>
+<h3>Typography</h3>
+<p>Body text uses the system font stack. Inline <code>code spans</code> and <a href="#">links</a> inherit accent color. <strong>Bold</strong> and <em>italic</em> keep their semantic markup.</p>
+<p class="caption">Small caption text in muted color.</p>
+<h3>Lists</h3>
+<ul>
+<li>Apples</li>
+<li>Bananas</li>
+<li>Cherries</li>
+</ul>
+<h3>Code blocks</h3>
+<pre><code class="language-typescript">  function greet(name: string): string {
+    return `Hello, ${name}!`;
+  }
+</code></pre>
+<h3>Table</h3>
+<table>
+<thead>
+<tr>
+<th data-key="plan">Plan</th>
+<th data-key="price">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Free</td>
+<td>$0</td>
+</tr>
+<tr>
+<td>Team</td>
+<td>$12</td>
+</tr>
+</tbody>
+</table>
+<h3>Form controls</h3>
+<form>
+<label>Your name<input type="text" name="name"></label>
+<label>Email<input type="email" name="email"></label>
+<label>Message<textarea name="message"></textarea></label>
+<label><input type="checkbox" name="newsletter">Subscribe to newsletter</label>
+<div class="jeml-group">
+<button type="submit" class="primary">Send</button>
+<button class="ghost">Cancel</button>
+</div>
+</form>
+</section>
+<footer>
+<p class="muted jeml-align-center">Built with JEML. Default preset · v0.4.x</p>
+</footer>
+</body>
+</html>

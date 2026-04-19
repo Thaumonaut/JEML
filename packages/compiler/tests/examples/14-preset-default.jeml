@@ -1,0 +1,118 @@
+>> meta [
+  title="Preset showcase"
+  description="Every JEML primitive rendered with the default preset"
+]
+
+>> document:
+
+  > nav.sticky:
+    > brand:
+      /> icon [name=logo]: </
+      JEML
+    <
+    > links:
+      - #'Tokens'[url="#tokens"]
+      - #'Primitives'[url="#primitives"]
+      - #'Variants'[url="#variants"]
+    <
+    > button.primary: Get started <
+  < nav
+
+  > section [id=tokens]:
+    > heading.1: Default preset showcase <
+    > text.lead:
+      A single stylesheet that styles every JEML primitive with restraint.
+      Override any **--jeml-*** token to re-skin without rewriting selectors.
+    <
+    > text.muted: System-minimal aesthetic. No webfonts. Light + dark via prefers-color-scheme. <
+  < section
+
+  > section [id=primitives]:
+    > heading.2: Layout primitives <
+
+    > grid [cols=3 gap=md]:
+      > card:
+        > heading.3: Card <
+        > text: A card sits on a raised surface with a soft border. <
+      <
+      > card.elevated:
+        > heading.3: Elevated <
+        > text: Same card with a shadow instead of a border. <
+      <
+      > card.flat:
+        > heading.3: Flat <
+        > text: A muted surface card with no border. <
+      <
+    < grid
+
+    > heading.3: Stack & group <
+    > stack [gap=sm]:
+      > text: Stacks lay children out vertically with a configurable gap. <
+      > group [gap=sm]:
+        > button.primary: Primary <
+        > button.secondary: Secondary <
+        > button.ghost: Ghost <
+        > button.danger: Danger <
+      <
+    <
+  < section
+
+  > section [id=variants]:
+    > heading.2: Foundation styles <
+
+    > heading.3: Typography <
+    > text:
+      Body text uses the system font stack. Inline `code spans` and
+      #'links'[url="#"] inherit accent color. **Bold** and _italic_ keep
+      their semantic markup.
+    <
+    > text.caption: Small caption text in muted color. <
+
+    > heading.3: Lists <
+    > list:
+      - Apples
+      - Bananas
+      - Cherries
+    <
+
+    > heading.3: Code blocks <
+    ```typescript
+    function greet(name: string): string {
+      return `Hello, ${name}!`;
+    }
+    ```
+
+    > heading.3: Table <
+    > table:
+      > columns:
+        - [key=plan label=Plan]
+        - [key=price label=Price]
+      <
+      > row:
+        - Free
+        - $0
+      <
+      > row:
+        - Team
+        - $12
+      <
+    < table
+
+    > heading.3: Form controls <
+    > form:
+      !> field [type=text label="Your name" name=name]
+      !> field [type=email label="Email" name=email]
+      !> field [type=textarea label="Message" name=message]
+      !> field [type=checkbox label="Subscribe to newsletter" name=newsletter]
+      > group:
+        > button.primary [type=submit]: Send <
+        > button.ghost: Cancel <
+      <
+    <
+  < section
+
+  > footer:
+    > text.muted [align=center]: Built with JEML. Default preset · v0.4.x <
+  < footer
+
+<< document

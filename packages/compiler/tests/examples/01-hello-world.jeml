@@ -1,3 +1,5 @@
+>> style [preset=none]
+
 >> document:
   > heading.1: Hello, world <
 << document

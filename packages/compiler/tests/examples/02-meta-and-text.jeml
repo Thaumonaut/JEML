@@ -3,6 +3,8 @@
   description="A simple test page"
 ]
 
+>> style [preset=none]
+
 >> document:
   > heading.1: Welcome <
   > text:

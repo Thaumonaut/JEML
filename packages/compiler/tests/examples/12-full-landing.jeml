@@ -6,7 +6,7 @@
 ]
 << meta
 
->> style [type=css ref="/styles/landing.css"]
+>> style [type=css ref="/styles/landing.css" preset=none]
 
 >> document:
 

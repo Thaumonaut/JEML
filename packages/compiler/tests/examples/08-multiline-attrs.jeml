@@ -2,7 +2,7 @@
   title="Styled Page"
 ]
 
->> style [type=css ref="/styles/main.css"]
+>> style [type=css ref="/styles/main.css" preset=none]
 
 >> document:
   > button.primary [

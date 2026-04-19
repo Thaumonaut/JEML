@@ -1,3 +1,5 @@
+>> style [preset=none]
+
 >> document:
   > text:
     This paragraph has **bold text** and _italic text_ and `inline code`.

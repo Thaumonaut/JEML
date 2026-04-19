@@ -1,0 +1,39 @@
+>> meta [title="Counter"]
+
+>> script [type=typescript]: {
+  let count = 0
+  let x = 1
+
+  let isDark = false
+  let isDarkState = "light"
+
+  toggleIsDark() {
+    isDark = !isDark
+    if(isDark) {
+      isDarkState = "Dark"
+    } else {
+      isDarkState = "Light"
+    }
+  }
+
+  increment () {
+    count = count + 1
+  }
+
+  reset () {
+    count = 0
+  }
+}
+<<
+
+>> document:
+  > heading.1: Counter <
+  > text: Clicks: &count <
+  > button [on_press=@increment]: Add <
+  > button [on_press=@reset]: Reset <
+
+  > text: &isDarkState <
+  > button [on_press=@toggleIsDark]: toggle dark mode <
+
+  > text: &x <
+<< document
