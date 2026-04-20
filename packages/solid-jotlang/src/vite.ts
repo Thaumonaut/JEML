@@ -1,13 +1,13 @@
 /**
- * Vite plugin for `solid-jotl`. Place it BEFORE `vite-plugin-solid`
- * so the JOTL source is rewritten to TSX before Solid compiles it further.
+ * Vite plugin for `solid-jotlang`. Place it BEFORE `vite-plugin-solid`
+ * so the JOTLANG source is rewritten to TSX before Solid compiles it further.
  *
  * ```ts
  * // vite.config.ts
- * import solidJotl from 'solid-jotl/vite'
+ * import solidJotlang from 'solid-jotlang/vite'
  * import solid from 'vite-plugin-solid'
  *
- * export default { plugins: [solidJotl(), solid()] }
+ * export default { plugins: [solidJotlang(), solid()] }
  * ```
  */
 
@@ -29,14 +29,14 @@ export type JotlSolidOptions = {
   meta?: 'auto' | 'solid-meta' | 'noop'
 }
 
-export default function solidJotl(options: JotlSolidOptions = {}): Plugin {
+export default function solidJotlang(options: JotlSolidOptions = {}): Plugin {
   const suffix = options.suffix ?? '.jot'
   const metaSetting = options.meta ?? 'auto'
   let resolvedMeta: CompileOptions['meta'] = 'noop'
   let warnedNoMeta = false
 
   return {
-    name: 'solid-jotl',
+    name: 'solid-jotlang',
     enforce: 'pre',
     configResolved(config) {
       // Decide once, per dev/build cycle, whether `solid-meta` is reachable
@@ -70,7 +70,7 @@ export default function solidJotl(options: JotlSolidOptions = {}): Plugin {
         warnedNoMeta = true
         // eslint-disable-next-line no-console
         console.warn(
-          `[solid-jotl] ${cleanId}: >> meta directives detected but \`solid-meta\` is not installed. ` +
+          `[solid-jotlang] ${cleanId}: >> meta directives detected but \`solid-meta\` is not installed. ` +
             `Add it as a dependency to lower meta into <Title>/<Meta> components, ` +
             `or pass meta: 'noop' to silence this warning.`,
         )

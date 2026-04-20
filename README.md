@@ -1,14 +1,14 @@
-# JOTL — monorepo
+# JOTLANG — monorepo
 
-JOTL — a markup language for UI templating that compiles to HTML.
+JOTLANG — a markup language for UI templating that compiles to HTML.
 
 This repository is organized as an npm workspaces monorepo with three packages:
 
 | Package | Description |
 |---------|-------------|
 | [`@jotl/compiler`](./packages/compiler) | The JOTL → HTML compiler (reference implementation, TypeScript + Peggy) |
-| [`jotl-lsp`](./packages/lsp) | Language Server Protocol implementation for editor intelligence |
-| [`jotl-language`](./packages/vscode-extension) | VS Code extension — grammar + bundled LSP client |
+| [`jotlang-lsp`](./packages/lsp) | Language Server Protocol implementation for editor intelligence |
+| [`jotlang-language`](./packages/vscode-extension) | VS Code extension — grammar + bundled LSP client |
 
 Documentation lives in `docs/` and the authoritative language spec in `spec/RULEBOOK.md`.
 

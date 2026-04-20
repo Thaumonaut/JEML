@@ -10,7 +10,6 @@
     "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "baseUrl": ".",
     "types": ["node", "vitest/globals"]
   },
   "include": ["src/**/*", "tests/**/*"],

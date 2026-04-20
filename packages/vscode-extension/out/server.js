@@ -9628,6 +9628,24 @@ var require_tags = __commonJS({
         attributes: ["type"],
         specSection: "\xA75.1.4"
       },
+      {
+        name: "component",
+        flavor: "block",
+        description: "Declares a named, exportable component. solid-jotlang wraps the props/script/document inside as a single Solid component function. Multiple `>> component` blocks may live in the same file.",
+        htmlMapping: "(no HTML output \u2014 compiles to a Solid component)",
+        variants: [],
+        attributes: [],
+        specSection: "solid-jotlang"
+      },
+      {
+        name: "props",
+        flavor: "block",
+        description: "Declares typed component props. The body is a TypeScript object-literal type \u2014 fields suffixed with `?` are optional. Available inside the component as `props.<name>`.",
+        htmlMapping: "(no HTML output \u2014 type-only declaration)",
+        variants: [],
+        attributes: [],
+        specSection: "solid-jotlang"
+      },
       // ───────── Block structure ─────────
       {
         name: "section",
@@ -10264,6 +10282,55 @@ var require_attributes = __commonJS({
         description: "Handler invoked when a form is submitted.",
         responsive: false
       },
+      {
+        name: "on_input",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "Handler invoked on every keystroke / value change of an input. In solid-jotlang, receives the native InputEvent.",
+        responsive: false
+      },
+      {
+        name: "on_blur",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "Handler invoked when the element loses focus.",
+        responsive: false
+      },
+      {
+        name: "on_focus",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "Handler invoked when the element gains focus.",
+        responsive: false
+      },
+      {
+        name: "on_keydown",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "Handler invoked on keydown. Receives the native KeyboardEvent.",
+        responsive: false
+      },
+      {
+        name: "on_keyup",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "Handler invoked on keyup. Receives the native KeyboardEvent.",
+        responsive: false
+      },
+      {
+        name: "on_mount",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "solid-jotlang: handler invoked once after the element mounts (Solid `onMount` lifecycle).",
+        responsive: false
+      },
+      {
+        name: "on_cleanup",
+        class: "behavior",
+        accepts: ["reference"],
+        description: "solid-jotlang: handler invoked when the element unmounts (Solid `onCleanup` lifecycle).",
+        responsive: false
+      },
       // ───────── Directive-specific ─────────
       {
         name: "title",
@@ -10349,7 +10416,7 @@ var require_diagnostics = __commonJS({
           severity: err.severity === "error" ? node_12.DiagnosticSeverity.Error : node_12.DiagnosticSeverity.Warning,
           range: toLspRange(err.range),
           message: err.message,
-          source: "jotl"
+          source: "jotlang"
         });
       }
       const tokens = result.tokens;
@@ -10364,7 +10431,7 @@ var require_diagnostics = __commonJS({
               severity: node_12.DiagnosticSeverity.Information,
               range: toLspRange(t.range),
               message: `Unknown tag '${t.text}'. If this is a user-defined component, consider using a capitalized name.`,
-              source: "jotl"
+              source: "jotlang"
             });
           }
           continue;
@@ -10376,7 +10443,7 @@ var require_diagnostics = __commonJS({
               severity: node_12.DiagnosticSeverity.Error,
               range: toLspRange(v.range),
               message: `Tag '${t.text}' does not accept variants.`,
-              source: "jotl"
+              source: "jotlang"
             });
           } else {
             const allowed = tagDef.variants.map((vd) => vd.name);
@@ -10385,7 +10452,7 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(v.range),
                 message: `Unknown variant '${v.text}' for tag '${t.text}'. Valid variants: ${allowed.join(", ")}.`,
-                source: "jotl"
+                source: "jotlang"
               });
             }
           }
@@ -10403,7 +10470,7 @@ var require_diagnostics = __commonJS({
             severity: node_12.DiagnosticSeverity.Warning,
             range: toLspRange(tokens[i].range),
             message: `Responsive override on style attribute '${attrName.text}' is discouraged. Layout attributes accept overrides; for theming, use a design token system instead. (Rulebook \xA78.7)`,
-            source: "jotl"
+            source: "jotlang"
           });
         }
       }
@@ -10465,14 +10532,14 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Directive close '<<' with no matching '>>' open.",
-                source: "jotl"
+                source: "jotlang"
               });
             } else if (popped.kind !== "directive") {
               diagnostics.push({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: `Directive close '<<' but the innermost open is a ${popped.kind}.`,
-                source: "jotl"
+                source: "jotlang"
               });
               stack.push(popped);
             }
@@ -10485,14 +10552,14 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Block close '<' with no matching '>' open.",
-                source: "jotl"
+                source: "jotlang"
               });
             } else if (popped.kind === "directive") {
               diagnostics.push({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Block close '<' used to close a directive \u2014 use '<<' instead.",
-                source: "jotl"
+                source: "jotlang"
               });
               stack.push(popped);
             }
@@ -10505,7 +10572,7 @@ var require_diagnostics = __commonJS({
                 severity: node_12.DiagnosticSeverity.Error,
                 range: toLspRange(t.range),
                 message: "Inline close '</' with no matching '/>' open.",
-                source: "jotl"
+                source: "jotlang"
               });
             } else if (popped.kind !== "inline") {
               stack.push(popped);
@@ -10521,7 +10588,7 @@ var require_diagnostics = __commonJS({
           severity: node_12.DiagnosticSeverity.Error,
           range: toLspRange(entry.token.range),
           message: `Unclosed ${word}. Add '${closer}' to close it.`,
-          source: "jotl"
+          source: "jotlang"
         });
       }
       return diagnostics;
@@ -10546,9 +10613,41 @@ var require_diagnostics = __commonJS({
             break;
           }
         }
+        if (sawColon && isBraceBounded(tokens, i)) {
+          result.set(i, false);
+          continue;
+        }
         result.set(i, sawColon);
       }
       return result;
+    }
+    function isBraceBounded(tokens, directiveIdx) {
+      let colonIdx = -1;
+      let depth = 0;
+      for (let j = directiveIdx + 1; j < tokens.length; j++) {
+        const tk = tokens[j];
+        if (tk.kind === "attr-bracket-open")
+          depth++;
+        else if (tk.kind === "attr-bracket-close")
+          depth--;
+        else if (tk.kind === "newline" && depth === 0)
+          return false;
+        else if (tk.kind === "content-delim" && depth === 0) {
+          colonIdx = j;
+          break;
+        }
+      }
+      if (colonIdx < 0)
+        return false;
+      for (let j = colonIdx + 1; j < tokens.length; j++) {
+        const tk = tokens[j];
+        if (tk.kind === "whitespace")
+          continue;
+        if (tk.kind === "newline")
+          return false;
+        return tk.text.startsWith("{");
+      }
+      return false;
     }
     function toLspRange(r) {
       return {
@@ -10656,13 +10755,27 @@ var require_completions = __commonJS({
           label: ">> script",
           kind: node_12.CompletionItemKind.Keyword,
           detail: "Reactive script",
-          insertText: ">> script [type=typescript]: {\n  $0\n}\n<<",
+          insertText: ">> script: {\n  $0\n}",
+          insertTextFormat: node_12.InsertTextFormat.Snippet
+        },
+        {
+          label: ">> component",
+          kind: node_12.CompletionItemKind.Keyword,
+          detail: "solid-jotlang component declaration",
+          insertText: ">> component ${1:Name}:\n  >> props: {\n    $2\n  }\n\n  >> script: {\n    $3\n  }\n\n  >> document:\n    $0\n  << document\n<< component",
+          insertTextFormat: node_12.InsertTextFormat.Snippet
+        },
+        {
+          label: ">> props",
+          kind: node_12.CompletionItemKind.Keyword,
+          detail: "Typed component props (solid-jotlang)",
+          insertText: ">> props: {\n  $0\n}",
           insertTextFormat: node_12.InsertTextFormat.Snippet
         }
       ];
     }
     function directiveTagCompletions() {
-      return ["meta", "style", "import", "document", "script"].map((name) => ({
+      return ["meta", "style", "import", "document", "script", "component", "props"].map((name) => ({
         label: name,
         kind: node_12.CompletionItemKind.Keyword,
         detail: `${name} directive`
@@ -10965,6 +11078,15 @@ var require_hover = __commonJS({
     var sigils_1 = require_sigils();
     var tags_1 = require_tags();
     var attributes_1 = require_attributes();
+    var REACTIVITY_PRIMITIVES = {
+      signal: "**`signal(initial)`** \u2014 solid-jotlang reactive primitive\n\nDeclares a reactive value. Inside a `>> script:` body, assignments to a `signal()`-declared name compile to setter calls and reads compile to getter calls.\n\n```ts\nlet count = signal(0)\ncount = count() + 1   // setter\nconsole.log(count())  // getter\n```",
+      memo: "**`memo(() => expr)`** \u2014 solid-jotlang reactive primitive\n\nDeclares a derived value that recomputes only when its dependencies change. Compiles to Solid's `createMemo`.",
+      effect: "**`effect(() => { ... })`** \u2014 solid-jotlang reactive primitive\n\nRuns a side-effect that re-runs whenever any reactive value it reads changes. Compiles to Solid's `createEffect`.",
+      resource: "**`resource(fetcher)`** \u2014 solid-jotlang reactive primitive\n\nDeclares an async resource (e.g. for `fetch`). Tracks loading state and re-fetches when its source signal changes. Compiles to Solid's `createResource`.",
+      onMount: "**`onMount(() => { ... })`** \u2014 Solid lifecycle\n\nRuns once after the component mounts to the DOM. Re-exported from `solid-js`.",
+      onCleanup: "**`onCleanup(() => { ... })`** \u2014 Solid lifecycle\n\nRuns when the component (or current reactive scope) is disposed. Re-exported from `solid-js`.",
+      props: "**`props`** \u2014 component props object\n\nInside a `>> component`, the typed object declared by `>> props: { ... }`. Access fields as `props.name`. Solid props are getters \u2014 destructuring breaks reactivity."
+    };
     function computeHover(ctx) {
       const tok = ctx.index.at(ctx.line, ctx.column);
       if (!tok)
@@ -11100,6 +11222,15 @@ Loop-bound variable, scoped to the enclosing \`~ for\` body.`
           range
         };
       }
+      if (tok.kind === "identifier") {
+        const doc = REACTIVITY_PRIMITIVES[tok.text];
+        if (doc) {
+          return {
+            contents: { kind: node_12.MarkupKind.Markdown, value: doc },
+            range
+          };
+        }
+      }
       if (tok.kind === "css-length") {
         return {
           contents: {
@@ -11173,13 +11304,13 @@ connection.onInitialize((_params) => {
       }
     },
     serverInfo: {
-      name: "jotl-lsp",
-      version: "0.1.0"
+      name: "jotlang-lsp",
+      version: "0.6.0"
     }
   };
 });
 connection.onInitialized(() => {
-  connection.console.log("JOTL language server initialized.");
+  connection.console.log("JOTLANG language server initialized.");
 });
 documents.onDidChangeContent((change) => {
   const analysis = analyze(change.document);

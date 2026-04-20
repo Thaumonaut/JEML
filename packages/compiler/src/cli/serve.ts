@@ -223,7 +223,7 @@ function errorDocument(message: string): string {
     .replaceAll('>', '&gt;')
   return `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"/><title>JOTL compile error</title></head>
+<head><meta charset="utf-8"/><title>JOTLANG compile error</title></head>
 <body>
   <pre style="font-family: ui-monospace, monospace; padding: 1rem; white-space: pre-wrap;">${safe}</pre>
 </body>

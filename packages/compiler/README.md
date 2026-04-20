@@ -1,6 +1,6 @@
 # jotl
 
-JOTL — a markup language for UI templating that compiles to HTML.
+JOTLANG — a markup language for UI templating that compiles to HTML.
 
 ```bash
 npm install -g jotl
@@ -73,7 +73,7 @@ and credits.
 
 ## Editor support
 
-The companion VS Code / Cursor extension is published as `jotl-language` on
+The companion VS Code / Cursor extension is published as `jotlang-language` on
 the marketplace. It provides syntax highlighting (including embedded
 TypeScript and CSS in `>> script` and `>> style` blocks) and an LSP-backed
 diagnostics + completion experience.

@@ -1,4 +1,4 @@
-# JOTL Project — Claude Code Kickoff (v0.4)
+# JOTLANG Project — Claude Code Kickoff (v0.4)
 
 ## What this project is
 

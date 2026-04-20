@@ -159,14 +159,29 @@ function rootDirectiveCompletions(): CompletionItem[] {
       label: '>> script',
       kind: CompletionItemKind.Keyword,
       detail: 'Reactive script',
-      insertText: '>> script [type=typescript]: {\n  $0\n}\n<<',
+      insertText: '>> script: {\n  $0\n}',
+      insertTextFormat: InsertTextFormat.Snippet,
+    },
+    {
+      label: '>> component',
+      kind: CompletionItemKind.Keyword,
+      detail: 'solid-jotlang component declaration',
+      insertText:
+        '>> component ${1:Name}:\n  >> props: {\n    $2\n  }\n\n  >> script: {\n    $3\n  }\n\n  >> document:\n    $0\n  << document\n<< component',
+      insertTextFormat: InsertTextFormat.Snippet,
+    },
+    {
+      label: '>> props',
+      kind: CompletionItemKind.Keyword,
+      detail: 'Typed component props (solid-jotlang)',
+      insertText: '>> props: {\n  $0\n}',
       insertTextFormat: InsertTextFormat.Snippet,
     },
   ];
 }
 
 function directiveTagCompletions(): CompletionItem[] {
-  return ['meta', 'style', 'import', 'document', 'script'].map(name => ({
+  return ['meta', 'style', 'import', 'document', 'script', 'component', 'props'].map(name => ({
     label: name,
     kind: CompletionItemKind.Keyword,
     detail: `${name} directive`,

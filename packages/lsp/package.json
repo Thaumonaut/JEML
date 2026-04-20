@@ -1,10 +1,10 @@
 {
-  "name": "jotl-lsp",
-  "version": "0.5.0",
-  "description": "Language Server Protocol implementation for JOTL",
+  "name": "jotlang-lsp",
+  "version": "0.6.0",
+  "description": "Language Server Protocol implementation for JOTLANG (Jot Object Template Language).",
   "main": "dist/server.js",
   "bin": {
-    "jotl-lsp": "./dist/server.js"
+    "jotlang-lsp": "./dist/server.js"
   },
   "files": [
     "dist/",

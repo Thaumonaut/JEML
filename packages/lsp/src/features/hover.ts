@@ -20,6 +20,37 @@ export interface HoverContext {
   column: number;
 }
 
+/**
+ * solid-jotlang reactivity primitives. These appear inside `>> script: { ... }`
+ * bodies where the LSP tokenizer treats their names as bare identifiers — we
+ * surface a hover doc so users get inline reference material without leaving
+ * the file.
+ */
+const REACTIVITY_PRIMITIVES: Record<string, string> = {
+  signal:
+    '**`signal(initial)`** — solid-jotlang reactive primitive\n\n' +
+    'Declares a reactive value. Inside a `>> script:` body, assignments to a `signal()`-declared name compile to setter calls and reads compile to getter calls.\n\n' +
+    '```ts\nlet count = signal(0)\ncount = count() + 1   // setter\nconsole.log(count())  // getter\n```',
+  memo:
+    '**`memo(() => expr)`** — solid-jotlang reactive primitive\n\n' +
+    'Declares a derived value that recomputes only when its dependencies change. Compiles to Solid\'s `createMemo`.',
+  effect:
+    '**`effect(() => { ... })`** — solid-jotlang reactive primitive\n\n' +
+    'Runs a side-effect that re-runs whenever any reactive value it reads changes. Compiles to Solid\'s `createEffect`.',
+  resource:
+    '**`resource(fetcher)`** — solid-jotlang reactive primitive\n\n' +
+    'Declares an async resource (e.g. for `fetch`). Tracks loading state and re-fetches when its source signal changes. Compiles to Solid\'s `createResource`.',
+  onMount:
+    '**`onMount(() => { ... })`** — Solid lifecycle\n\n' +
+    'Runs once after the component mounts to the DOM. Re-exported from `solid-js`.',
+  onCleanup:
+    '**`onCleanup(() => { ... })`** — Solid lifecycle\n\n' +
+    'Runs when the component (or current reactive scope) is disposed. Re-exported from `solid-js`.',
+  props:
+    '**`props`** — component props object\n\n' +
+    'Inside a `>> component`, the typed object declared by `>> props: { ... }`. Access fields as `props.name`. Solid props are getters — destructuring breaks reactivity.',
+};
+
 export function computeHover(ctx: HoverContext): Hover | null {
   const tok = ctx.index.at(ctx.line, ctx.column);
   if (!tok) return null;
@@ -164,6 +195,20 @@ export function computeHover(ctx: HoverContext): Hover | null {
       },
       range,
     };
+  }
+
+  // ─────── solid-jotlang reactivity primitives (inside script bodies) ───────
+  // These tokenize as bare identifiers because the LSP tokenizer treats script
+  // bodies as opaque content. We surface a hover doc when the identifier name
+  // matches a known primitive.
+  if (tok.kind === 'identifier') {
+    const doc = REACTIVITY_PRIMITIVES[tok.text];
+    if (doc) {
+      return {
+        contents: { kind: MarkupKind.Markdown, value: doc },
+        range,
+      };
+    }
   }
 
   // ─────── CSS length ───────

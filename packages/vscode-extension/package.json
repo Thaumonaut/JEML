@@ -1,8 +1,8 @@
 {
-  "name": "jotl-language",
-  "displayName": "JOTL Language Support",
-  "description": "Syntax highlighting, diagnostics, completions, and hover for JOTL.",
-  "version": "0.5.0",
+  "name": "jotlang-language",
+  "displayName": "JOTLANG Language Support",
+  "description": "Syntax highlighting, diagnostics, completions, and hover for JOTLANG (.jot) files — including solid-jotlang components, props, reactivity, and event handlers.",
+  "version": "0.6.0",
   "publisher": "jotl",
   "engines": {
     "vscode": "^1.80.0"
@@ -11,6 +11,7 @@
     "Programming Languages"
   ],
   "keywords": [
+    "jotlang",
     "jotl",
     "markup",
     "html",
@@ -26,9 +27,11 @@
   "contributes": {
     "languages": [
       {
-        "id": "jotl",
+        "id": "jotlang",
         "aliases": [
+          "JOTLANG",
           "JOTL",
+          "jotlang",
           "jotl"
         ],
         "extensions": [
@@ -43,16 +46,16 @@
     ],
     "grammars": [
       {
-        "language": "jotl",
-        "scopeName": "source.jotl",
-        "path": "./syntaxes/jotl.tmLanguage.json"
+        "language": "jotlang",
+        "scopeName": "source.jotlang",
+        "path": "./syntaxes/jotlang.tmLanguage.json"
       }
     ],
     "configuration": {
       "type": "object",
-      "title": "JOTL",
+      "title": "JOTLANG",
       "properties": {
-        "jotl.trace.server": {
+        "jotlang.trace.server": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -61,7 +64,7 @@
             "verbose"
           ],
           "default": "off",
-          "description": "Traces the communication between VS Code and the JOTL language server."
+          "description": "Traces the communication between VS Code and the JOTLANG language server."
         }
       }
     }

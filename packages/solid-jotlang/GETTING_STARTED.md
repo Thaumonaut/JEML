@@ -1,4 +1,4 @@
-# Getting Started with `solid-jotl`
+# Getting Started with `solid-jotlang`
 
 A step-by-step guide to building your first reactive UI with JOTL on top of
 SolidJS. By the end you'll have:
@@ -19,7 +19,7 @@ If you already know your way around Vite + Solid, jump straight to
 |---|---|
 | Node.js | 18 or newer |
 | A package manager | `npm`, `pnpm`, or `yarn` — examples use `npm` |
-| An editor | VS Code or Cursor recommended (install the `jotl-language` extension for highlighting) |
+| An editor | VS Code or Cursor recommended (install the `jotlang-language` extension for highlighting) |
 
 You do **not** need to install JOTL globally. Everything lives inside your
 project's `node_modules`.
@@ -38,13 +38,13 @@ This gives you a stock SolidJS + TypeScript starter. We'll add JOTL on top.
 
 ---
 
-## 2. Install `solid-jotl`
+## 2. Install `solid-jotlang`
 
 ```bash
-npm install solid-jotl
+npm install solid-jotlang
 ```
 
-`solid-jotl` declares `solid-js` and `vite` as peer dependencies — both
+`solid-jotlang` declares `solid-js` and `vite` as peer dependencies — both
 already exist in the Solid template, so nothing else is needed.
 
 > **Optional:** if you want SEO metadata (`<title>`, `<meta>`) emitted from
@@ -69,12 +69,12 @@ Open `vite.config.ts` and replace the contents:
 // vite.config.ts
 import { defineConfig } from 'vite'
 import solid from 'vite-plugin-solid'
-import solidJotl from 'solid-jotl/vite'
+import solidJotlang from 'solid-jotlang/vite'
 
 export default defineConfig({
   plugins: [
-    // solidJotl() must come BEFORE solid() so .jot is rewritten to TSX first.
-    solidJotl(),
+    // solidJotlang() must come BEFORE solid() so .jot is rewritten to TSX first.
+    solidJotlang(),
     solid({
       // Tell vite-plugin-solid to also process .jot files (now TSX).
       extensions: ['.jot'],
@@ -83,10 +83,10 @@ export default defineConfig({
 })
 ```
 
-The order matters: `solidJotl()` rewrites every `.jot` file into a TSX module
+The order matters: `solidJotlang()` rewrites every `.jot` file into a TSX module
 that `vite-plugin-solid` then compiles into Solid runtime calls. With
 `enforce: 'pre'` set internally, the plugin always runs first regardless of
-the array order — but keeping `solidJotl()` listed first is the convention.
+the array order — but keeping `solidJotlang()` listed first is the convention.
 
 ---
 
@@ -105,11 +105,11 @@ declare module '*.jot' {
 This silences `Cannot find module './Counter.jot'` errors in your editor.
 The Vite plugin handles the actual compile.
 
-> Already importing one of `solid-jotl`'s ambient types? You can re-export
+> Already importing one of `solid-jotlang`'s ambient types? You can re-export
 > the bundled declaration instead:
 >
 > ```ts
-> /// <reference types="solid-jotl/dist/jotl.d.ts" />
+> /// <reference types="solid-jotlang/dist/jotl.d.ts" />
 > ```
 
 ---
@@ -190,7 +190,7 @@ number while "Reset" zeros it.
 
 ## 7. The reactivity contract
 
-`solid-jotl` is **explicit**. Anything you want to be reactive must be
+`solid-jotlang` is **explicit**. Anything you want to be reactive must be
 created with one of these helpers, all imported from `solid-js`:
 
 | You write | Compiler emits |
@@ -370,7 +370,7 @@ lowered into `<MetaProvider>` + `<Title>` / `<Meta>` / `<Link>`:
 ```jotl
 >> meta [
   title="My Counter App"
-  description="A tiny demo of solid-jotl"
+  description="A tiny demo of solid-jotlang"
   charset="utf-8"
   viewport="width=device-width, initial-scale=1"
   og_title="Counter"
@@ -394,23 +394,23 @@ a friendly one-time console warning during development.
 
 ## 12. Editor support
 
-Install the **JOTL Language Support** extension to get syntax highlighting,
+Install the **JOTLANG Language Support** extension to get syntax highlighting,
 diagnostics, and hover tips for `.jot` files in VS Code or Cursor:
 
 ```bash
-code --install-extension jotl.jotl-language
+code --install-extension jotl.jotlang-language
 # or
-cursor --install-extension jotl.jotl-language
+cursor --install-extension jotl.jotlang-language
 ```
 
 If you're using Helix, Zed, or Neovim, see `packages/lsp/README.md` for the
-LSP wiring snippets — `jotl-lsp` is also published as a standalone binary.
+LSP wiring snippets — `jotlang-lsp` is also published as a standalone binary.
 
 ---
 
 ## 13. Project layout
 
-A typical `solid-jotl` project ends up looking like this:
+A typical `solid-jotlang` project ends up looking like this:
 
 ```
 my-jotl-app/
@@ -439,7 +439,7 @@ export normal Solid components, so they're indistinguishable to consumers.
 
 **“Cannot find module './X.jot' or its corresponding type declarations.”**
 Add the ambient declaration from §4, or reference
-`solid-jotl/dist/jotl.d.ts` from your `tsconfig.json` `types` array.
+`solid-jotlang/dist/jotl.d.ts` from your `tsconfig.json` `types` array.
 
 **“Unknown directive `>> something`”**
 You're hitting a JOTL parser error. The grammar is documented in
@@ -455,11 +455,11 @@ expressions, `&count` in JOTL markup. A bare `count` is the signal getter
 itself, not its current value.
 
 **“`solid-meta` warning shows up in production.”**
-Either install `solid-meta`, or pass `meta: 'noop'` to `solidJotl()` in your
+Either install `solid-meta`, or pass `meta: 'noop'` to `solidJotlang()` in your
 Vite config to suppress the warning intentionally.
 
 ```ts
-solidJotl({ meta: 'noop' })
+solidJotlang({ meta: 'noop' })
 ```
 
 **“HMR isn't working on .jot edits.”**
@@ -471,12 +471,12 @@ across HMR is a v0.6 goal. Refresh the browser if you need a clean slate.
 
 ## 15. Where to go next
 
-- **`packages/solid-jotl/README.md`** — the full reference for the package
+- **`packages/solid-jotlang/README.md`** — the full reference for the package
 - **`docs/index.html`** — the *Learning JOTL* tutorial, including §16 on
   reactivity with Solid
 - **`spec/RULEBOOK.md`** — the authoritative grammar and the appendix on
   `>> component:` and `>> props:`
-- **`packages/solid-jotl/tests/examples/`** — five end-to-end fixtures
+- **`packages/solid-jotlang/tests/examples/`** — five end-to-end fixtures
   (counter, multi-component, control flow, implicit default, meta) with
   their expected TSX output side-by-side
 - **`examples/solid-counter/`** — a runnable Vite project you can copy

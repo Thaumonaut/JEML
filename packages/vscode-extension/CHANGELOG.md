@@ -1,12 +1,22 @@
-# Changelog — jotl-language
+# Changelog — jotlang-language
+
+## 0.5.1 — solid-jotlang support
+
+- **Syntax highlighting for `>> component Name:`** — the `component` keyword and `Name` identifier are now styled distinctly (`entity.name.class.component.jot`).
+- **TypeScript embedding inside `>> props: { ... }`** — same treatment as `>> script:` so prop type definitions get full TS highlighting.
+- **Snippet completions** for `>> component` (full scaffold with props/script/document) and `>> props`.
+- **Hover documentation** for solid-jotlang reactivity primitives — `signal`, `memo`, `effect`, `resource`, `onMount`, `onCleanup`, `props` — when hovered inside a script body.
+- **New event attributes** with hover docs and completion: `on_input`, `on_blur`, `on_focus`, `on_keydown`, `on_keyup`, `on_mount`, `on_cleanup` (in addition to the existing `on_press`, `on_change`, `on_submit`).
+- **Control-flow grammar fix** — `~ elif` is now recognized (was previously matching only `else if`); also added `~ while` for forward compatibility.
+- **Diagnostic fix** — `>> script: { ... }` and `>> props: { ... }` are now correctly understood as brace-bounded self-contained directives, no longer producing spurious "Unclosed directive" warnings.
 
 ## 0.5.0 — Renamed to JOTL
 
 - **Language renamed from JEML to JOTL.** File extension is now `.jot` (was `.jeml`).
-- Extension package: `jeml-language` → `jotl-language`. Marketplace ID: `jotl.jotl-language`.
-- Language id: `jeml` → `jotl`. TextMate scope: `source.jeml` → `source.jotl`.
-- Settings: `jeml.trace.server` → `jotl.trace.server`.
-- Bundled language server: `@jeml/lsp` → `jotl-lsp`.
+- Extension package: `jeml-language` → `jotlang-language`. Marketplace ID: `jotl.jotlang-language`.
+- Language id: `jeml` → `jotl`. TextMate scope: `source.jeml` → `source.jotlang`.
+- Settings: `jeml.trace.server` → `jotlang.trace.server`.
+- Bundled language server: `@jeml/lsp` → `jotlang-lsp`.
 - No grammar or feature changes — same syntax, new name.
 
 ## 0.4.1 — Embedded language highlighting
@@ -18,7 +28,7 @@
 
 ## 0.4.0 — Language Server integration
 
-- Full LSP integration via bundled `jotl-lsp` server
+- Full LSP integration via bundled `jotlang-lsp` server
 - Diagnostics, completions, hover documentation
 - Fix for pull-diagnostics handler (`textDocument/diagnostic`)
 

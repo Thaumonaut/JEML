@@ -329,6 +329,58 @@ export const ATTRIBUTES: AttributeDefinition[] = [
     description: 'Handler invoked when a form is submitted.',
     responsive: false,
   },
+  {
+    name: 'on_input',
+    class: 'behavior',
+    accepts: ['reference'],
+    description:
+      'Handler invoked on every keystroke / value change of an input. In solid-jotlang, receives the native InputEvent.',
+    responsive: false,
+  },
+  {
+    name: 'on_blur',
+    class: 'behavior',
+    accepts: ['reference'],
+    description: 'Handler invoked when the element loses focus.',
+    responsive: false,
+  },
+  {
+    name: 'on_focus',
+    class: 'behavior',
+    accepts: ['reference'],
+    description: 'Handler invoked when the element gains focus.',
+    responsive: false,
+  },
+  {
+    name: 'on_keydown',
+    class: 'behavior',
+    accepts: ['reference'],
+    description: 'Handler invoked on keydown. Receives the native KeyboardEvent.',
+    responsive: false,
+  },
+  {
+    name: 'on_keyup',
+    class: 'behavior',
+    accepts: ['reference'],
+    description: 'Handler invoked on keyup. Receives the native KeyboardEvent.',
+    responsive: false,
+  },
+  {
+    name: 'on_mount',
+    class: 'behavior',
+    accepts: ['reference'],
+    description:
+      'solid-jotlang: handler invoked once after the element mounts (Solid `onMount` lifecycle).',
+    responsive: false,
+  },
+  {
+    name: 'on_cleanup',
+    class: 'behavior',
+    accepts: ['reference'],
+    description:
+      'solid-jotlang: handler invoked when the element unmounts (Solid `onCleanup` lifecycle).',
+    responsive: false,
+  },
 
   // ───────── Directive-specific ─────────
   {

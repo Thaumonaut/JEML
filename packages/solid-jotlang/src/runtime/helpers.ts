@@ -1,5 +1,5 @@
 /**
- * Tiny runtime helpers consumed by solid-jotl output. Anything that's
+ * Tiny runtime helpers consumed by solid-jotlang output. Anything that's
  * non-trivial to inline at every call site lives here so the generated
  * TSX stays readable.
  *

@@ -1,8 +1,8 @@
 {
-  "name": "jotl-monorepo",
-  "version": "0.5.0",
+  "name": "jotlang-monorepo",
+  "version": "0.6.0",
   "private": true,
-  "description": "JOTL — a structured markup language. Monorepo containing the compiler, LSP, Solid integration, and tooling.",
+  "description": "JOTLANG (Jot Object Template Language) — a structured markup language. Monorepo containing the compiler, LSP, Solid integration, and tooling.",
   "workspaces": [
     "packages/*"
   ],
@@ -10,10 +10,10 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "dev": "npm run dev -w jotl",
-    "dev:lsp": "npm run dev -w jotl-lsp",
-    "build:cli": "npm run build:cli -w jotl",
-    "build:playground": "npm run build:playground -w jotl"
+    "dev": "npm run dev -w jotlang",
+    "dev:lsp": "npm run dev -w jotlang-lsp",
+    "build:cli": "npm run build:cli -w jotlang",
+    "build:playground": "npm run build:playground -w jotlang"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

@@ -4,7 +4,7 @@
 //   1. extension.js — runs in the VS Code extension host, imports vscode API.
 //      Marked `vscode` as external because it's provided by the host.
 //   2. server.js — runs as a child process (the LSP server). Bundles all of
-//      jotl-lsp, including its node_modules tree, into a single file.
+//      jotlang-lsp, including its node_modules tree, into a single file.
 //
 // Both are IIFE-compatible CommonJS modules for Node 18+.
 

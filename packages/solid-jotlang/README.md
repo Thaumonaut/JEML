@@ -1,4 +1,4 @@
-# solid-jotl
+# solid-jotlang
 
 A SolidJS compiler for [JOTL](https://github.com/jekdev/jotl) — write reactive,
 component-based interfaces in JOTL's whitespace-sigil syntax and ship them as
@@ -34,7 +34,7 @@ fine-grained reactive [SolidJS](https://www.solidjs.com/) components.
 `jotl` (the standalone compiler) emits static HTML and a tiny runtime —
 ideal for documents, marketing sites, and progressively enhanced pages.
 
-`solid-jotl` takes the same `.jot` source and emits **SolidJS
+`solid-jotlang` takes the same `.jot` source and emits **SolidJS
 components** instead, so you get:
 
 - Fine-grained reactivity (no virtual DOM diff)
@@ -49,10 +49,10 @@ are explicit (`let x = signal(0)`).
 ## Install
 
 ```bash
-npm install solid-jotl solid-js vite vite-plugin-solid -D
+npm install solid-jotlang solid-js vite vite-plugin-solid -D
 ```
 
-> New to `solid-jotl`? The [**Getting Started guide**](./GETTING_STARTED.md)
+> New to `solid-jotlang`? The [**Getting Started guide**](./GETTING_STARTED.md)
 > walks you through a brand-new project, from `npm create vite` to a working
 > reactive counter with scoped styles and SEO meta tags.
 
@@ -66,11 +66,11 @@ JSX-to-DOM transform and is required.
 // vite.config.ts
 import { defineConfig } from 'vite'
 import solid from 'vite-plugin-solid'
-import solidJotl from 'solid-jotl/vite'
+import solidJotlang from 'solid-jotlang/vite'
 
 export default defineConfig({
   plugins: [
-    solidJotl(),
+    solidJotlang(),
     solid({ extensions: ['.jot'] }),
   ],
 })
@@ -189,7 +189,7 @@ Per-file output:
 ## Programmatic API
 
 ```ts
-import { compile, compileAst } from 'solid-jotl'
+import { compile, compileAst } from 'solid-jotlang'
 
 const { code } = compile(source, { id: 'Counter.jot' })
 ```

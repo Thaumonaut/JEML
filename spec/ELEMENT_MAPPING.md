@@ -1,4 +1,4 @@
-# JOTL → HTML Element Mapping (v0.4)
+# JOTLANG → HTML Element Mapping (v0.4)
 
 This document defines how JOTL tags compile to HTML elements. The compiler uses this as its authoritative reference.
 

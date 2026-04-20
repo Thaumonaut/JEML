@@ -1,6 +1,6 @@
-# JOTL v0.4 Rule Book
+# JOTLANG v0.4 Rule Book
 
-**JOTL — Draft Specification**
+**JOTLANG — Draft Specification**
 
 This document is the working specification for JOTL v0.4. It captures every design decision made so far and flags the open questions that still need resolution. Rules are numbered so they can be referenced and amended individually.
 
@@ -770,7 +770,7 @@ handle_delete (id, event) { /* ... */ }
 ## Appendix C: `>> component` and `>> props` (Reactive Targets)
 
 The `>> component:` and `>> props:` directives extend JOTL for compilers that
-emit reactive UI frameworks (currently `solid-jotl`). The standalone
+emit reactive UI frameworks (currently `solid-jotlang`). The standalone
 HTML compiler ignores them (no-op), so a `.jot` file can be authored once and
 consumed by either pipeline.
 
@@ -853,7 +853,7 @@ C.2.3. Inside the surrounding `>> script:`, props are addressed as
 
 Reactive compilers may define a small set of script-level primitives that are
 rewritten into the host framework's reactivity API. The current set used by
-`solid-jotl` is:
+`solid-jotlang` is:
 
 | You write                            | Lowered to                                  |
 |--------------------------------------|---------------------------------------------|

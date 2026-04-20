@@ -79,14 +79,14 @@ connection.onInitialize((_params: InitializeParams): InitializeResult => {
       },
     },
     serverInfo: {
-      name: 'jotl-lsp',
-      version: '0.1.0',
+      name: 'jotlang-lsp',
+      version: '0.6.0',
     },
   };
 });
 
 connection.onInitialized(() => {
-  connection.console.log('JOTL language server initialized.');
+  connection.console.log('JOTLANG language server initialized.');
 });
 
 // ─────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 /**
- * Public entry point for `solid-jotl`.
+ * Public entry point for `solid-jotlang`.
  *
  * `compile(source, options?)` parses a `.jot` source string and returns a
  * TSX module that vite-plugin-solid can compile further. Most users won't

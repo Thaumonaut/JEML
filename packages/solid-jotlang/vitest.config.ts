@@ -1,19 +1,19 @@
 import { defineConfig } from 'vitest/config'
 import solid from 'vite-plugin-solid'
-import solidJotl from './src/vite'
+import solidJotlang from './src/vite'
 
 // We run two test environments:
 //  - Codegen tests (default `node` env, no plugins needed) — pure string in,
 //    string out.
 //  - Runtime tests (`jsdom` env, mounted via @solidjs/testing-library) — these
 //    need vite-plugin-solid wired up so the .jot → .tsx output gets compiled
-//    to real Solid JS. We register solidJotl() BEFORE solid() and tell solid()
+//    to real Solid JS. We register solidJotlang() BEFORE solid() and tell solid()
 //    to also process .jot files (since they're now TSX).
 export default defineConfig({
   plugins: [
-    solidJotl(),
+    solidJotlang(),
     solid({
-      // solid-jotl emits plain JS (no TS syntax) so we just need to add
+      // solid-jotlang emits plain JS (no TS syntax) so we just need to add
       // `.jot` to the list of files vite-plugin-solid is willing to process.
       extensions: ['.jot'],
     }),

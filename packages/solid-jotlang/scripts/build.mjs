@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Build script for solid-jotl.
+ * Build script for solid-jotlang.
  *
- * Mirrors the esbuild approach used by jotl: bundle the published
+ * Mirrors the esbuild approach used by jotlang: bundle the published
  * surface (`src/index.ts` and `src/vite.ts`) into ESM modules under `dist/`,
  * keeping the SolidJS runtime out of the package (it's a peer dep).
  *

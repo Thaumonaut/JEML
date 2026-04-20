@@ -1,4 +1,4 @@
-# jotl-lsp
+# jotlang-lsp
 
 The JOTL Language Server — implements the Language Server Protocol (LSP) to provide editor intelligence for `.jot` files in any editor that supports LSP.
 
@@ -11,16 +11,16 @@ The JOTL Language Server — implements the Language Server Protocol (LSP) to pr
 ## Installation
 
 ```bash
-npm install -g jotl-lsp
+npm install -g jotlang-lsp
 ```
 
-This installs the `jotl-lsp` binary, which communicates over stdio (the default transport for LSP).
+This installs the `jotlang-lsp` binary, which communicates over stdio (the default transport for LSP).
 
 ## Editor setup
 
 ### VS Code / Cursor
 
-Install the [JOTL Language Support extension](../vscode-extension) — it bundles this server internally. No separate installation needed.
+Install the [JOTLANG Language Support extension](../vscode-extension) — it bundles this server internally. No separate installation needed.
 
 ### Neovim (nvim-lspconfig)
 
@@ -31,7 +31,7 @@ local configs = require('lspconfig.configs')
 if not configs.jotl then
   configs.jotl = {
     default_config = {
-      cmd = { 'jotl-lsp', '--stdio' },
+      cmd = { 'jotlang-lsp', '--stdio' },
       filetypes = { 'jotl' },
       root_dir = lspconfig.util.root_pattern('package.json', '.git'),
       settings = {},
@@ -50,13 +50,13 @@ In your `settings.json`:
 {
   "languages": {
     "JOTL": {
-      "language_servers": ["jotl-lsp"]
+      "language_servers": ["jotlang-lsp"]
     }
   },
   "lsp": {
-    "jotl-lsp": {
+    "jotlang-lsp": {
       "binary": {
-        "path": "jotl-lsp",
+        "path": "jotlang-lsp",
         "arguments": ["--stdio"]
       }
     }
@@ -70,13 +70,13 @@ In your `languages.toml`:
 
 ```toml
 [[language]]
-name = "jotl"
-scope = "source.jotl"
+name = "jotlang"
+scope = "source.jotlang"
 file-types = ["jot"]
-language-servers = ["jotl-lsp"]
+language-servers = ["jotlang-lsp"]
 
-[language-server.jotl-lsp]
-command = "jotl-lsp"
+[language-server.jotlang-lsp]
+command = "jotlang-lsp"
 args = ["--stdio"]
 ```
 

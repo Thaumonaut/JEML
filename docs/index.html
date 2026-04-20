@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learning JOTL — an illustrated tutorial</title>
+<title>Learning JOTLANG — an illustrated tutorial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -704,7 +704,7 @@
   <h1>Markup, <em>rewritten</em> for humans.</h1>
 
   <p class="hero-lede">
-    A three-column tour of JOTL — the source on the left, the HTML it compiles to in the middle, and what it actually looks like on the right. Everything you see rendered is real, with Tailwind doing the styling.
+    A three-column tour of JOTLANG — the source on the left, the HTML it compiles to in the middle, and what it actually looks like on the right. Everything you see rendered is real, with Tailwind doing the styling.
   </p>
 
   <dl class="hero-meta">
@@ -1978,14 +1978,14 @@ a sigil, _ escapes underscore.
 
     <h3>Editor support</h3>
 
-    <p>The <em>jotl-language</em> extension works in both VS Code and Cursor. Syntax highlighting handles every directive, sigil, and control-flow keyword — including embedded TypeScript, JavaScript, and CSS inside <code>&gt;&gt; script</code> and <code>&gt;&gt; style</code> blocks. The Language Server provides diagnostics, hover tooltips, and completions.</p>
+    <p>The <em>jotlang-language</em> extension works in both VS Code and Cursor. Syntax highlighting handles every directive, sigil, and control-flow keyword — including embedded TypeScript, JavaScript, and CSS inside <code>&gt;&gt; script</code> and <code>&gt;&gt; style</code> blocks. The Language Server provides diagnostics, hover tooltips, and completions.</p>
 
     <div class="compare">
       <div class="compare-row compare-head">
         <div>Editor</div><div>Install command</div>
       </div>
-      <div class="compare-row"><div>VS Code</div><div>code --install-extension jotl.jotl-language</div></div>
-      <div class="compare-row"><div>Cursor</div><div>cursor --install-extension jotl.jotl-language</div></div>
+      <div class="compare-row"><div>VS Code</div><div>code --install-extension jotl.jotlang-language</div></div>
+      <div class="compare-row"><div>Cursor</div><div>cursor --install-extension jotl.jotlang-language</div></div>
       <div class="compare-row"><div>Either, manually</div><div>open the .vsix file from the marketplace</div></div>
     </div>
 
@@ -2021,8 +2021,8 @@ a sigil, _ escapes underscore.
         <div>Path</div><div>What's inside</div>
       </div>
       <div class="compare-row"><div>packages/compiler/</div><div>jotl — parser, codegen, CLI</div></div>
-      <div class="compare-row"><div>packages/lsp/</div><div>jotl-lsp — diagnostics &amp; completions</div></div>
-      <div class="compare-row"><div>packages/vscode-extension/</div><div>jotl-language — TextMate grammar &amp; client</div></div>
+      <div class="compare-row"><div>packages/lsp/</div><div>jotlang-lsp — diagnostics &amp; completions</div></div>
+      <div class="compare-row"><div>packages/vscode-extension/</div><div>jotlang-language — TextMate grammar &amp; client</div></div>
       <div class="compare-row"><div>packages/compiler/tests/examples/</div><div>Source fixtures, one per feature</div></div>
       <div class="compare-row"><div>packages/compiler/tests/expected/</div><div>Golden HTML snapshots used in CI</div></div>
     </div>
@@ -2040,7 +2040,7 @@ a sigil, _ escapes underscore.
     <div class="section-num">§ 16</div>
     <div class="section-head-inner">
       <h2>Reactivity with <em>Solid</em></h2>
-      <p class="kicker">A second compiler — <code>solid-jotl</code> — emits SolidJS components from the same JOTL grammar. Use it when you want fine-grained reactivity, components, signals, and a full SPA build pipeline. New in v0.5.0.</p>
+      <p class="kicker">A second compiler — <code>solid-jotlang</code> — emits SolidJS components from the same JOTL grammar. Use it when you want fine-grained reactivity, components, signals, and a full SPA build pipeline. New in v0.5.0.</p>
     </div>
   </div>
 
@@ -2048,9 +2048,9 @@ a sigil, _ escapes underscore.
 
     <h3>What it is</h3>
 
-    <p>The standalone <code>jotl</code> compiler emits static HTML and a tiny runtime — perfect for content sites and progressively enhanced pages. The sibling package <code>solid-jotl</code> takes the same <em>.jot</em> source and compiles it to <a href="https://www.solidjs.com/">SolidJS</a> components instead, so you get reactive signals, derived memos, effects, and idiomatic JSX control flow — written entirely in JOTL's whitespace-sigil syntax.</p>
+    <p>The standalone <code>jotl</code> compiler emits static HTML and a tiny runtime — perfect for content sites and progressively enhanced pages. The sibling package <code>solid-jotlang</code> takes the same <em>.jot</em> source and compiles it to <a href="https://www.solidjs.com/">SolidJS</a> components instead, so you get reactive signals, derived memos, effects, and idiomatic JSX control flow — written entirely in JOTL's whitespace-sigil syntax.</p>
 
-    <p>Authoring stays the same: <code>&gt; heading.1: Counter &lt;</code>, <code>&amp;count</code>, <code>@increment</code>, <code>~ if</code>, <code>~ for</code>. What changes is the output. <code>solid-jotl</code> emits a Solid component (TSX/JSX) per <code>&gt;&gt; component:</code> block, plain JavaScript at module scope for top-level <code>&gt;&gt; script:</code>, and global stylesheet injection for any <code>&gt;&gt; style:</code> body.</p>
+    <p>Authoring stays the same: <code>&gt; heading.1: Counter &lt;</code>, <code>&amp;count</code>, <code>@increment</code>, <code>~ if</code>, <code>~ for</code>. What changes is the output. <code>solid-jotlang</code> emits a Solid component (TSX/JSX) per <code>&gt;&gt; component:</code> block, plain JavaScript at module scope for top-level <code>&gt;&gt; script:</code>, and global stylesheet injection for any <code>&gt;&gt; style:</code> body.</p>
 
     <h3>The component-mode file</h3>
 
@@ -2109,16 +2109,16 @@ a sigil, _ escapes underscore.
 
     <h3>Use it in Vite</h3>
 
-    <p>The package ships a Vite plugin under <code>solid-jotl/vite</code>. Drop it next to <code>vite-plugin-solid</code> and import <em>.jot</em> files like any other module.</p>
+    <p>The package ships a Vite plugin under <code>solid-jotlang/vite</code>. Drop it next to <code>vite-plugin-solid</code> and import <em>.jot</em> files like any other module.</p>
 
 <div class="code-pane">// vite.config.ts
 import { defineConfig } from 'vite'
 import solid from 'vite-plugin-solid'
-import solidJotl from 'solid-jotl/vite'
+import solidJotlang from 'solid-jotlang/vite'
 
 export default defineConfig({
   plugins: [
-    solidJotl(),
+    solidJotlang(),
     solid({ extensions: ['.jot'] }),
   ],
 })</div>
@@ -2131,7 +2131,7 @@ render(() =&gt; &lt;Counter initial={0} /&gt;, document.getElementById('root')!)
 
     <div class="callout">
       <div class="callout-label">When to pick which compiler</div>
-      <p>Use <code>jotl</code> for documents, marketing sites, and anything you'd otherwise write in static HTML or a small static-site generator. Use <code>solid-jotl</code> when the page is an application — interactive forms, real-time data, multi-component UIs that need reactivity.</p>
+      <p>Use <code>jotl</code> for documents, marketing sites, and anything you'd otherwise write in static HTML or a small static-site generator. Use <code>solid-jotlang</code> when the page is an application — interactive forms, real-time data, multi-component UIs that need reactivity.</p>
     </div>
   </div>
 </section>
@@ -2141,7 +2141,7 @@ render(() =&gt; &lt;Counter initial={0} /&gt;, document.getElementById('root')!)
   <div class="colophon-inner">
     <div class="colophon-mark">JOTL</div>
     <p>Made for people who write markup by hand, prefer short sigils to long tags, and want their responsive design to live next to the layout attribute it modifies.</p>
-    <p>This tutorial covers JOTL v0.5.0. The full specification is in <em>spec/RULEBOOK.md</em>; the compiler reference is in <em>spec/ELEMENT_MAPPING.md</em>; the example corpus lives in <em>packages/compiler/tests/examples/</em> and <em>packages/compiler/tests/expected/</em>. The compiler is published as <em>jotl</em> on npm; the editor extension as <em>jotl-language</em> on the VS Code marketplace.</p>
+    <p>This tutorial covers JOTL v0.5.0. The full specification is in <em>spec/RULEBOOK.md</em>; the compiler reference is in <em>spec/ELEMENT_MAPPING.md</em>; the example corpus lives in <em>packages/compiler/tests/examples/</em> and <em>packages/compiler/tests/expected/</em>. The compiler is published as <em>jotl</em> on npm; the editor extension as <em>jotlang-language</em> on the VS Code marketplace.</p>
     <div class="colophon-meta">
       <span><strong>Typography</strong> Fraunces & Inter Tight</span>
       <span><strong>Code</strong> JetBrains Mono</span>

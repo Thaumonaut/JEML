@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "JOTL",
-  "scopeName": "source.jotl",
+  "scopeName": "source.jotlang",
   "patterns": [
     {
       "include": "#comments"
@@ -11,6 +11,12 @@
     },
     {
       "include": "#style-directive"
+    },
+    {
+      "include": "#props-directive"
+    },
+    {
+      "include": "#component-directive"
     },
     {
       "include": "#directive-close"
@@ -50,27 +56,27 @@
     "comments": {
       "patterns": [
         {
-          "name": "comment.block.jot",
+          "name": "comment.block.jotlang",
           "begin": "%\\{",
           "end": "%\\}",
           "beginCaptures": {
             "0": {
-              "name": "punctuation.definition.comment.jot"
+              "name": "punctuation.definition.comment.jotlang"
             }
           },
           "endCaptures": {
             "0": {
-              "name": "punctuation.definition.comment.jot"
+              "name": "punctuation.definition.comment.jotlang"
             }
           }
         },
         {
-          "name": "comment.line.percent.jot",
+          "name": "comment.line.percent.jotlang",
           "begin": "%",
           "end": "$",
           "beginCaptures": {
             "0": {
-              "name": "punctuation.definition.comment.jot"
+              "name": "punctuation.definition.comment.jotlang"
             }
           }
         }
@@ -82,10 +88,10 @@
       "end": "^(\\})\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "keyword.control.tag.directive.jot"
+          "name": "keyword.control.tag.directive.jotlang"
         },
         "3": {
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         },
         "4": {
           "patterns": [
@@ -95,15 +101,15 @@
           ]
         },
         "5": {
-          "name": "punctuation.separator.content.jot"
+          "name": "punctuation.separator.content.jotlang"
         },
         "6": {
-          "name": "punctuation.section.embedded.begin.jot"
+          "name": "punctuation.section.embedded.begin.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.section.embedded.end.jot"
+          "name": "punctuation.section.embedded.end.jotlang"
         }
       },
       "contentName": "meta.embedded.block.typescript",
@@ -119,10 +125,10 @@
       "end": "^(\\})\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "keyword.control.tag.directive.jot"
+          "name": "keyword.control.tag.directive.jotlang"
         },
         "3": {
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         },
         "4": {
           "patterns": [
@@ -132,15 +138,15 @@
           ]
         },
         "5": {
-          "name": "punctuation.separator.content.jot"
+          "name": "punctuation.separator.content.jotlang"
         },
         "6": {
-          "name": "punctuation.section.embedded.begin.jot"
+          "name": "punctuation.section.embedded.begin.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.section.embedded.end.jot"
+          "name": "punctuation.section.embedded.end.jotlang"
         }
       },
       "contentName": "meta.embedded.block.css",
@@ -150,15 +156,77 @@
         }
       ]
     },
+    "props-directive": {
+      "comment": "Embed TypeScript highlighting inside >> props: { ... } <<. Same closing-brace-at-column-0 rule as script-directive. Used by solid-jotlang to declare a component's typed props.",
+      "begin": "^(\\s*)(>>)\\s+(props)\\b([^:\\n]*?)(:)\\s*(\\{)\\s*$",
+      "end": "^\\s*(\\})\\s*$",
+      "beginCaptures": {
+        "2": {
+          "name": "keyword.control.tag.directive.jotlang"
+        },
+        "3": {
+          "name": "entity.name.tag.jotlang"
+        },
+        "4": {
+          "patterns": [
+            {
+              "include": "#attributes"
+            }
+          ]
+        },
+        "5": {
+          "name": "punctuation.separator.content.jotlang"
+        },
+        "6": {
+          "name": "punctuation.section.embedded.begin.jotlang"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.end.jotlang"
+        }
+      },
+      "contentName": "meta.embedded.block.typescript",
+      "patterns": [
+        {
+          "include": "source.ts"
+        }
+      ]
+    },
+    "component-directive": {
+      "comment": "solid-jotlang component declaration: >> component Name [...] : ... << component. The Name is highlighted as a class entity.",
+      "match": "^(\\s*)(>>)\\s+(component)\\s+([A-Z][a-zA-Z0-9_]*)([^:\\n]*?)(:)\\s*$",
+      "captures": {
+        "2": {
+          "name": "keyword.control.tag.directive.jotlang"
+        },
+        "3": {
+          "name": "entity.name.tag.jotlang"
+        },
+        "4": {
+          "name": "entity.name.class.component.jotlang"
+        },
+        "5": {
+          "patterns": [
+            {
+              "include": "#attributes"
+            }
+          ]
+        },
+        "6": {
+          "name": "punctuation.separator.content.jotlang"
+        }
+      }
+    },
     "inline-element": {
       "patterns": [
         {
-          "name": "meta.tag.inline.content.jot",
+          "name": "meta.tag.inline.content.jotlang",
           "begin": "(/>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)([^:\\n]*?)(:)",
           "end": "(</)",
           "beginCaptures": {
             "1": {
-              "name": "keyword.control.tag.inline.jot"
+              "name": "keyword.control.tag.inline.jotlang"
             },
             "2": {
               "patterns": [
@@ -175,12 +243,12 @@
               ]
             },
             "4": {
-              "name": "punctuation.separator.content.jot"
+              "name": "punctuation.separator.content.jotlang"
             }
           },
           "endCaptures": {
             "1": {
-              "name": "keyword.control.tag.inline.jot"
+              "name": "keyword.control.tag.inline.jotlang"
             }
           },
           "patterns": [
@@ -192,12 +260,12 @@
       ]
     },
     "void-element": {
-      "name": "meta.tag.void.jot",
+      "name": "meta.tag.void.jotlang",
       "begin": "^(\\s*)(!>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)(?=\\s*(\\[|$))",
       "end": "(?<=\\])|(?<=[a-zA-Z_0-9])\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "keyword.control.tag.void.jot"
+          "name": "keyword.control.tag.void.jotlang"
         },
         "3": {
           "patterns": [
@@ -219,7 +287,7 @@
           "match": "([a-zA-Z_][a-zA-Z0-9_]*)((?:\\.[a-zA-Z0-9_]+)+)",
           "captures": {
             "1": {
-              "name": "entity.name.tag.jot"
+              "name": "entity.name.tag.jotlang"
             },
             "2": {
               "patterns": [
@@ -227,10 +295,10 @@
                   "match": "(\\.)([a-zA-Z0-9_]+)",
                   "captures": {
                     "1": {
-                      "name": "punctuation.definition.variant.jot"
+                      "name": "punctuation.definition.variant.jotlang"
                     },
                     "2": {
-                      "name": "entity.other.attribute-name.variant.jot"
+                      "name": "entity.other.attribute-name.variant.jotlang"
                     }
                   }
                 }
@@ -240,19 +308,19 @@
         },
         {
           "match": "[a-zA-Z_][a-zA-Z0-9_]*",
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         }
       ]
     },
     "block-open": {
       "patterns": [
         {
-          "name": "meta.tag.block.same-line.jot",
+          "name": "meta.tag.block.same-line.jotlang",
           "begin": "^(\\s*)(>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)([^:\\n]*?)(:)(?=.*\\S.*<\\s*$)",
           "end": "(<)\\s*$",
           "beginCaptures": {
             "2": {
-              "name": "keyword.control.tag.jot"
+              "name": "keyword.control.tag.jotlang"
             },
             "3": {
               "patterns": [
@@ -269,12 +337,12 @@
               ]
             },
             "5": {
-              "name": "punctuation.separator.content.jot"
+              "name": "punctuation.separator.content.jotlang"
             }
           },
           "endCaptures": {
             "1": {
-              "name": "keyword.control.tag.jot"
+              "name": "keyword.control.tag.jotlang"
             }
           },
           "patterns": [
@@ -287,12 +355,12 @@
           ]
         },
         {
-          "name": "meta.tag.block.multi-line.open.jot",
+          "name": "meta.tag.block.multi-line.open.jotlang",
           "begin": "^(\\s*)(>)\\s+([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z0-9_]+)*)",
           "end": "(:)\\s*$",
           "beginCaptures": {
             "2": {
-              "name": "keyword.control.tag.jot"
+              "name": "keyword.control.tag.jotlang"
             },
             "3": {
               "patterns": [
@@ -304,7 +372,7 @@
           },
           "endCaptures": {
             "1": {
-              "name": "punctuation.separator.content.jot"
+              "name": "punctuation.separator.content.jotlang"
             }
           },
           "patterns": [
@@ -316,27 +384,27 @@
       ]
     },
     "block-close": {
-      "name": "meta.tag.close.jot",
+      "name": "meta.tag.close.jotlang",
       "match": "^\\s*(<)\\s*([a-zA-Z_][a-zA-Z0-9_]*)?\\s*$",
       "captures": {
         "1": {
-          "name": "keyword.control.tag.close.jot"
+          "name": "keyword.control.tag.close.jotlang"
         },
         "2": {
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         }
       }
     },
     "control-flow": {
-      "name": "meta.control-flow.jot",
-      "begin": "^(\\s*)(~)\\s+(for|if|else\\s+if|else)\\b",
+      "name": "meta.control-flow.jotlang",
+      "begin": "^(\\s*)(~)\\s+(for|while|if|elif|else)\\b",
       "end": "$",
       "beginCaptures": {
         "2": {
-          "name": "keyword.control.flow.jot"
+          "name": "keyword.control.flow.jotlang"
         },
         "3": {
-          "name": "keyword.control.flow.jot"
+          "name": "keyword.control.flow.jotlang"
         }
       },
       "patterns": [
@@ -346,21 +414,21 @@
       ]
     },
     "control-flow-close": {
-      "name": "meta.control-flow.close.jot",
+      "name": "meta.control-flow.close.jotlang",
       "match": "^\\s*(~<)\\s*$",
       "captures": {
         "1": {
-          "name": "keyword.control.flow.jot"
+          "name": "keyword.control.flow.jotlang"
         }
       }
     },
     "sibling-marker": {
-      "name": "meta.sibling.jot",
+      "name": "meta.sibling.jotlang",
       "begin": "^(\\s*)(-)(\\s+)",
       "end": "$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.list.jot"
+          "name": "punctuation.definition.list.jotlang"
         }
       },
       "patterns": [
@@ -412,18 +480,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.typescript",
       "patterns": [
         {
@@ -436,18 +504,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.javascript",
       "patterns": [
         {
@@ -460,18 +528,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.python",
       "patterns": [
         {
@@ -484,18 +552,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.rust",
       "patterns": [
         {
@@ -508,18 +576,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.html",
       "patterns": [
         {
@@ -532,18 +600,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.css",
       "patterns": [
         {
@@ -556,18 +624,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.json",
       "patterns": [
         {
@@ -581,22 +649,22 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
-      "contentName": "meta.embedded.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
+      "contentName": "meta.embedded.block.jotlang",
       "patterns": [
         {
-          "include": "source.jotl"
+          "include": "source.jotlang"
         }
       ]
     },
@@ -605,18 +673,18 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "contentName": "meta.embedded.block.shellscript",
       "patterns": [
         {
@@ -630,37 +698,37 @@
       "end": "^\\s*(```)\\s*$",
       "beginCaptures": {
         "2": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         },
         "3": {
-          "name": "fenced_code.block.language.jot"
+          "name": "fenced_code.block.language.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.definition.markdown.jot"
+          "name": "punctuation.definition.markdown.jotlang"
         }
       },
-      "name": "markup.fenced_code.block.jot",
+      "name": "markup.fenced_code.block.jotlang",
       "patterns": [
         {
           "match": "^.*$",
-          "name": "markup.raw.block.jot"
+          "name": "markup.raw.block.jotlang"
         }
       ]
     },
     "attributes": {
-      "name": "meta.attributes.jot",
+      "name": "meta.attributes.jotlang",
       "begin": "\\[",
       "end": "\\]",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.section.attributes.begin.jot"
+          "name": "punctuation.section.attributes.begin.jotlang"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "punctuation.section.attributes.end.jot"
+          "name": "punctuation.section.attributes.end.jotlang"
         }
       },
       "patterns": [
@@ -671,19 +739,19 @@
           "include": "#responsive-override-implicit"
         },
         {
-          "name": "meta.attribute.key-value.jot",
+          "name": "meta.attribute.key-value.jotlang",
           "match": "([a-zA-Z_][a-zA-Z0-9_-]*)(=)",
           "captures": {
             "1": {
-              "name": "entity.other.attribute-name.jot"
+              "name": "entity.other.attribute-name.jotlang"
             },
             "2": {
-              "name": "punctuation.separator.key-value.jot"
+              "name": "punctuation.separator.key-value.jotlang"
             }
           }
         },
         {
-          "name": "entity.other.attribute-name.boolean.jot",
+          "name": "entity.other.attribute-name.boolean.jotlang",
           "match": "\\b([a-zA-Z_][a-zA-Z0-9_-]*)\\b(?![=\\^])"
         },
         {
@@ -714,112 +782,112 @@
           "include": "#unquoted-identifier"
         },
         {
-          "name": "keyword.operator.ternary.jot",
+          "name": "keyword.operator.ternary.jotlang",
           "match": "\\?|:"
         }
       ]
     },
     "responsive-override-explicit": {
-      "name": "meta.attribute.responsive.explicit.jot",
+      "name": "meta.attribute.responsive.explicit.jotlang",
       "match": "([a-zA-Z_][a-zA-Z0-9_-]*)(\\^)(\\()([0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt))(\\))(=)",
       "captures": {
         "1": {
-          "name": "entity.other.attribute-name.jot"
+          "name": "entity.other.attribute-name.jotlang"
         },
         "2": {
-          "name": "keyword.operator.responsive.jot"
+          "name": "keyword.operator.responsive.jotlang"
         },
         "3": {
-          "name": "punctuation.definition.responsive.begin.jot"
+          "name": "punctuation.definition.responsive.begin.jotlang"
         },
         "4": {
-          "name": "constant.numeric.breakpoint.jot"
+          "name": "constant.numeric.breakpoint.jotlang"
         },
         "5": {
-          "name": "punctuation.definition.responsive.end.jot"
+          "name": "punctuation.definition.responsive.end.jotlang"
         },
         "6": {
-          "name": "punctuation.separator.key-value.jot"
+          "name": "punctuation.separator.key-value.jotlang"
         }
       }
     },
     "responsive-override-implicit": {
-      "name": "meta.attribute.responsive.implicit.jot",
+      "name": "meta.attribute.responsive.implicit.jotlang",
       "match": "(\\^)(\\()([0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt))(\\))(=)",
       "captures": {
         "1": {
-          "name": "keyword.operator.responsive.jot"
+          "name": "keyword.operator.responsive.jotlang"
         },
         "2": {
-          "name": "punctuation.definition.responsive.begin.jot"
+          "name": "punctuation.definition.responsive.begin.jotlang"
         },
         "3": {
-          "name": "constant.numeric.breakpoint.jot"
+          "name": "constant.numeric.breakpoint.jotlang"
         },
         "4": {
-          "name": "punctuation.definition.responsive.end.jot"
+          "name": "punctuation.definition.responsive.end.jotlang"
         },
         "5": {
-          "name": "punctuation.separator.key-value.jot"
+          "name": "punctuation.separator.key-value.jotlang"
         }
       }
     },
     "css-length": {
-      "name": "constant.numeric.length.jot",
+      "name": "constant.numeric.length.jotlang",
       "match": "\\b[0-9]+(?:\\.[0-9]+)?(?:px|rem|em|%|vh|vw|pt)\\b"
     },
     "boolean-literal": {
-      "name": "constant.language.boolean.jot",
+      "name": "constant.language.boolean.jotlang",
       "match": "\\b(true|false)\\b"
     },
     "unquoted-identifier": {
-      "name": "string.unquoted.jot",
+      "name": "string.unquoted.jotlang",
       "match": "(?<==)([a-zA-Z_][a-zA-Z0-9_-]*)"
     },
     "import-names": {
       "patterns": [
         {
-          "name": "meta.import.namespace.jot",
+          "name": "meta.import.namespace.jotlang",
           "match": "(\\*)\\s+(as)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
           "captures": {
             "1": {
-              "name": "keyword.operator.namespace.jot"
+              "name": "keyword.operator.namespace.jotlang"
             },
             "2": {
-              "name": "keyword.control.import.jot"
+              "name": "keyword.control.import.jotlang"
             },
             "3": {
-              "name": "entity.name.namespace.jot"
+              "name": "entity.name.namespace.jotlang"
             }
           }
         },
         {
-          "name": "meta.import.destructure.jot",
+          "name": "meta.import.destructure.jotlang",
           "begin": "\\{",
           "end": "\\}",
           "beginCaptures": {
             "0": {
-              "name": "punctuation.section.destructure.begin.jot"
+              "name": "punctuation.section.destructure.begin.jotlang"
             }
           },
           "endCaptures": {
             "0": {
-              "name": "punctuation.section.destructure.end.jot"
+              "name": "punctuation.section.destructure.end.jotlang"
             }
           },
           "patterns": [
             {
-              "name": "entity.name.import.jot",
+              "name": "entity.name.import.jotlang",
               "match": "[a-zA-Z_][a-zA-Z0-9_]*"
             },
             {
-              "name": "punctuation.separator.comma.jot",
+              "name": "punctuation.separator.comma.jotlang",
               "match": ","
             }
           ]
         },
         {
-          "name": "entity.name.import.default.jot",
+          "name": "entity.name.import.default.jotlang",
           "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
         }
       ]
@@ -827,12 +895,12 @@
     "string": {
       "patterns": [
         {
-          "name": "string.quoted.double.jot",
+          "name": "string.quoted.double.jotlang",
           "begin": "\"",
           "end": "\"",
           "patterns": [
             {
-              "name": "constant.character.escape.jot",
+              "name": "constant.character.escape.jotlang",
               "match": "\\\\."
             },
             {
@@ -844,12 +912,12 @@
           ]
         },
         {
-          "name": "string.quoted.single.jot",
+          "name": "string.quoted.single.jotlang",
           "begin": "'",
           "end": "'",
           "patterns": [
             {
-              "name": "constant.character.escape.jot",
+              "name": "constant.character.escape.jotlang",
               "match": "\\\\."
             },
             {
@@ -861,12 +929,12 @@
           ]
         },
         {
-          "name": "string.quoted.backtick.jot",
+          "name": "string.quoted.backtick.jotlang",
           "begin": "`",
           "end": "`",
           "patterns": [
             {
-              "name": "constant.character.escape.jot",
+              "name": "constant.character.escape.jotlang",
               "match": "\\\\."
             }
           ]
@@ -874,53 +942,53 @@
       ]
     },
     "variable-ref": {
-      "name": "variable.other.readwrite.jot",
+      "name": "variable.other.readwrite.jotlang",
       "match": "(?<![a-zA-Z0-9_])(&)([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)*)",
       "captures": {
         "1": {
-          "name": "punctuation.definition.variable.jot"
+          "name": "punctuation.definition.variable.jotlang"
         },
         "2": {
-          "name": "variable.other.readwrite.jot"
+          "name": "variable.other.readwrite.jotlang"
         }
       }
     },
     "handler-ref": {
-      "name": "variable.function.handler.jot",
+      "name": "variable.function.handler.jotlang",
       "match": "(?<![a-zA-Z0-9_])(@)([a-zA-Z_][a-zA-Z0-9_]*)",
       "captures": {
         "1": {
-          "name": "punctuation.definition.handler.jot"
+          "name": "punctuation.definition.handler.jotlang"
         },
         "2": {
-          "name": "entity.name.function.handler.jot"
+          "name": "entity.name.function.handler.jotlang"
         }
       }
     },
     "iterator-ref": {
-      "name": "variable.parameter.iterator.jot",
+      "name": "variable.parameter.iterator.jotlang",
       "match": "(?<![a-zA-Z0-9_])(\\$)([a-zA-Z_][a-zA-Z0-9_]*(?:\\.[a-zA-Z_][a-zA-Z0-9_]*)*)",
       "captures": {
         "1": {
-          "name": "punctuation.definition.iterator.jot"
+          "name": "punctuation.definition.iterator.jotlang"
         },
         "2": {
-          "name": "variable.parameter.iterator.jot"
+          "name": "variable.parameter.iterator.jotlang"
         }
       }
     },
     "expression": {
-      "name": "meta.expression.jot",
+      "name": "meta.expression.jotlang",
       "begin": "\\{",
       "end": "\\}",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.section.expression.begin.jot"
+          "name": "punctuation.section.expression.begin.jotlang"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "punctuation.section.expression.end.jot"
+          "name": "punctuation.section.expression.end.jotlang"
         }
       },
       "patterns": [
@@ -940,7 +1008,7 @@
           "include": "#number"
         },
         {
-          "name": "keyword.operator.jot",
+          "name": "keyword.operator.jotlang",
           "match": "\\?|:|==|!=|<=|>=|<|>|\\+|-|\\*|/|%|&&|\\|\\||!"
         }
       ]
@@ -963,21 +1031,21 @@
           "include": "#number"
         },
         {
-          "name": "keyword.other.as.jot",
+          "name": "keyword.other.as.jotlang",
           "match": "\\bas\\b"
         },
         {
-          "name": "keyword.operator.jot",
+          "name": "keyword.operator.jotlang",
           "match": "==|!=|<=|>=|<|>|\\+|-|\\*|/|%|&&|\\|\\||!|\\?|:"
         },
         {
-          "name": "punctuation.section.group.jot",
+          "name": "punctuation.section.group.jotlang",
           "match": "[()]"
         }
       ]
     },
     "number": {
-      "name": "constant.numeric.jot",
+      "name": "constant.numeric.jotlang",
       "match": "\\b-?[0-9]+(\\.[0-9]+)?\\b"
     },
     "content-line": {
@@ -1015,30 +1083,30 @@
       ]
     },
     "escaped-char": {
-      "name": "constant.character.escape.jot",
+      "name": "constant.character.escape.jotlang",
       "match": "\\\\[&@$*_`#\\\\{}\\[\\]<>|~:!/-]"
     },
     "link-shorthand": {
-      "name": "markup.underline.link.jot",
+      "name": "markup.underline.link.jotlang",
       "patterns": [
         {
-          "name": "meta.link.jot",
+          "name": "meta.link.jotlang",
           "begin": "(#)(['\"])",
           "end": "(['\"])\\s*(\\[)([^\\]]*)(\\])",
           "beginCaptures": {
             "1": {
-              "name": "punctuation.definition.link.jot"
+              "name": "punctuation.definition.link.jotlang"
             },
             "2": {
-              "name": "punctuation.definition.string.begin.jot"
+              "name": "punctuation.definition.string.begin.jotlang"
             }
           },
           "endCaptures": {
             "1": {
-              "name": "punctuation.definition.string.end.jot"
+              "name": "punctuation.definition.string.end.jotlang"
             },
             "2": {
-              "name": "punctuation.section.attributes.begin.jot"
+              "name": "punctuation.section.attributes.begin.jotlang"
             },
             "3": {
               "patterns": [
@@ -1048,12 +1116,12 @@
               ]
             },
             "4": {
-              "name": "punctuation.section.attributes.end.jot"
+              "name": "punctuation.section.attributes.end.jotlang"
             }
           },
           "patterns": [
             {
-              "name": "constant.character.escape.jot",
+              "name": "constant.character.escape.jotlang",
               "match": "\\\\."
             },
             {
@@ -1069,14 +1137,14 @@
     "attributes-inner": {
       "patterns": [
         {
-          "name": "meta.attribute.key-value.jot",
+          "name": "meta.attribute.key-value.jotlang",
           "match": "([a-zA-Z_][a-zA-Z0-9_]*)(=)",
           "captures": {
             "1": {
-              "name": "entity.other.attribute-name.jot"
+              "name": "entity.other.attribute-name.jotlang"
             },
             "2": {
-              "name": "punctuation.separator.key-value.jot"
+              "name": "punctuation.separator.key-value.jotlang"
             }
           }
         },
@@ -1093,23 +1161,23 @@
           "include": "#expression"
         },
         {
-          "name": "entity.other.attribute-name.boolean.jot",
+          "name": "entity.other.attribute-name.boolean.jotlang",
           "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!=)"
         }
       ]
     },
     "markdown-bold": {
-      "name": "markup.bold.jot",
+      "name": "markup.bold.jotlang",
       "begin": "\\*\\*",
       "end": "\\*\\*",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.bold.jot"
+          "name": "punctuation.definition.bold.jotlang"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.bold.jot"
+          "name": "punctuation.definition.bold.jotlang"
         }
       },
       "patterns": [
@@ -1122,17 +1190,17 @@
       ]
     },
     "markdown-italic": {
-      "name": "markup.italic.jot",
+      "name": "markup.italic.jotlang",
       "begin": "(?<=\\s|^|[^a-zA-Z0-9])_(?=[^_\\s])",
       "end": "_(?=\\s|$|[^a-zA-Z0-9])",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.italic.jot"
+          "name": "punctuation.definition.italic.jotlang"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.italic.jot"
+          "name": "punctuation.definition.italic.jotlang"
         }
       },
       "patterns": [
@@ -1145,47 +1213,47 @@
       ]
     },
     "markdown-code": {
-      "name": "markup.raw.inline.jot",
+      "name": "markup.raw.inline.jotlang",
       "begin": "`",
       "end": "`",
       "beginCaptures": {
         "0": {
-          "name": "punctuation.definition.raw.jot"
+          "name": "punctuation.definition.raw.jotlang"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "punctuation.definition.raw.jot"
+          "name": "punctuation.definition.raw.jotlang"
         }
       }
     },
     "directive-close": {
-      "name": "meta.tag.directive.close.jot",
+      "name": "meta.tag.directive.close.jotlang",
       "match": "^\\s*(<<)\\s*([a-zA-Z_][a-zA-Z0-9_]*)?\\s*$",
       "captures": {
         "1": {
-          "name": "keyword.control.tag.directive.jot"
+          "name": "keyword.control.tag.directive.jotlang"
         },
         "2": {
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         }
       }
     },
     "directive-open": {
-      "name": "meta.tag.directive.open.jot",
+      "name": "meta.tag.directive.open.jotlang",
       "begin": "^\\s*(>>)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
       "end": "(:)\\s*$|$",
       "beginCaptures": {
         "1": {
-          "name": "keyword.control.tag.directive.jot"
+          "name": "keyword.control.tag.directive.jotlang"
         },
         "2": {
-          "name": "entity.name.tag.jot"
+          "name": "entity.name.tag.jotlang"
         }
       },
       "endCaptures": {
         "1": {
-          "name": "punctuation.separator.content.jot"
+          "name": "punctuation.separator.content.jotlang"
         }
       },
       "patterns": [

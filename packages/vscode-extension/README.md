@@ -1,4 +1,4 @@
-# JOTL Language Support for VS Code
+# JOTLANG Language Support for VS Code
 
 Syntax highlighting, diagnostics, completions, and hover documentation for [JOTL](https://github.com/Thaumonaut/JOTL) — a structured markup language with whitespace-sigil syntax.
 
@@ -37,12 +37,12 @@ Hover any token for rich markdown documentation:
 
 ### From VSIX
 ```bash
-code --install-extension jotl-language-0.5.0.vsix
+code --install-extension jotlang-language-0.5.0.vsix
 ```
 
 For Cursor:
 ```bash
-cursor --install-extension jotl-language-0.5.0.vsix
+cursor --install-extension jotlang-language-0.5.0.vsix
 ```
 
 ### From source (development)
@@ -50,16 +50,16 @@ cursor --install-extension jotl-language-0.5.0.vsix
 git clone https://github.com/Thaumonaut/JOTL
 cd JOTL
 npm install
-npm run build --workspace=jotl-lsp
-npm run build --workspace=jotl-language
+npm run build --workspace=jotlang-lsp
+npm run build --workspace=jotlang-language
 cd packages/vscode-extension
 npx vsce package --allow-missing-repository --no-dependencies
-code --install-extension jotl-language-0.5.0.vsix
+code --install-extension jotlang-language-0.5.0.vsix
 ```
 
 ## Architecture
 
-This extension is a thin client for the [jotl-lsp](../lsp) language server. The grammar handles syntax highlighting (TextMate regex-based), while the language server handles everything semantic (parse tree analysis, diagnostics, completions, hover). Both bundles ship together in the `.vsix`.
+This extension is a thin client for the [jotlang-lsp](../lsp) language server. The grammar handles syntax highlighting (TextMate regex-based), while the language server handles everything semantic (parse tree analysis, diagnostics, completions, hover). Both bundles ship together in the `.vsix`.
 
 When you open a `.jot` file, the extension spawns the LSP server as a child process and establishes a JSON-RPC connection over stdio. All language intelligence lives in the server; this extension is ~30 lines of glue.
 
@@ -67,7 +67,7 @@ When you open a `.jot` file, the extension spawns the LSP server as a child proc
 
 | Setting | Values | Description |
 |---------|--------|-------------|
-| `jotl.trace.server` | `off`, `messages`, `verbose` | Trace LSP traffic for debugging |
+| `jotlang.trace.server` | `off`, `messages`, `verbose` | Trace LSP traffic for debugging |
 
 ## License
 

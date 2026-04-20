@@ -1,8 +1,9 @@
 {
-  "name": "jotl",
-  "version": "0.5.0",
-  "description": "JOTL — compile .jot files to HTML (static compiler + CLI)",
+  "name": "jotlang",
+  "version": "0.6.0",
+  "description": "JOTLANG — Jot Object Template Language. Compile .jot files to HTML (static compiler + CLI). \"JOTL\" for short.",
   "keywords": [
+    "jotlang",
     "jotl",
     "markup",
     "compiler",
@@ -24,7 +25,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "jotl": "dist/jotl.mjs"
+    "jotlang": "dist/jotl.mjs"
   },
   "files": [
     "dist/",

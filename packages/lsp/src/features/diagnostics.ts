@@ -35,7 +35,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           : DiagnosticSeverity.Warning,
       range: toLspRange(err.range),
       message: err.message,
-      source: 'jotl',
+      source: 'jotlang',
     });
   }
 
@@ -57,7 +57,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           severity: DiagnosticSeverity.Information,
           range: toLspRange(t.range),
           message: `Unknown tag '${t.text}'. If this is a user-defined component, consider using a capitalized name.`,
-          source: 'jotl',
+          source: 'jotlang',
         });
       }
       continue;
@@ -71,7 +71,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
           severity: DiagnosticSeverity.Error,
           range: toLspRange(v.range),
           message: `Tag '${t.text}' does not accept variants.`,
-          source: 'jotl',
+          source: 'jotlang',
         });
       } else {
         const allowed = tagDef.variants.map(vd => vd.name);
@@ -80,7 +80,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(v.range),
             message: `Unknown variant '${v.text}' for tag '${t.text}'. Valid variants: ${allowed.join(', ')}.`,
-            source: 'jotl',
+            source: 'jotlang',
           });
         }
       }
@@ -103,7 +103,7 @@ export function computeDiagnostics(result: TokenizeResult): Diagnostic[] {
         severity: DiagnosticSeverity.Warning,
         range: toLspRange(tokens[i].range),
         message: `Responsive override on style attribute '${attrName.text}' is discouraged. Layout attributes accept overrides; for theming, use a design token system instead. (Rulebook §8.7)`,
-        source: 'jotl',
+        source: 'jotlang',
       });
     }
   }
@@ -200,14 +200,14 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Directive close '<<' with no matching '>>' open.",
-            source: 'jotl',
+            source: 'jotlang',
           });
         } else if (popped.kind !== 'directive') {
           diagnostics.push({
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: `Directive close '<<' but the innermost open is a ${popped.kind}.`,
-            source: 'jotl',
+            source: 'jotlang',
           });
           // Put it back — the '<<' may actually close something outer
           stack.push(popped);
@@ -221,7 +221,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Block close '<' with no matching '>' open.",
-            source: 'jotl',
+            source: 'jotlang',
           });
         } else if (popped.kind === 'directive') {
           // Directive with body should close with '<<', not '<'. But people
@@ -231,7 +231,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Block close '<' used to close a directive — use '<<' instead.",
-            source: 'jotl',
+            source: 'jotlang',
           });
           stack.push(popped);
         }
@@ -244,7 +244,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
             severity: DiagnosticSeverity.Error,
             range: toLspRange(t.range),
             message: "Inline close '</' with no matching '/>' open.",
-            source: 'jotl',
+            source: 'jotlang',
           });
         } else if (popped.kind !== 'inline') {
           // Mismatch — put back
@@ -268,7 +268,7 @@ function detectUnclosedBlocks(tokens: Token[]): Diagnostic[] {
       severity: DiagnosticSeverity.Error,
       range: toLspRange(entry.token.range),
       message: `Unclosed ${word}. Add '${closer}' to close it.`,
-      source: 'jotl',
+      source: 'jotlang',
     });
   }
 
@@ -306,10 +306,52 @@ function classifyDirectiveOpens(tokens: Token[]): Map<number, boolean> {
         break;
       }
     }
+    // If a `:` was followed by `{` on the same line (allowing only whitespace
+    // between), this is a brace-bounded body (e.g. `>> script: { ... }` /
+    // `>> props: { ... }`). The body is closed by `}` at column 0, not `<<`,
+    // so it does NOT contribute to the open-stack for unclosed-block checks.
+    if (sawColon && isBraceBounded(tokens, i)) {
+      result.set(i, false);
+      continue;
+    }
     result.set(i, sawColon);
   }
 
   return result;
+}
+
+/**
+ * Check whether a `>> name [...] : { ... }` directive uses a brace-bounded
+ * body. Returns true if the next non-whitespace token after the `:` is a `{`
+ * on the same line.
+ */
+function isBraceBounded(tokens: Token[], directiveIdx: number): boolean {
+  // Find the colon belonging to this directive's header.
+  let colonIdx = -1;
+  let depth = 0;
+  for (let j = directiveIdx + 1; j < tokens.length; j++) {
+    const tk = tokens[j];
+    if (tk.kind === 'attr-bracket-open') depth++;
+    else if (tk.kind === 'attr-bracket-close') depth--;
+    else if (tk.kind === 'newline' && depth === 0) return false;
+    else if (tk.kind === 'content-delim' && depth === 0) {
+      colonIdx = j;
+      break;
+    }
+  }
+  if (colonIdx < 0) return false;
+
+  // Look at the next non-whitespace token on the same line.
+  for (let j = colonIdx + 1; j < tokens.length; j++) {
+    const tk = tokens[j];
+    if (tk.kind === 'whitespace') continue;
+    if (tk.kind === 'newline') return false;
+    // The tokenizer doesn't emit a dedicated brace token, so `{` is wrapped
+    // up as `text` or `unknown`. Either way, a single-character `{` means
+    // brace-bounded.
+    return tk.text.startsWith('{');
+  }
+  return false;
 }
 
 // ─────────────────────────────────────────────────────

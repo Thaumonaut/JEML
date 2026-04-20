@@ -48,7 +48,7 @@ export type ScriptDirective = {
  * A meta-wrapper whose body is a list of nested directives (>> props,
  * >> script, >> style, >> document, …). Mirrors Vue's SFC structure.
  *
- * Codegen rules (see solid-jotl):
+ * Codegen rules (see solid-jotlang):
  *  - The first declared component in a file becomes the default export.
  *  - Authors override with `[export=default]` to pin a specific component.
  *  - The standalone HTML codegen (jotl) treats this directive as a
@@ -65,7 +65,7 @@ export type ComponentDirective = {
  * `>> props [attrs]: { …TS interface body… }`
  *
  * The body is captured verbatim and emitted as a TypeScript interface body
- * by solid-jotl. Standalone HTML mode ignores it.
+ * by solid-jotlang. Standalone HTML mode ignores it.
  */
 export type PropsDirective = {
   type: 'props'

@@ -156,4 +156,73 @@ if (hover2) {
   console.log('  (no hover)');
 }
 
+hr('solid-jotlang component — diagnostics should be clean');
+const SOLID_COMPONENT = `>> component Counter:
+  >> props: {
+    initial?: number
+  }
+  >> script: {
+    let count = signal(props.initial ?? 0)
+    function tap() { count = count() + 1 }
+  }
+  >> document:
+    > text: Clicks: &count <
+    > button [on_press=@tap on_input=@tap]: Add <
+  << document
+<< component
+`;
+const rs = tokenize(SOLID_COMPONENT);
+const ds = computeDiagnostics(rs);
+if (ds.length === 0) console.log('  (none — clean file)');
+for (const d of ds) {
+  const sev = d.severity === 1 ? 'ERROR' : d.severity === 2 ? 'WARN' : 'INFO';
+  console.log(`  [${sev}] ${d.range.start.line}:${d.range.start.character} — ${d.message}`);
+}
+
+hr('Completion: after `>> ` at start of file (should include component + props)');
+const directiveSample = `>> `;
+const rd = tokenize(directiveSample);
+const idxd = buildTokenIndex(rd.tokens);
+const dlines = directiveSample.split('\n');
+const dirCompletions = computeCompletions({
+  index: idxd,
+  line: dlines.length - 1,
+  column: dlines[dlines.length - 1].length,
+  source: directiveSample,
+});
+for (const c of dirCompletions) {
+  console.log(`    ${c.label.padEnd(15)} ${c.detail ?? ''}`);
+}
+
+hr('Hover: over `signal` inside a script body');
+const signalSample = `>> script: {
+  let count = signal(0)
+}`;
+const rsig = tokenize(signalSample);
+const idxsig = buildTokenIndex(rsig.tokens);
+// `signal` starts at line 1, column 14 (after "  let count = ")
+const sigHover = computeHover({ index: idxsig, line: 1, column: 16 });
+if (sigHover) {
+  const value = typeof sigHover.contents === 'object' && 'value' in sigHover.contents
+    ? sigHover.contents.value
+    : JSON.stringify(sigHover.contents);
+  console.log(value.split('\n').slice(0, 3).join('\n') + '\n  ...');
+} else {
+  console.log('  (no hover)');
+}
+
+hr('Hover: over `on_press` attribute');
+const onPressSample = `> button [on_press=@tap]: Tap <`;
+const rop = tokenize(onPressSample);
+const idxop = buildTokenIndex(rop.tokens);
+const opHover = computeHover({ index: idxop, line: 0, column: 12 });
+if (opHover) {
+  const value = typeof opHover.contents === 'object' && 'value' in opHover.contents
+    ? opHover.contents.value
+    : JSON.stringify(opHover.contents);
+  console.log(value.split('\n').slice(0, 4).join('\n'));
+} else {
+  console.log('  (no hover)');
+}
+
 hr('DONE');

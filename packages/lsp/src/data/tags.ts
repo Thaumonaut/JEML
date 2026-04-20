@@ -87,6 +87,26 @@ export const TAGS: TagDefinition[] = [
     attributes: ['type'],
     specSection: '§5.1.4',
   },
+  {
+    name: 'component',
+    flavor: 'block',
+    description:
+      'Declares a named, exportable component. solid-jotlang wraps the props/script/document inside as a single Solid component function. Multiple `>> component` blocks may live in the same file.',
+    htmlMapping: '(no HTML output — compiles to a Solid component)',
+    variants: [],
+    attributes: [],
+    specSection: 'solid-jotlang',
+  },
+  {
+    name: 'props',
+    flavor: 'block',
+    description:
+      'Declares typed component props. The body is a TypeScript object-literal type — fields suffixed with `?` are optional. Available inside the component as `props.<name>`.',
+    htmlMapping: '(no HTML output — type-only declaration)',
+    variants: [],
+    attributes: [],
+    specSection: 'solid-jotlang',
+  },
 
   // ───────── Block structure ─────────
   {
